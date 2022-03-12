@@ -1,39 +1,125 @@
 .App {
+  margin: unset;
+  box-sizing: border-box;
+}
+
+.no-mg {
+  margin: unset;
+}
+
+.fullscreen {
+  height: 100vh;
+}
+
+.fullwidth {
+  width: 100%;
+}
+
+.fullheight {
+  height: 100%;
+}
+
+.pdt-50 {
+  padding-top: 50px;
+}
+
+.mgt-20 {
+  margin-top: 20px;
+}
+
+.mgr-20 {
+  margin-right: 20px;
+}
+
+.bdr {
+  border-right: 1px solid rgb(199, 191, 182);
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.bg-lightpink {
+  background-color: #f0f2f5;
+}
+
+.row-reverse {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.center {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.border {
+  border: 0.5px solid black;
+  border-radius: 3px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
-  }
-}
-
-.App-header {
-  min-height: 100vh;
+.row-between {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pd-20 {
+  padding: 20px;
+}
+
+.pd-x-10 {
+  padding: 0 10px
+}
+
+.pd-x-20 {
+  padding: 0 20px
+}
+
+.mg-20 {
+  margin: 20px;
+}
+
+.pdr-20{
+  padding-right: 20px;
+}
+
+.mgt-10 {
+  margin-top: 10px;
+}
+
+.mgl-20 {
+  margin-left: 20px;
+}
+
+.mgt-30 {
+  margin-top: 30px;
+}
+
+.mgl-30 {
+  margin-left: 30px;
+}
+
+.mgr-10 {
+  margin-right: 10px;
+}
+
+.bold {
+  font-weight: 500;
+}
+
+.row-center-y {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
 }
 
-.App-link {
-  color: rgb(112, 76, 182);
+.mgl-5 {
+  margin-left: 5px;
 }
 
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+.mgl-10 {
+  margin-left: 10px;
+}
+
+.hide {
+  display: none;
 }

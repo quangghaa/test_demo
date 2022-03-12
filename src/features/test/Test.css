@@ -1,0 +1,102 @@
+.row {
+    display: flex;
+}
+
+.nav {
+    padding: unset;
+    list-style-type: none;
+    height: 100%;
+    background-color: #f0f2f5;
+    border-right: 1px solid rgb(199, 191, 182);
+}
+
+.nav-item {
+    padding: 30px 10px;
+    border-bottom: 1px solid #d8dce0;
+}
+
+.nav-item:hover {
+    color: rgb(199, 191, 182);
+    cursor: pointer;
+}
+
+.vertical {
+    writing-mode: vertical-lr;
+    text-orientation: sideways;
+    font-size: 20px;
+    font-weight: 550;
+}
+
+.cus-pd {
+    padding: 20px 30px 0 30px;
+}
+
+.list {
+    list-style-type: none;
+}
+
+.qs-num {
+    background-color: black;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 0px 15px 2px 15px;
+    margin-right: 15px;
+}
+
+.qs {
+    font-size: 18px;
+    font-weight: 450;
+}
+
+.cus-mg {
+    margin: 10px 0 0 90px;
+}
+
+.inp-list {
+    list-style-type: none;
+    padding: unset;
+}
+
+.code-sec {
+    padding-top: 50px;
+    background-color: #f0f2f5;
+    border: 0.5px solid #f0f2f5;
+    border-radius: 3px;
+
+    position: relative;
+}
+
+.select-lang {
+    position: absolute;
+    right: 0;
+    top: 5px;
+
+    display: flex;
+    align-items: center;
+}
+
+.big-icon {
+    font-size: 35px;
+}
+
+.big-icon:hover {
+    cursor: pointer;
+    color: #ced0d3;
+}
+
+.code-sec textarea {
+    border: unset;
+}
+
+.btn-run {
+    padding: 5px 15px;
+    margin-right: 20px;
+}
+
+.btn-sub {
+    padding: 5px, 15px;
+    color: white;
+    background-color: black;
+}

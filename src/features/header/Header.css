@@ -1,0 +1,60 @@
+.header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    padding: 0 20px;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    border-bottom: 1px solid #ffc71833;
+    
+}
+
+.lg-btn:hover {
+    cursor: pointer;
+    color: rgb(90, 84, 84);
+}
+
+/* Modal style */
+.ant-modal-content {
+    border-radius: 5px;
+    width: 400px;
+}
+
+.ant-modal-title {
+    font-size: 24px;
+}
+
+.ant-modal-header {
+    border-bottom: unset;
+}
+
+.ant-modal-footer {
+    text-align: center;
+    border-top: unset;
+}
+
+.btn-login {
+    background-color: black;
+    color: white;
+    padding: 3px 20px;
+    border-radius: 20px;
+    width: fit-content;
+}
+
+.forgot-pass {
+    color: #b6b7b9;
+    font-size: 14px;
+}
+
+.forgot-pass:hover {
+    cursor: pointer;
+    color: #8a8b8b;
+}

@@ -1,57 +1,39 @@
+import { Button } from 'antd';
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import 'antd/dist/antd.css';
 import './App.css';
+import { Link, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Header } from 'antd/lib/layout/layout';
+import Homepage from './features/home/Homepage';
+import Instruction from './features/instruction/Instruction';
+import Test from './features/test/Test';
+import Login from './features/login/Login';
+import Schedule from './features/dashboard/schedule/Schedule';
+import Question from './features/dashboard/question/Question';
+
 
 function App() {
+
+
   return (
+    
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <Router>
+            
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path='/instruction' element={<Instruction />} />
+          <Route path='/test' element={<Test />} />
+          
+          <Route path='/dashboard' element={<Schedule />} />
+          <Route path='/dashboard/schedule' element={<Schedule />} />
+          <Route path='/dashboard/question' element={<Question />} />
+          {/* <Route path='/dashboard/complete' /> */}
+        </Routes>
+
+      </Router>
     </div>
+    
   );
 }
 

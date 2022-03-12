@@ -1,0 +1,147 @@
+.name-inp {
+    border: 0.5px solid black;
+    border-radius: 3px;
+    padding-right: 40px;
+
+    position: relative;
+}
+
+.name-inp input {
+    border: unset;
+}
+
+.name-inp-ic {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.level-list {
+    margin: unset;
+    padding: unset;
+    list-style-type: none;
+    display: flex;
+    border: 0.5px solid #d1d3d6;
+    width: fit-content;
+}
+
+.level-list li {
+    color: black;
+    padding: 2px 15px;
+    background-color: #f0f2f5;
+    border-right: 0.5px solid #d1d3d6;
+}
+
+.level-list li:hover {
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-search {
+    background-color: black;
+    color: white;
+    padding: 0px 15px;
+    margin-right: 20px;
+    border-radius: 20px;
+}
+
+.btn-add {
+    background-color: white;
+    color: black;
+    padding: 0px 15px;
+    border-radius: 20px;
+}
+
+.btn-delete {
+    background-color: #f0f2f5;
+    color: black;
+    font-weight: 500;
+    padding: 0 30px;
+    border-radius: 20px;
+}
+
+.c-pd {
+    padding: 0 20px 0 0;
+}
+
+.filter {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+#contact input {
+    height: 32px;
+}
+
+.c-cas {
+    width: inherit;
+}
+
+.c-cans {
+    list-style-type: none;
+    margin: unset;
+    padding: unset;
+}
+
+.c-card {
+    width: auto;
+    height: auto;
+    border: 0.5px solid black;
+    border-radius: 5px;
+
+    position: relative;
+}
+
+.c-card > span {
+    padding-left: 20px;
+}
+
+.c-card > div {
+    padding: 5px 20px;
+}
+
+.c-h {
+    background-color: black;
+    color: white;
+}
+
+.c-time {
+    border: 0.5px solid rgb(179, 169, 169);
+    border-radius: 10px;
+    padding: 5px 15px;
+    background-color: #f0f2f5;
+    width: fit-content;
+}
+
+.c-cal {
+    list-style-type: none;
+    display: flex;
+    margin: unset;
+    padding: unset;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+.c-cal li {
+    min-width: 300px;
+    margin: 0 20px 0 0;
+}
+
+.cal-date {
+    width: fit-content;
+    border: 0.5px solid black;
+    background-color: #f0f2f5;
+    color: black;
+    font-weight: 500;
+    border-radius: 20px;
+    padding: 3px 20px;
+    margin-bottom: 10px;
+}

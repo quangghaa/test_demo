@@ -1,0 +1,54 @@
+.body {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.big-text {
+    font-size: 46px;
+    font-weight: 550;
+    color: black;
+}
+
+.img-box {
+    width: 400px;
+    height: 100px;
+    background-color: antiquewhite;
+}
+
+.hint {
+    color: gainsboro;
+}
+
+.input-box {
+    position: relative;
+    padding-right: 40px;
+    border: 0.5px solid gainsboro;
+    border-radius: 2px;
+    height: auto;
+    width: 300px;
+}
+
+input {
+    border: unset !important;
+    height: 40px;
+}
+
+.position {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 40px;
+    width: 40px;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.position :hover {
+    cursor: pointer;
+    color: rgb(84, 141, 141);
+}

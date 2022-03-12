@@ -1,0 +1,35 @@
+.ant-modal-content {
+    border-radius: 5px;
+    width: 400px;
+}
+
+.ant-modal-title {
+    font-size: 24px;
+}
+
+.ant-modal-header {
+    border-bottom: unset;
+}
+
+.ant-modal-footer {
+    text-align: center;
+    border-top: unset;
+}
+
+.btn-login {
+    background-color: black;
+    color: white;
+    padding: 3px 20px;
+    border-radius: 20px;
+    width: fit-content;
+}
+
+.forgot-pass {
+    color: #b6b7b9;
+    font-size: 14px;
+}
+
+.forgot-pass:hover {
+    cursor: pointer;
+    color: #8a8b8b;
+}
