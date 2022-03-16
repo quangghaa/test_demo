@@ -1,8 +1,168 @@
 import { CalendarOutlined, CloseOutlined, FileWordOutlined, FilterFilled, MailFilled, PhoneFilled, PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Cascader, Checkbox, Col, DatePicker, Input, Row } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import useFetch from '../../../hook/useFetch';
+import { ICalendar, ICandidate } from '../../interface';
+import { addCandidate, selectTest } from '../../reducer/testSlice';
 import HeaderD from '../headerD/HeaderD';
 import './Schedule.css';
+
+const allCansData = [
+    {
+        date: '2022-03-18',
+        candidates: [
+            {
+                code: 'BC0001',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Backend',
+                level: 'Junior',
+                reporter: 'Quang Ha',
+                time: '7:30'
+            },
+            {
+                code: 'BC0002',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Frontend',
+                level: 'middle',
+                reporter: 'Quang Ha',
+                time: '10:30'
+            },
+            {
+                code: 'BC0003',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Backend',
+                level: 'Junior',
+                reporter: 'Quang Ha',
+                time: '14:30'
+            }
+        ]
+    },
+    {
+        date: '2022-03-16',
+        candidates: [
+            {
+                code: 'BC0001',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Backend',
+                level: 'Junior',
+                reporter: 'Quang Ha',
+                time: '7:30'
+            },
+            {
+                code: 'BC0002',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Frontend',
+                level: 'middle',
+                reporter: 'Quang Ha',
+                time: '10:30'
+            },
+            {
+                code: 'BC0003',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Backend',
+                level: 'Junior',
+                reporter: 'Quang Ha',
+                time: '14:30'
+            }
+        ]
+    },
+    {
+        date: '2022-03-11',
+        candidates: [
+            {
+                code: 'BC1001',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Backend',
+                level: 'Junior',
+                reporter: 'Quang Ha',
+                time: '7:30'
+            },
+            {
+                code: 'BC1002',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Frontend',
+                level: 'middle',
+                reporter: 'Quang Ha',
+                time: '10:30'
+            }
+        ]
+    },
+    {
+        date: '2022-03-14',
+        candidates: [
+            {
+                code: 'BC0001',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Backend',
+                level: 'Junior',
+                reporter: 'Quang Ha',
+                time: '7:30'
+            },
+            {
+                code: 'BC0002',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Frontend',
+                level: 'middle',
+                reporter: 'Quang Ha',
+                time: '10:30'
+            },
+            {
+                code: 'BC0003',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Backend',
+                level: 'Junior',
+                reporter: 'Quang Ha',
+                time: '14:30'
+            }
+        ]
+    },
+    {
+        date: '2022-03-12',
+        candidates: [
+            {
+                code: 'BC0001',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Backend',
+                level: 'Junior',
+                reporter: 'Quang Ha',
+                time: '7:30'
+            },
+            {
+                code: 'BC0002',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Frontend',
+                level: 'middle',
+                reporter: 'Quang Ha',
+                time: '10:30'
+            },
+            {
+                code: 'BC0003',
+                name: 'Nguyen Van A',
+                department: 'P.CN Blockchain',
+                position: 'Backend',
+                level: 'Junior',
+                reporter: 'Quang Ha',
+                time: '14:30'
+            }
+        ]
+    }
+]
+
 
 const upcommingCansData = [
     {
@@ -264,8 +424,43 @@ const calendarData = [
 ]
 
 const CandidateCard = (props: any) => {
+
+    const [showoptions, setShowoptions] = useState(1);
+
+    const isOdd = (n: number) => {
+        if(n % 2 !== 0) return true;
+        return false;
+    }
+
+    const openOptions = () => {
+        setShowoptions(showoptions => showoptions + 1);
+    }
+
+    const Options = (props: any) => {
+        const dispatch = useAppDispatch();
+        const test = useAppSelector(selectTest);
+
+        const onSetupTest = () => {
+            
+            if(!test.candidates.includes(props.data)) dispatch(addCandidate(props.data));
+        }
+
+        return (
+                <ul id='ol' className='option-list' style={{display: isOdd(showoptions) ? 'none' : ''}}>
+                    <li>Chọn</li>
+                    <li>Gửi code</li>
+                    <li>Xem liên hệ</li>
+                    <li onClick={onSetupTest}>
+                        <Link to='/dashboard/question'>Thiết lập bài test</Link>
+                    </li>
+                    <li >Chỉnh sửa thông tin</li>
+                    <li>Xóa ứng viên</li>
+                </ul>
+        )
+    }
+
     return (
-        <li key={props.data.code} className='mgt-20'>
+        <li id='opstion-parent' key={props.data.code} className='mgt-20' onClick={openOptions}>
             <div className='c-card col'>
                 <div className='row-between c-h'>
                     <span>{props.data.name}</span>
@@ -302,28 +497,28 @@ const CandidateCard = (props: any) => {
 
                 <div className='center'>
                     <span className='c-time'>
-                        <CalendarOutlined className='mgr-10'/>
+                        <CalendarOutlined className='mgr-10' />
                         <span className='mgr-10'>{props.data.time}</span>
-                        <span>{props.date}</span>
+                        <span>{props.data.date}</span>
                     </span>
                 </div>
             </div>
+            <Options data={props.data} id={props.data.code}/>
         </li>
     )
 }
 
-const ScheduleSection = () => {
+const ScheduleSection = (props: any) => {
     return (
         <Row gutter={8}>
             <Col span={8}>
                 <div className='pd-20'>
                     <span>Sắp tới</span>
                     <ul className='c-cans'>
-                        {upcommingCansData.map((up: any) => (
-                            up.candidates.map((c: any) => (
-                                <CandidateCard data={c} date={up.date} />
-                            ))
-                        ))}
+                        {props.fu.length > 0 ? props.fu.map((up: any) => (
+                            <CandidateCard data={up} />
+                        )
+                        ) : <></>}
                     </ul>
                 </div>
             </Col>
@@ -332,11 +527,9 @@ const ScheduleSection = () => {
                 <div className='pd-20'>
                     <span>Hôm nay</span>
                     <ul className='c-cans'>
-                        {todayCansData.map((up: any) => (
-                            up.candidates.map((c: any) => (
-                                <CandidateCard data={c} date={up.date} />
-                            ))
-                        ))}
+                        {props.to.length > 0 ? props.to.map((to: any) => (
+                            <CandidateCard data={to} />
+                        )) : <></>}
                     </ul>
                 </div>
             </Col>
@@ -345,11 +538,9 @@ const ScheduleSection = () => {
                 <div className='pd-20'>
                     <span>Quá hạn</span>
                     <ul className='c-cans'>
-                        {outdateCansData.map((up: any) => (
-                            up.candidates.map((c: any) => (
-                                <CandidateCard data={c} date={up.date} />
-                            ))
-                        ))}
+                        {props.pa.length > 0 ? props.pa.map((pa: any) => (
+                            <CandidateCard data={pa} />
+                        )) : <></>}
                     </ul>
                 </div>
             </Col>
@@ -357,14 +548,14 @@ const ScheduleSection = () => {
     )
 }
 
-const CalendarSection = () => {
+const CalendarSection = (props: any) => {
     return (
         <div>
-            {calendarData.map((cal: any) => (
+            {props.list.map((cal: any) => (
                 <div className='col mgt-20'>
                     <span className='cal-date'>{cal.date}</span>
                     <ul className='c-cal'>
-                        {cal.candidates.map((c: any) => (
+                        {cal.cans.map((c: any) => (
                             <CandidateCard data={c} date={cal.date} />
                         ))}
                     </ul>
@@ -377,7 +568,7 @@ const CalendarSection = () => {
 const Schedule = () => {
     const options = [
         {
-            value: 'blockchain',
+            value: 'Blockchain',
             label: 'Blockchain',
             children: []
         },
@@ -413,6 +604,230 @@ const Schedule = () => {
         })
     }
 
+    const [inputseacrh, setInputsearch] = useState({
+        name: '',
+        department: '',
+        level: '',
+        date: '',
+        time: ''
+    });
+
+    const [isSearching, setIsSearching] = useState(false);
+
+    const handleInputName = (e: any) => {
+        // console.log(e.target.value);
+        let t = { ...inputseacrh };
+        t.name = e.target.value;
+        setInputsearch(t);
+        // console.log("Test: ", inputseacrh);
+    }
+
+    const handleSelectDepartment = (value: any) => {
+        console.log(value);
+        const t = { ...inputseacrh };
+        if (Array.isArray(value) && value.length > 0) {
+            t.department = value[0];
+            setInputsearch(t);
+        }
+
+    }
+
+    const genLevelList = ['Fresher', 'Junior', 'Senior'];
+
+    const handleLevelClick = (l: any) => {
+        console.log(l);
+
+        const li = document.getElementsByClassName('mark-lv');
+
+        if (li != null) {
+            const ar = Array.from(li);
+            ar.forEach((el: any) => {
+                el.style.color = 'black';
+                el.style.backgroundColor = 'white';
+            })
+        }
+
+        const el = document.getElementById(l);
+
+        if (el != null) {
+            el.style.color = 'white';
+            el.style.backgroundColor = 'black';
+        }
+
+        const t = { ...inputseacrh };
+        t.level = l;
+        setInputsearch(t);
+    }
+
+    const [today, setToday] = useState([] as ICandidate[]);
+    const [future, setFuture] = useState([] as ICandidate[]);
+    const [past, setPast] = useState([] as ICandidate[]);
+
+    const [calList, setCalList] = useState([] as ICalendar[]);
+
+    const classify = (rs: ICandidate[]) => {
+
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var t = now.getFullYear() + "-" + (month) + "-" + (day);
+
+        var today = new Date(t);
+
+        let to = [] as ICandidate[];
+        let fu = [] as ICandidate[];
+        let pa = [] as ICandidate[];
+
+        let cal = [] as ICalendar[];
+
+        let dateList = [] as string[];
+        if (sw.schedule) {
+            rs.forEach(i => {
+                let x = new Date(i.date);
+                if (x > today) {
+                    fu.push(i);
+                }
+                else if (x < today) {
+                    pa.push(i);
+                }
+                else if (x.toISOString === today.toISOString) {
+                    to.push(i);
+                }
+            })
+            setFuture(fu);
+            setToday(to);
+            setPast(pa);
+        }
+
+        else {
+            if (sw.calendar) {
+                // Find all date from now
+                rs.forEach((c) => {
+                    const t = c.date;
+                    const date = new Date(t);
+                    if (date >= today) {
+                        if (!dateList.includes(t)) dateList.push(t);
+                    }
+
+                })
+
+                dateList.forEach((d) => {
+                    const date = new Date(d);
+                    console.log("A: ", date);
+                    let canList = [] as ICandidate[];
+                    rs.forEach((c) => {
+                        const cDate = new Date(c.date);
+                        console.log("B: ", cDate);
+                        if (cDate.toISOString() === date.toISOString()) {
+                            console.log("X");
+                            canList.push(c);
+                        }
+                    });
+                    if (canList.length > 0) {
+                        let toList = {
+                            date: d,
+                            cans: canList
+                        }
+                        cal.push(toList);
+                    }
+                });
+                setCalList(cal);
+            }
+        }
+
+    }
+
+    const url = 'https://demo.uiza.vn/candidates';
+    const { loading, error, data } = useFetch(url, 'GET');
+    const [candidateList, setCandidateList] = useState([] as ICandidate[]);
+
+    useEffect(() => {
+        if (error == null) {
+            if (data != null) {
+                setCandidateList(data);
+                if (!isSearching) classify(data);
+            }
+        }
+    }, [data, sw]);
+
+    const handleSearch = () => {
+        const name = inputseacrh.name.trim();
+        const department = inputseacrh.department.trim();
+        const level = inputseacrh.level.trim();
+
+        setIsSearching(true);
+        let rs = [] as ICandidate[];
+
+        if (name.length === 0) {
+            if (department.length === 0) {
+                if (level.length === 0) {
+                    return;
+                } else {
+                    candidateList.forEach(can => {
+                        if (can.level === level) {
+                            rs.push(can);
+                        }
+                    });
+                }
+            }
+            else {
+                if (level.length === 0) {
+                    candidateList.forEach(can => {
+                        if (can.department === department) {
+                            rs.push(can);
+                        }
+                    });
+                }
+                else {
+                    candidateList.forEach(can => {
+                        if (can.department === department && can.level === level) {
+                            rs.push(can);
+                        }
+                    });
+                }
+            }
+        }
+        else {
+            if (department.length === 0) {
+                if (level.length === 0) {
+                    candidateList.forEach(can => {
+                        if (can.name === name) {
+                            rs.push(can);
+                        }
+                    });
+                }
+                else {
+                    candidateList.forEach(can => {
+                        if (can.name === name && can.level === level) {
+                            rs.push(can);
+                        }
+                    });
+                }
+            }
+            else {
+                if (level.length === 0) {
+                    candidateList.forEach(can => {
+                        if (can.name === name && can.department === department) {
+                            rs.push(can);
+                        }
+                    });
+                }
+                else {
+                    candidateList.forEach(can => {
+                        if (can.name === name && can.department === department && can.level === level) {
+                            rs.push(can);
+                        }
+                    });
+                }
+            }
+
+        }
+
+        console.log("Hope OK: ", rs);
+
+        classify(rs);
+    }
+
     return (
         <div className='pdt-50'>
             <HeaderD />
@@ -422,22 +837,23 @@ const Schedule = () => {
                         <span className='filter'><FilterFilled className='mgr-20' />Bộ lọc</span>
                         <span className='mgt-20'>Tên</span>
                         <div className='name-inp'>
-                            <Input size="large" placeholder="large size" />
+                            <Input size="large" placeholder="large size" onChange={(e) => handleInputName(e)} />
                             <span className='name-inp-ic'><UserOutlined /></span>
                         </div>
 
                         <span className='mgt-10'>Phòng ban</span>
-                        <Cascader className='c-cas' size='large' options={options} onChange={onChange} placeholder="Please select" />
+                        <Cascader className='c-cas' size='large' options={options} onChange={handleSelectDepartment} placeholder="Please select" />
 
                         <span className='mgt-10'>Vị trí</span>
                         <span className='border'>
                             <br />
                         </span>
-                        <ul className='level-list'>
-                            <li>Fresher</li>
-                            <li>Junior</li>
-                            <li>Senior</li>
+                        <ul className='lv-list'>
+                            {genLevelList.map((l, i) => (
+                                <li id={l} key={i + 1} onClick={() => handleLevelClick(l)} className='mark-lv'><span>{l}</span></li>
+                            ))}
                         </ul>
+
                         <div className='row-between mgt-10'>
                             <div className='col'>
                                 <span>Lịch</span>
@@ -450,7 +866,7 @@ const Schedule = () => {
                             </div>
                         </div>
                         <span className='center mgt-30'>
-                            <Button className='btn-search' icon={<SearchOutlined />}>
+                            <Button className='btn-search' onClick={handleSearch} icon={<SearchOutlined />}>
                                 Tìm
                             </Button>
                             <Button className='btn-add' icon={<PlusOutlined />}>
@@ -470,8 +886,8 @@ const Schedule = () => {
                         <Checkbox className='mgl-30' checked={sw.schedule} onChange={scheduleClick}>Bảng</Checkbox>
                         <Checkbox className='mgl-30' checked={sw.calendar} onChange={calendarClick}>Lịch</Checkbox>
                     </span>
-                    {sw.schedule ? <ScheduleSection /> : <></>}
-                    {sw.calendar ? <CalendarSection /> : <></>}
+                    {sw.schedule ? <ScheduleSection fu={future} to={today} pa={past} /> : <></>}
+                    {sw.calendar ? <CalendarSection list={calList} /> : <></>}
                 </Col>
             </Row>
 

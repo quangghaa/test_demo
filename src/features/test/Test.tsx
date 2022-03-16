@@ -1,17 +1,29 @@
 import { UndoOutlined } from '@ant-design/icons';
 import { Button, Cascader, Col, Radio, Row, Space } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import { useState } from 'react';
+import React from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { idText } from 'typescript';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import Header from '../header/Header';
+import { IChosen, IQA } from '../interface';
+import { selectListTest } from '../reducer/listTestSlice';
+// import { addAnswer } from '../reducer/testSlice';
 import './Test.css';
 
 const Question = (props: any) => {
-
     const [answer, setAnswer] = useState('');
 
-    const onChange = (e: any) => {
-        console.log('radio checked', e.target.value);
+    const dispatch = useAppDispatch();
+
+    const onChange = (e: any, id: any) => {
+        console.log("CHOSE: ", id);
         setAnswer(e.target.value);
+        
+        // dispatch(addAnswer({
+        //     number: id,
+        //     value: e.target.value
+        // }))
     };
 
     const mapAns = (ans: any) => {
@@ -25,20 +37,27 @@ const Question = (props: any) => {
         }
     }
 
+    // const track = useContext(TrackContext);
+    // console.log('TRACK: ', track);
+
     return (
-        <li className='list-item mgt-20' key={props.id + 1}>
-            <span className='qs-num'>Cau {props.id + 1}</span>
+        <li className='list-item mgt-20' key={props.data.id}>
+            <span className='qs-num'>Cau {props.data.id}</span>
             <span className='qs'>{props.data.question}</span>
             <br></br>
             {
-                props.data.type === 'write' ?
+                props.data.type === 'w' ?
                     <TextArea rows={4} className='cus-mg' />
                     :
-                    <Radio.Group onChange={onChange} value={answer} className='cus-mg'>
+                    <Radio.Group onChange={(e) => onChange(e, props.data.id)} value={answer} className='cus-mg'>
                         <Space direction="vertical">
-                            {props.data.answer.map((ans: any, i: any) => (
-                                <Radio value={mapAns(i + 1)}>{ans}</Radio>
-                            ))}
+                            {/* {props.data.answer.map((ans: any, i: any) => (
+                                        <Radio value={mapAns(i + 1)}>{ans}</Radio>
+                                    ))} */}
+                            <Radio value='A'>{props.data.A}</Radio>
+                            <Radio value='B'>{props.data.B}</Radio>
+                            <Radio value='C'>{props.data.C}</Radio>
+                            <Radio value='D'>{props.data.D}</Radio>
                         </Space>
                     </Radio.Group>
             }
@@ -47,11 +66,14 @@ const Question = (props: any) => {
 }
 
 const EnglishTest = (props: any) => {
+
     return (
         <ul className='list'>
-            {props.data[0].eng.content.map((d: any, i: any) => (
-                <Question id={i} data={d} />
-            ))}
+            {Array.isArray(props.data) && props.data.length > 0 ?
+                props.data.map((qa: IQA) => (
+                    <Question id={qa.id} data={qa} />
+                )) : <></>
+            }
         </ul>
     )
 }
@@ -59,34 +81,36 @@ const EnglishTest = (props: any) => {
 const GeneralTest = (props: any) => {
     return (
         <ul className='list'>
-            {props.data[0].gen.content.map((d: any, i: any) => (
-                <Question id={i} data={d} />
-            ))}
+            {Array.isArray(props.data) && props.data.length > 0 ?
+                props.data.map((qa: IQA) => (
+                    <Question id={qa.id} data={qa} />
+                )) : <></>
+            }
         </ul>
     )
 }
 
 const CodeTest = (props: any) => {
     const { problem, example, function_description, returns, input_format, constraints, sample_input, sample_output, explaination } = props.data[0].code.content
-    
+
     const options = [
         {
-          value: 'java',
-          label: 'Java',
-          children: [
-          ],
+            value: 'java',
+            label: 'Java',
+            children: [
+            ],
         },
         {
-          value: 'golang',
-          label: 'Golang',
-          children: [
-          ],
+            value: 'golang',
+            label: 'Golang',
+            children: [
+            ],
         },
-      ];
-      
-      function onChange(value: any) {
+    ];
+
+    function onChange(value: any) {
         console.log(value);
-      }
+    }
 
     return (
         <div >
@@ -96,7 +120,7 @@ const CodeTest = (props: any) => {
                     {problem.content.map((c: any) => (
                         <p>{c}</p>
                     ))}
-                    
+
                     <b>{example.title}</b>
                     <ul>
                         {example.content.map((e: any) => (
@@ -137,31 +161,31 @@ const CodeTest = (props: any) => {
                     </ul>
 
                     <b>{sample_input.title}</b>
-                        <ul className='bg-lightpink'>
+                    <ul className='bg-lightpink'>
                         {sample_input.content.map((s: any) => (
                             <li>{s}</li>
                         ))}
-                        </ul>
+                    </ul>
 
                     <b>{sample_output.title}</b>
-                        <ul className='bg-lightpink'>
-                            {sample_output.content.map((s: any) => (
-                                <li>{s}</li>
-                            ))}
-                        </ul>
+                    <ul className='bg-lightpink'>
+                        {sample_output.content.map((s: any) => (
+                            <li>{s}</li>
+                        ))}
+                    </ul>
                     <b>{explaination.title}</b>
                 </Col>
 
                 <Col span={16}>
                     <div className='code-sec'>
                         <span className='select-lang'>
-                            <Cascader size="large" options={options} onChange={onChange} className='mgr-20'/>
-                            <UndoOutlined className='big-icon'/>
+                            <Cascader size="large" options={options} onChange={onChange} className='mgr-20' />
+                            <UndoOutlined className='big-icon' />
                         </span>
                         <TextArea rows={22} />
                     </div>
                     <div className='row-reverse mgt-20'>
-                        
+
                         <Button className='btn-sub'>Submit code</Button>
                         <Button className='btn-run'>Run code</Button>
                     </div>
@@ -175,153 +199,73 @@ const CodeTest = (props: any) => {
     )
 }
 
-const Test = () => {
-    const testData = [
-        {
-            eng: {
-                title: 'English test',
-                content: [
-                    {
-                        type: 'write',
-                        question: 'English Question 1?',
-                        answer: []
-                    },
-                    {
-                        type: 'choose',
-                        question: 'English Question 2?',
-                        answer: [
-                            'A. ', 'B.', 'C.', 'D.'
-                        ]
-                    },
-                    {
-                        type: 'choose',
-                        question: 'English Question 3?',
-                        answer: [
-                            'A. ', 'B.', 'C.', 'D.'
-                        ]
-                    }
-                ]
-            },
-            
-            gen: {
-                title: 'General test',
-                content: [
-                    {
-                        type: 'write',
-                        question: 'General Question 1?',
-                        answer: []
-                    },
-                    {
-                        type: 'choose',
-                        question: 'General Question 2?',
-                        answer: [
-                            'A. ', 'B.', 'C.', 'D.'
-                        ]
-                    },
-                    {
-                        type: 'choose',
-                        question: 'General Question 3?',
-                        answer: [
-                            'A. ', 'B.', 'C.', 'D.'
-                        ]
-                    }
-                ]
-            },
+// const addTrack = (t: IChosen) => {
+//     track.current.track.push(t);
+// }
 
-            code: {
-                title: 'Code test',
-                content: {
-                    problem: {
-                        title: 'Problem',
-                        content: [
-                            'There is a large pile of socks that must be paired by color.'
-                        ]
-                    },
-                    example: {
-                        title: 'Example',
-                        content: ['n = 7', 'arr = [1, 2, 3, 1]'],
-                        description: 'There is one pair of color 1 and one of color 2.'
-                    },
-                    function_description: {
-                        title: 'Function Description',
-                        content: [
-                            'Complete the sockMerchant function in the editor below.'
-                        ],
-                        parameter: [
-                            'int n: the number of socks in the pile',
-                            'int arr[n]: the colors of each sock'
-                        ]
-                    },
-                    returns: {
-                        title: 'Returns',
-                        content: [
-                            'int: the number of pairs'
-                        ]
-                    },
-                    input_format: {
-                        title: 'Input Format',
-                        content: [
-                            'The first line contains an integer n, the number of socks represented in arr',
-                            'The second line contains n space-seperated integers, arr[i], the colors of the socks in the pile.'
-                        ]
-                    },
-                    constraints: {
-                        title: 'Constraints',
-                        content: [
-                            '1 < n < 100',
-                            '1 < arr[i] < 100 where 0 < i < n'
-                        ]
-                    },
-                    sample_input: {
-                        title: 'Sample Input',
-                        content: [
-                            '9',
-                            '10 20 20 10 10 30 50 10 20'
-                        ]
-                    },
-                    sample_output: {
-                        title: 'Sample Output',
-                        content: [
-                            '3'
-                        ]
-                    },
-                    explaination: {
-                        title: 'Explaination',
-                        content: []
-                    }
-                    
-                }
-            }
-        }
-    ]
+// const updateTrack = (t: IChosen, id: number) => {
+//     const list = track.current.track;
+//     let index = null;
+//     list.forEach((item, i) => {
+//         if(item.id === id) index = i;
+//     });
+//     if(index != null) track.current.track[index] = t;
+// }
+
+// const track = useRef({
+//     track: [] as IChosen[],
+//     add: addTrack,
+//     update: updateTrack
+// });
+
+// export const TrackContext = createContext(track);
+
+const Test = () => {
+
+    const listTest = useAppSelector(selectListTest);
 
     const [switchview, setSwitchview] = useState('ENG');
 
     const toEng = () => {
         setSwitchview('ENG');
-        console.log("TO ENG");
     }
 
     const toGen = () => {
         setSwitchview('GEN');
-        console.log("To gen");
     }
 
     const toCode = () => {
         setSwitchview('CODE');
-        console.log("To code");
     }
 
-    const renderView = (props: any) => {
-        switch(switchview) {
-            case 'ENG': return <EnglishTest data={props}/>;
-            case 'GEN': return <GeneralTest data={props}/>
-            case 'CODE': return <CodeTest data={props}/>;
-            default: return <EnglishTest data={props}/>
+    // const renderView = (props: any, add: any, update: any) => {
+        const renderView = (props: any) => {
+        let eng = [] as IQA[];
+        let gen = [] as IQA[];
+        if (Array.isArray(props) && props.length > 0) {
+            props.map(t => {
+                if (t.type === 'ENG') {
+                    eng = t.qas;
+                } else if (t.type === 'GEN') {
+                    gen = t.qas;
+                }
+            })
+        }
+
+        switch (switchview) {
+            // case 'ENG': return <EnglishTest data={eng} funcAdd={add} funUpdate={update} />
+            // case 'GEN': return <GeneralTest data={gen} funcAdd={add} funUpdate={update} />
+            case 'ENG': return <EnglishTest data={eng} />
+            case 'GEN': return <GeneralTest data={gen} />
+            // case 'CODE': return <CodeTest data={props}/>;
+            // case 'CODE': return <CodeTest data={props}/>;
+            // default: return <EnglishTest data={eng} funcAdd={add} funUpdate={update} />
+            default: return <EnglishTest data={eng} />
         }
     }
 
     return (
+        // <TrackContext.Provider value={track}>
         <div>
             <Header />
             <div className='fullscreen row pdt-50'>
@@ -332,12 +276,17 @@ const Test = () => {
                 </ul>
 
                 <div className='cus-pd fullwidth'>
-                    {renderView(testData)}
+                    
+                        {/* {renderView(listTest, addTrack, updateTrack)} */}
+                        {renderView(listTest)}
                 </div>
             </div>
 
         </div>
+        //  </TrackContext.Provider>
     )
 }
 
 export default Test;
+
+

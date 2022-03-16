@@ -1,0 +1,45 @@
+.level-list {
+    margin-top: 10px;
+}
+
+.com-test-list {
+    margin: unset;
+    padding: unset;
+    list-style-type: none;
+}
+
+.com-test-list li {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(184, 178, 178);
+    padding: 0 0 20px 30px;
+}
+
+.left {
+    display: flex;
+
+}
+
+.right {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.cans-info {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+}
+
+.com-inp {
+    height: 24px;
+    width: 100px;
+    border: 1px solid black !important;
+    border-radius: 3px;
+}
+
+.cans-name {
+    font-size: 24px;
+    font-weight: 500;
+}
+

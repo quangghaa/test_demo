@@ -21,7 +21,9 @@ const HeaderD = () => {
                         <li>
                             <Link to='/dashboard/question'>Bộ câu hỏi</Link>
                         </li>
-                        <li>Đã hoàn thành</li>
+                        <li>
+                            <Link to='/dashboard/complete'>Đã hoàn thành</Link>
+                        </li>
                         <li>Tài liệu</li>
                     </ul>
                 </Col>
