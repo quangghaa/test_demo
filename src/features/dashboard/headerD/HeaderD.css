@@ -31,3 +31,8 @@
     cursor: pointer;
     color: rgb(156, 150, 150);
 }
+
+.logout-ic:hover {
+    cursor: pointer;
+    color: rgb(160, 153, 153);
+}

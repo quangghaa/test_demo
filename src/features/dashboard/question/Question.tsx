@@ -1,275 +1,18 @@
 import { CheckSquareFilled, CloseCircleFilled, CloseOutlined, ConsoleSqlOutlined, DownOutlined, FieldTimeOutlined, FilterFilled, PlusOutlined, SearchOutlined, UpOutlined } from '@ant-design/icons';
-import { Button, Cascader, Checkbox, Col, Input, message, Row } from 'antd';
+import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import useFetch from '../../../hook/useFetch';
-import { ICandidate, ITest, QA, QData } from '../../interface';
-import { addCandidate, selectTest, updateCandidates, updateCode, updateId, updateLevel, updateName, updateQas, updateType } from '../../reducer/testSlice';
+import { ICandidate, IQA, ITest, QA, QData } from '../../interface';
+import { addCandidate, deleteQa, selectTest, updateCandidates, updateCode, updateId, updateLevel, updateName, updateQas, updateType } from '../../reducer/testSlice';
 import HeaderD from '../headerD/HeaderD';
 import './Question.css';
 
-const qsData = [
-    {
-        type: 'ENG',
-        code: '0001',
-        title: 'Test -1',
-        level: 'B1',
-        qa: [
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-        ]
-    },
-    {
-        type: 'ENG',
-        code: '0002',
-        title: 'Test -2',
-        level: 'B2',
-        qa: [
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-        ]
-    },
-    {
-        type: 'ENG',
-        code: '0003',
-        title: 'Test -3',
-        level: 'B1',
-        qa: [
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-        ]
-    },
-    {
-        type: 'GEN',
-        code: '0004',
-        title: 'Test -4',
-        level: 'Fresher',
-        qa: [
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-        ]
-    },
-    {
-        type: 'GEN',
-        code: '0005',
-        title: 'Test -5',
-        level: 'Junior',
-        qa: [
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-
-            {
-                question: 'Anyuy _____ drink milk every day. She is very ...',
-                choose: [
-                    'A.',
-                    'B.',
-                    'C.',
-                    'D.'
-                ],
-                answer: 'A',
-            },
-        ]
-    }
-
-]
 
 const Question = (props: any) => {
-    
+
 
     const options = [
         {
@@ -328,11 +71,11 @@ const Question = (props: any) => {
     }
     const [testData, setTestData] = useState([] as ITest[]);
     const url = 'https://demo.uiza.vn/tests';
-    const {loading, error, data} = useFetch(url, 'GET');
+    const { loading, error, data } = useFetch(url, 'GET');
     useEffect(() => {
-        if(error == null && data != null) {
+        if (error == null && data != null) {
             setTestData(data);
-        } 
+        }
     }, [data]);
     console.log("Check Data:", testData);
 
@@ -377,55 +120,55 @@ const Question = (props: any) => {
         const type = testType;
         const lv = level;
 
-        if(name.length === 0) {
-            if(lv.length === 0) {
-                if(type.length !== 0) {
+        if (name.length === 0) {
+            if (lv.length === 0) {
+                if (type.length !== 0) {
                     testData.forEach(t => {
-                        if(t.type === type) {
+                        if (t.type === type) {
                             tempRs.push(t);
                         }
-                    }); 
+                    });
                 }
             } else {
-                if(type.length === 0) {
+                if (type.length === 0) {
                     testData.forEach(t => {
-                        if(t.level === lv) {
+                        if (t.level === lv) {
                             tempRs.push(t);
                         }
                     });
                 } else {
                     testData.forEach(t => {
-                        if(t.type === type && t.level === lv) {
+                        if (t.type === type && t.level === lv) {
                             tempRs.push(t);
                         }
                     });
                 }
             }
         } else {
-            if(type.length === 0) {
-                if(lv.length === 0) {
+            if (type.length === 0) {
+                if (lv.length === 0) {
                     testData.forEach(t => {
-                        if(t.name === name) {
+                        if (t.name === name) {
                             tempRs.push(t);
                         }
                     });
                 } else {
                     testData.forEach(t => {
-                        if(t.name === name && t.level === lv) {
+                        if (t.name === name && t.level === lv) {
                             tempRs.push(t);
                         }
                     });
                 }
             } else {
-                if(lv.length === 0) {
+                if (lv.length === 0) {
                     testData.forEach(t => {
-                        if(t.name === name && t.type === type) {
+                        if (t.name === name && t.type === type) {
                             tempRs.push(t);
                         }
                     });
                 } else {
                     testData.forEach(t => {
-                        if(t.name === name && t.type === type && t.level === lv) {
+                        if (t.name === name && t.type === type && t.level === lv) {
                             tempRs.push(t);
                         }
                     });
@@ -445,52 +188,83 @@ const Question = (props: any) => {
 
     const reduxTest = useAppSelector(selectTest);
 
-    const selectedCandidate = reduxTest.candidates[0];
+    const selectedCandidate = reduxTest.candidates.length > 0 ? reduxTest.candidates[0] : null;
+
+    // useEffect(() => {
+    //     // First load 
+    //     if(reduxTest.id > 0) {
+    //         let tem = [] as ITest[];
+    //         tem.push(reduxTest);
+
+    //         if(reduxTest.candidates.length > 0) {
+    //             let temC = [] as string[];
+    //             reduxTest.candidates.map(c => {
+    //                 temC.push(c.code);
+    //             })
+    //             setCandidateCodeList(temC);
+    //         }
+    //         setTestItem(tem);
+    //     }
+    // }, [])
+
+    console.log("Selected cand: ", selectedCandidate);
     const [candidatesHad, setCandidatesHad] = useState([] as ICandidate[]);
 
     useEffect(() => {
         let rs = [] as ICandidate[];
-        rs.push(selectedCandidate);
-        console.log("CAN HAD: ", candidatesHad);
-        if(candidatesHad.length > 0) {
-            let update = [] as ICandidate[];
-            candidatesHad.forEach(c => {
-                console.log('Code: ', c.code);
-                console.log('Old code: ', selectedCandidate.code);
-                if(c.code !== selectedCandidate.code) {
-                    console.log("Is here");
-                    update.push(c);
+        if (selectedCandidate != null) {
+            rs.push(selectedCandidate);
+            if (candidatesHad.length > 0) {
+                // rs.push(selectedCandidate);
+                let update = [] as ICandidate[];
+                candidatesHad.forEach(c => {
+                    if (c.code !== selectedCandidate.code) {
+                        update.push(c);
+                    }
+                })
+                if (update.length > 0) {
+                    update.forEach(c => {
+                        rs.push(c);
+                    })
                 }
-            })
-            console.log('update list', update);
-            if(update.length > 0) {
-                update.forEach(c => {
-                    rs.push(c);
+            }
+        } else {
+            if (candidatesHad.length > 0) {
+                candidatesHad.forEach(c => {
+                    rs.push(c)
                 })
             }
         }
+
         console.log("Rs list: ", rs);
-        dispatch(updateCandidates(rs));
+        if (rs[0] !== undefined) dispatch(updateCandidates(rs));
+
     }, [candidatesHad]);
 
     const [candidateCodeList, setCandidateCodeList] = useState([] as string[]);
 
     useEffect(() => {
         let codes = [] as string[];
-        reduxTest.candidates.forEach(c => {
-            codes.push(c.code);
-        });
+        console.log('Test: ', reduxTest.candidates);
+        if (reduxTest.candidates.length > 0) {
+            console.log('BIGGER');
+            reduxTest.candidates.forEach(c => {
+                codes.push(c.code);
+            });
+        }
         setCandidateCodeList(codes);
-    }, [reduxTest.candidates])
+    }, [reduxTest.candidates]);
+
+
 
     const handleTestClick = (code: any) => {
-        
+
         let whereToFind = [] as ITest[];
         let rs = [] as ITest[];
-        !isSearching ? whereToFind = testData : whereToFind = rsSearch; 
+        !isSearching ? whereToFind = testData : whereToFind = rsSearch;
 
         whereToFind.forEach(t => {
-            if(t.code === code) {
+            if (t.code === code) {
                 rs.push(t);
                 // Set list candidate for this test
                 setCandidatesHad(t.candidates);
@@ -507,25 +281,25 @@ const Question = (props: any) => {
             }
         });
     }
-    
+
     const [res, setRes] = useState(null);
     const [err, setErr] = useState(null);
 
     const success = () => {
         message.success('Test Saved');
-      };
-      
-      const errorm = () => {
+    };
+
+    const errorm = () => {
         message.error('An error occur');
-      };
+    };
     useEffect(() => {
-        if(res != null) success();
-        if(err != null) errorm();
+        if (res != null) success();
+        if (err != null) errorm();
     }, [res, err])
 
     const onSave = () => {
         const testCode = testItem.length > 0 ? testItem[0].code : '';
-        if(testCode.length === 0) return;
+        if (testCode.length === 0) return;
 
         const body = {
             candidates: reduxTest.candidates
@@ -547,18 +321,18 @@ const Question = (props: any) => {
                 setErr(error);
             }
         }
-        fetchData();       
+        fetchData();
     }
 
     const QuestionItem = (props: any) => {
         const [detail, setDetail] = useState({
-            index:'',
+            index: '',
             state: false
         });
 
         useEffect(() => {
-            const el1 = document.getElementById('demo-qa-'+detail.index);
-            const el2 = document.getElementById('ans-detail-'+detail.index);
+            const el1 = document.getElementById('demo-qa-' + detail.index);
+            const el2 = document.getElementById('ans-detail-' + detail.index);
 
             if (el1 != null && el2 != null) {
                 if (!detail.state) {
@@ -570,7 +344,7 @@ const Question = (props: any) => {
                     el2.classList.remove('hide');
                 }
             }
-        },[detail.state])
+        }, [detail.state])
 
         const handleDetail = (i: any) => {
             setDetail({
@@ -580,22 +354,39 @@ const Question = (props: any) => {
         }
 
         const handleRemoveQuestion = (ind: any) => {
-            if(testItem.length > 0 && ind > -1) {
-                // const oldQa = testItem[0].qas;
-                // const newQa = [] as QA[];
-                // let qItem = [] as QData[];
+            if (testItem.length > 0 && ind > -1) {
+                const oldTestItem = testItem[0];
 
-                // for(let i = 0; i < oldQa.length; i++) {
-                //     if(i != ind) newQa.push(oldQa[i]);
+                const oldQa = testItem[0].qas;
+                let newQa = [] as IQA[];
 
-                // }
-                
-                // const r = questionItem[0];
-                // r.qa = newQa;
-                // qItem.push(r);
-                // setQuestionItem(qItem);
+                for (let i = 0; i < oldQa.length; i++) {
+                    if (i !== ind) newQa.push(oldQa[i]);
+                }
+
+                const x = [
+                    {
+                        id: oldTestItem.id,
+                        code: oldTestItem.code,
+                        type: oldTestItem.type,
+                        name: oldTestItem.name,
+                        level: oldTestItem.level,
+                        candidates: oldTestItem.candidates,
+                        qas: newQa
+                    }
+                ]
+
+                dispatch(deleteQa(ind));
+
+                setTestItem(x);
 
             }
+        }
+
+        const onEdit = () => {
+            console.log('ON EDIT');
+            props.setmode();
+            props.edit();
         }
 
         return (
@@ -617,7 +408,7 @@ const Question = (props: any) => {
                             </ul>
                             <span className='row-between pd-x-20'>
                                 <span>Đáp án: {props.data.answer}</span>
-                                <span>Edit</span>
+                                <span onClick={onEdit}>Edit</span>
                             </span>
                         </div>
                     </div>
@@ -633,6 +424,71 @@ const Question = (props: any) => {
     const onSelectAns = () => {
         console.log('x');
     }
+
+    // Modal Create + Edit
+    const handleLogin = () => {
+        console.log('Login');
+        setVisible(true);
+    }
+
+    const [visible, setVisible] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalText, setModalText] = useState('Content of the modal');
+
+    const [isEdit, setIsEdit] = useState(false);
+
+    const setmode = () => {
+        setIsEdit(true);
+    }
+
+    const showModal = () => {
+        setVisible(true);
+    };
+
+    const handleOk = () => {
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setVisible(false);
+            setConfirmLoading(false);
+        }, 2000);
+
+        setIsEdit(false);
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setIsEdit(false);
+        setVisible(false);
+    };
+
+    // ----------
+    const questionTypes = [
+        {
+          value: '0',
+          label: 'Trắc nghiệm'
+        },
+        {
+          value: '1',
+          label: 'Điền từ'
+        },
+      ];
+      
+      function selectQuestionType(value: any) {
+        console.log(value);
+      }
+
+      const range = [1, 2, 3, 4];
+      const mapABC = (n: number) => {
+        switch(n) {
+            case 1: return 'A';
+            case 2: return 'B';
+            case 3: return 'C';
+            case 4: return 'D';
+            default: return 'Unkown';
+        }
+      }
+    //
 
     return (
         <div className='pdt-50'>
@@ -673,9 +529,9 @@ const Question = (props: any) => {
                     <ul className='rs-test-list'>
                         {!isSearching ? testData.map((t, i) => (
                             <li key={i} onClick={() => handleTestClick(t.code)}>
-                                
+
                                 <span className='lv-cir'>{t.level}</span>
-                                
+
                                 <span>{t.name}</span>
                             </li>
                         )) : rsSearch.map((t, i) => (
@@ -691,14 +547,63 @@ const Question = (props: any) => {
                 <Col span={5} className='pd-20 bdr mgt-20'>
                     <div className='sticky-sec'>
                         <span className='font'>Câu hỏi</span>
-                        <Button className='btn-cre'>Tạo câu hỏi</Button>
+                        <Button className='btn-cre' onClick={showModal}>Tạo câu hỏi</Button>
                     </div>
+
+                    <Modal
+                        title={!isEdit ? 'Tạo câu hỏi' : 'Sửa câu hỏi'}
+                        visible={visible}
+                        confirmLoading={confirmLoading}
+                        onCancel={handleCancel}
+                        className="create-form"
+                        footer={[
+                            <div className='col'>
+                                <div className='center'>
+                                        <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
+                                            Lưu câu hỏi
+                                        </Button>
+
+                                        <Button key="cancel" onClick={handleCancel} className='btn-login'>
+                                            Thôi
+                                        </Button>
+                                </div>
+                            </div>
+                            ,
+                        ]}
+                    >
+                        <span className='row-between'>
+                            <span>Loại câu hỏi: </span>
+                            <Cascader options={questionTypes} onChange={selectQuestionType} placeholder="Please select" />
+                        </span>
+                        <span className='col mgt-10'>
+                            <span>Câu hỏi: </span>
+                            <TextArea rows={2} placeholder='Nhập câu hỏi' />
+                        </span>
+                        
+                        <div className='mgt-20'>
+                            <span>Danh sách câu trả lời: </span>
+                            <ul className='enter-ans-list'>
+                                {range.map((r) => (
+                                    <li className='row-between mgt-10 row-center-y'>
+                                        <span>{mapABC(r)}:</span>
+                                        <Input className='w-250' placeholder={'Nhập phương án ' + mapABC(r)}></Input>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <span className='row-between mgt-20 row-center-y'>
+                            <span>Đáp án: </span>
+                            <Input placeholder='Nhập đáp án' className='w-250'></Input>
+                        </span>
+
+                    </Modal>
 
                     <ul className='qs-list mgt-20'>
                         {(testItem.length > 0) ? testItem[0].qas.map((qa: any, i) => (
-                            <QuestionItem data={qa} index={i}/>
+                            <QuestionItem data={qa} index={i} edit={showModal} setmode={setmode} />
                         )) : <></>}
-                        
+
                     </ul>
                 </Col>
                 <Col span={13} className='pd-20 mgt-20'>
@@ -709,11 +614,11 @@ const Question = (props: any) => {
                                 <span>Tên bài test</span>
                                 <span className='box mgt-10 row-center-y'>{testItem.length > 0 ? testItem[0].name : ''}</span>
                                 <span className='row-between mgt-10'>
-                                    
+
                                     <ul className='lv-list'>
-                                    {levelList.map((l, i) => (
-                                        <li id={l} key={i + 1}><span>{l}</span></li>
-                                    ))}
+                                        {levelList.map((l, i) => (
+                                            <li id={l} key={i + 1}><span>{l}</span></li>
+                                        ))}
                                     </ul>
                                     <span className='row-center-y'>
                                         <FieldTimeOutlined className='big-time-ic' />
@@ -725,11 +630,11 @@ const Question = (props: any) => {
                                 <span>Tham gia test</span>
                                 <div className='lar-box mgt-10'>
                                     <ul className='can-list'>
-                                        {candidateCodeList.length > 0 ? 
+                                        {candidateCodeList.length > 0 ?
                                             candidateCodeList.map(code => (
-                                                <li>{code} <CloseOutlined className='mgl-5' /></li>
+                                                code != null ? <li>{code} <CloseOutlined className='mgl-5' /></li> : <></>
                                             ))
-                                            : 
+                                            :
                                             <></>
                                         }
                                     </ul>
@@ -738,36 +643,38 @@ const Question = (props: any) => {
 
                             <Button className='btn-save mgl-10' onClick={onSave}>Lưu</Button>
                         </div>
-                        <ul className='demo-qs-list'>
-                            
-                            {testItem.length > 0 ? testItem[0].qas.map((q) => (
+                        
+                    </div>
+
+                    <ul className='demo-qs-list'>
+
+                            {testItem.length > 0 ? testItem[0].qas.map((q, i) => (
                                 <li>
-                                <span><CloseOutlined />{q.question}</span>
-                                <ul className='qs-ans-list'>
-                                    {/* {q.choose.length > 0 ? q.choose.map((c) => (
+                                    <span>{i + 1}.&nbsp;{q.question}</span>
+                                    <ul className='qs-ans-list'>
+                                        {/* {q.choose.length > 0 ? q.choose.map((c) => (
                                         <li>
                                             <Checkbox onChange={onSelectAns}>{c}</Checkbox>
                                         </li>
                                     ))
                                     
                                     : <></>} */}
-                                    <li>
-                                        <Checkbox onChange={onSelectAns}>A.&nbsp;{q.A}</Checkbox>
-                                    </li>
-                                    <li>
-                                        <Checkbox onChange={onSelectAns}>B.&nbsp;{q.B}</Checkbox>
-                                    </li>
-                                    <li>
-                                        <Checkbox onChange={onSelectAns}>C.&nbsp;{q.C}</Checkbox>
-                                    </li>
-                                    <li>
-                                        <Checkbox onChange={onSelectAns}>D.&nbsp;{q.D}</Checkbox>
-                                    </li>
-                                </ul>   
-                            </li>
+                                        <li>
+                                            <Checkbox onChange={onSelectAns}>A.&nbsp;{q.A}</Checkbox>
+                                        </li>
+                                        <li>
+                                            <Checkbox onChange={onSelectAns}>B.&nbsp;{q.B}</Checkbox>
+                                        </li>
+                                        <li>
+                                            <Checkbox onChange={onSelectAns}>C.&nbsp;{q.C}</Checkbox>
+                                        </li>
+                                        <li>
+                                            <Checkbox onChange={onSelectAns}>D.&nbsp;{q.D}</Checkbox>
+                                        </li>
+                                    </ul>
+                                </li>
                             )) : <></>}
                         </ul>
-                    </div>
                 </Col>
             </Row>
 

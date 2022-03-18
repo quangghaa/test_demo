@@ -59,9 +59,4 @@ export interface IChosen {
     value: string;
 }
 
-export type ChosenContextType = {
-    chosens: IChosen[];
-    addChosen: (chosen: IChosen) => void;
-    updateChosen: (chosen: IChosen) => void;
-}
 

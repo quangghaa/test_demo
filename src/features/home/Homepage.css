@@ -32,7 +32,7 @@
 }
 
 input {
-    border: unset !important;
+    /* border: unset !important; */
     height: 40px;
 }
 

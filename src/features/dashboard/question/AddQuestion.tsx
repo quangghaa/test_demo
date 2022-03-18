@@ -1,10 +1,10 @@
-import { Button, Input, Modal, Statistic } from 'antd';
-import Countdown from 'antd/lib/statistic/Countdown';
-import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import './Header.css';
+import { Button, Input, Modal } from "antd";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const Header = (props: any) => {
+
+
+const AddQuestion = (props: any) => {
     const handleLogin = () => {
         console.log('Login');
         setVisible(true);
@@ -31,35 +31,14 @@ const Header = (props: any) => {
         console.log('Clicked cancel button');
         setVisible(false);
     };
-
-    const { Countdown } = Statistic;
-    // const deadline = Date.now() + 1000 * 60 * 60; // Moment is also OK
-    const dl = useRef(Date.now() + 1000 * 60 * 60);
     
-
-    function onFinish() {
-        console.log('finished!');
-    }
-
-    function onChange(val: any) {
-        if (4.95 * 1000 < val && val < 5 * 1000) {
-            console.log('changed!');
-        }
-    }
-
     return (
         <>
-            <div className="header">
-                <span>LOGO</span>
-                {props.start ? <span><Countdown value={dl.current} onFinish={onFinish} /></span> : <></>}
-                <span className='lg-btn' onClick={handleLogin}>Login</span>
-            </div>
             <Modal
                 title='Đăng nhập'
                 visible={visible}
                 confirmLoading={confirmLoading}
                 className="login"
-                onCancel={handleCancel}
                 footer={[
                     <div className='col'>
                         <div className='row-reverse'><span className='forgot-pass'>Quên mật khẩu?</span></div>
@@ -83,4 +62,4 @@ const Header = (props: any) => {
     )
 }
 
-export default Header;
+export default AddQuestion;

@@ -230,5 +230,14 @@ white-space: nowrap;
     margin-left: 15px;
 }
 
+.enter-ans-list {
+    list-style-type: none;
+    margin: unset;
+    padding: unset;
+    
+}
 
+.enter-ans-list li {
+    
+}
 

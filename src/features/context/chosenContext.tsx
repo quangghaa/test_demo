@@ -1,29 +1,18 @@
-// import React, { createContext, useState } from "react";
-// import { ChosenContextType, IChosen } from "../interface";
+import React, { createContext, useContext, useState } from "react";
+import { IChosen } from "../interface";
 
-// export const ChosenContext = createContext<ChosenContextType | null>(null);
 
-// const ChosenProvider: React.FC<React.ReactNode> = ({children}) => {
-//     const [chosens, setChosens] = useState<IChosen[]>([
-        
-//     ])
+export type ChosenContextType = {
+    chosens: IChosen[]
+    addChosen: (chosen: IChosen) => void
+    updateChosen: (chosen: IChosen) => void
+}
 
-//     const addChosen = (chosen: IChosen) => {
-//         const newChosen: IChosen = {
-//             id: chosen.id,
-//             value: chosen.value
-//         }
-//         setChosens([...chosens, newChosen]);
-//     }
+export const MyChosenContext = createContext<ChosenContextType>({
+    chosens: [] as IChosen[],
+    addChosen: () => {},
+    updateChosen: () => {}
 
-//     const updateChosen = (chosen: IChosen) => {
-//         chosens.filter((ch: IChosen) => {
-//             if(chosen.id === ch.id) {
-//                 ch.id = chosen.id;
-//                 ch.value = chosen.value;
-//                 setChosens(...[chosens]);
-//             }
-//         })
-//     }
-// }
-export {}
+})
+
+export const useChosenContext = () => useContext(MyChosenContext);

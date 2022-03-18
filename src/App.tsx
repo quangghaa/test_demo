@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -12,17 +12,23 @@ import Complete from './features/dashboard/complete/Complete';
 
 
 function App() {
+  const [isBegin, setIsBegin] = useState(false);
 
+  const begin = () => {
+    setIsBegin(true);
+    console.log("BEGIN!!");
+  }
 
   return (
     
+
     <div className="App">
       <Router>
             
         <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path='/instruction' element={<Instruction />} />
-          <Route path='/test' element={<Test />} />
+          <Route path="/" element={<Homepage start={isBegin} />} />
+          <Route path='/instruction' element={<Instruction start={isBegin} begin={begin}/>} />
+          <Route path='/test' element={<Test start={isBegin} />} />
           
           <Route path='/dashboard' element={<Schedule />} />
           <Route path='/dashboard/schedule' element={<Schedule />} />

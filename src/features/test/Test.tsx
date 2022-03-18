@@ -1,14 +1,11 @@
-import { UndoOutlined } from '@ant-design/icons';
+import { PropertySafetyFilled, UndoOutlined } from '@ant-design/icons';
 import { Button, Cascader, Col, Radio, Row, Space } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import React from 'react';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { idText } from 'typescript';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import Header from '../header/Header';
 import { IChosen, IQA } from '../interface';
 import { selectListTest } from '../reducer/listTestSlice';
-// import { addAnswer } from '../reducer/testSlice';
 import './Test.css';
 
 const Question = (props: any) => {
@@ -20,10 +17,6 @@ const Question = (props: any) => {
         console.log("CHOSE: ", id);
         setAnswer(e.target.value);
         
-        // dispatch(addAnswer({
-        //     number: id,
-        //     value: e.target.value
-        // }))
     };
 
     const mapAns = (ans: any) => {
@@ -36,9 +29,6 @@ const Question = (props: any) => {
             default: return 'Unknown';
         }
     }
-
-    // const track = useContext(TrackContext);
-    // console.log('TRACK: ', track);
 
     return (
         <li className='list-item mgt-20' key={props.data.id}>
@@ -199,28 +189,8 @@ const CodeTest = (props: any) => {
     )
 }
 
-// const addTrack = (t: IChosen) => {
-//     track.current.track.push(t);
-// }
 
-// const updateTrack = (t: IChosen, id: number) => {
-//     const list = track.current.track;
-//     let index = null;
-//     list.forEach((item, i) => {
-//         if(item.id === id) index = i;
-//     });
-//     if(index != null) track.current.track[index] = t;
-// }
-
-// const track = useRef({
-//     track: [] as IChosen[],
-//     add: addTrack,
-//     update: updateTrack
-// });
-
-// export const TrackContext = createContext(track);
-
-const Test = () => {
+const Test = (props: any) => {
 
     const listTest = useAppSelector(selectListTest);
 
@@ -238,7 +208,6 @@ const Test = () => {
         setSwitchview('CODE');
     }
 
-    // const renderView = (props: any, add: any, update: any) => {
         const renderView = (props: any) => {
         let eng = [] as IQA[];
         let gen = [] as IQA[];
@@ -253,21 +222,15 @@ const Test = () => {
         }
 
         switch (switchview) {
-            // case 'ENG': return <EnglishTest data={eng} funcAdd={add} funUpdate={update} />
-            // case 'GEN': return <GeneralTest data={gen} funcAdd={add} funUpdate={update} />
             case 'ENG': return <EnglishTest data={eng} />
             case 'GEN': return <GeneralTest data={gen} />
-            // case 'CODE': return <CodeTest data={props}/>;
-            // case 'CODE': return <CodeTest data={props}/>;
-            // default: return <EnglishTest data={eng} funcAdd={add} funUpdate={update} />
             default: return <EnglishTest data={eng} />
         }
     }
 
     return (
-        // <TrackContext.Provider value={track}>
         <div>
-            <Header />
+            <Header start={props.start}/>
             <div className='fullscreen row pdt-50'>
                 <ul className='nav'>
                     <li className='nav-item' onClick={toEng}><span className='vertical'>Tiếng anh</span></li>
@@ -276,14 +239,11 @@ const Test = () => {
                 </ul>
 
                 <div className='cus-pd fullwidth'>
-                    
-                        {/* {renderView(listTest, addTrack, updateTrack)} */}
                         {renderView(listTest)}
                 </div>
             </div>
 
         </div>
-        //  </TrackContext.Provider>
     )
 }
 

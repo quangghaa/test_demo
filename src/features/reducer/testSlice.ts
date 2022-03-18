@@ -48,26 +48,33 @@ export const testSlice = createSlice({
         addCandidate: (state, action) => {
             state.candidates.push(action.payload);    
         },
+        addQa: (state, action) => {
+            state.qas = [...[state.qas], action.payload];
+        },
+        deleteQa: (state, action) => {
+            state.qas = state.qas.filter((value: any, index:any) => {
+                return index != action.payload;
+            })
+        },
         updateQas: (state, action) => {
             state.qas = action.payload;
         },
         updateCandidates: (state, action) => {
             state.candidates = action.payload;
         },
-        // addAnswer: (state, action) => {
-        //     state.chosen.push(action.payload);
-        // },
-        // updateAnswer: (state, action) => {
-        //     state.chosen.map((c, i) => {
-        //         if(c.id === action.payload.id) {
-        //             state.chosen[i] = action.payload;
-        //         }
-        //     })
-        // }
+        clear: (state) => {
+            state.id = 0;
+            state.code = '';
+            state.type = '';
+            state.name = '';
+            state.level = '';
+            state.candidates = [] as ICandidate[];
+            state.qas = [] as IQA[];
+        }
     }
 });
 
-export const { updateId, updateCode, updateType, updateName, updateLevel, addCandidate, updateQas, updateCandidates } = testSlice.actions;
+export const { updateId, updateCode, updateType, updateName, updateLevel, addCandidate, deleteQa, updateQas, updateCandidates, clear } = testSlice.actions;
 
 export const selectTest = (state: RootState) => state.test;
 

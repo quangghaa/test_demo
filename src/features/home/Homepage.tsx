@@ -12,7 +12,7 @@ import { addTest, selectListTest } from '../reducer/listTestSlice';
 import { addCandidate } from '../reducer/listCandidateSlice';
 import './Homepage.css';
 
-const Homepage = () => {
+const Homepage = (props: any) => {
 
     function checkStatus(response: any) {
         if (response.ok) {
@@ -113,7 +113,7 @@ const Homepage = () => {
 
     return (
         <div>
-            <Header />
+            <Header start={props.start}/>
             <div className='fullscreen body'>
                 <span className='big-text'>Chào mừng bạn đến với</span>
                 <br></br>

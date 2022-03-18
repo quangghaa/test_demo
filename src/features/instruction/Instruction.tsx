@@ -3,16 +3,18 @@ import { Link } from 'react-router-dom';
 import Header from '../header/Header';
 import './Instruction.css';
 
-const Instruction = () => {
+const Instruction = (props: any) => {
+
     return (
         <div>
-            <Header />
+            <Header start={props.start}/>
             <div className='fullscreen body'>
                 <span className='big-text'>Hướng dẫn</span>
                 <p>Nội dung hướng dẫn nằm đây ....</p>
-                <Link to='/test'>
-                    <Button className='begin'>Bắt đầu</Button>
-                </Link>
+                    <Button className='begin' onClick={props.begin}>
+                        <Link to='/test'>Bắt đầu</Link>
+                    </Button>
+                
             </div>
         </div>
     )
