@@ -9,7 +9,8 @@ export interface TestState {
     name: string;
     level: string;
     candidates: ICandidate[];
-    qas: IQA[];
+    // qas: IQA[];
+    questions: IQA[];
 
     // chosen: Chosen[];
 }
@@ -21,7 +22,8 @@ const initialState: TestState = {
     name: '',
     level: '',
     candidates: [] as ICandidate[],
-    qas: [] as IQA[],
+    // qas: [] as IQA[],
+    questions: [] as IQA[],
 
     // chosen: [] as Chosen[],
 }
@@ -49,15 +51,15 @@ export const testSlice = createSlice({
             state.candidates.push(action.payload);    
         },
         addQa: (state, action) => {
-            state.qas = [...[state.qas], action.payload];
+            state.questions = [...[state.questions], action.payload];
         },
         deleteQa: (state, action) => {
-            state.qas = state.qas.filter((value: any, index:any) => {
+            state.questions = state.questions.filter((value: any, index:any) => {
                 return index != action.payload;
             })
         },
         updateQas: (state, action) => {
-            state.qas = action.payload;
+            state.questions = action.payload;
         },
         updateCandidates: (state, action) => {
             state.candidates = action.payload;
@@ -69,7 +71,7 @@ export const testSlice = createSlice({
             state.name = '';
             state.level = '';
             state.candidates = [] as ICandidate[];
-            state.qas = [] as IQA[];
+            state.questions = [] as IQA[];
         }
     }
 });

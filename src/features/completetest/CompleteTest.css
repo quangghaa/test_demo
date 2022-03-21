@@ -1,0 +1,21 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: black;
+}
+
+.big-text {
+    font-size: 46px;
+    color: black;
+    font-weight: 550;
+}
+
+.begin {
+    border-radius: 20px;
+    background-color: black;
+    color: white;
+    padding: 4px 20px;
+
+}

@@ -47,11 +47,28 @@ const Header = (props: any) => {
         }
     }
 
+    const handleSubmit = () => {
+        console.log('...');
+        props.finish();
+    }
+
     return (
         <>
             <div className="header">
-                <span>LOGO</span>
-                {props.start ? <span><Countdown value={dl.current} onFinish={onFinish} /></span> : <></>}
+                
+                <span className='row'>
+                    <span>LOGO</span>
+                    {props.start ?  
+                    <span className='row mgl-20'>
+                        <Countdown value={dl.current} onFinish={onFinish} />
+                        <Button onClick={handleSubmit} className='btn-sub mgl-20'>
+                            <Link to='/completetest'>Nộp bài</Link>
+                            
+                        </Button>
+                    </span>
+                    : <></>}
+                    
+                </span>
                 <span className='lg-btn' onClick={handleLogin}>Login</span>
             </div>
             <Modal

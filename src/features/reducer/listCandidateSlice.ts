@@ -1,6 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
+// export interface CandidateState {
+//     id: number;
+//     code: string;
+//     name: string;
+//     department: string;
+//     position: string;
+//     level: string;
+//     reporter: string;
+//     time: string;
+//     date: string;
+// }
+
 export interface CandidateState {
     id: number;
     code: string;
@@ -11,6 +23,12 @@ export interface CandidateState {
     reporter: string;
     time: string;
     date: string;
+
+    phone: string;
+    email: string;
+    englishMark: number;
+    codingMark: number;
+    knowledgeMark: number;
 }
 
 const initialState: CandidateState[] = [];

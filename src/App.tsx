@@ -9,6 +9,7 @@ import Test from './features/test/Test';
 import Schedule from './features/dashboard/schedule/Schedule';
 import Question from './features/dashboard/question/Question';
 import Complete from './features/dashboard/complete/Complete';
+import CompleteTest from './features/completetest/CompleteTest';
 
 
 function App() {
@@ -17,6 +18,11 @@ function App() {
   const begin = () => {
     setIsBegin(true);
     console.log("BEGIN!!");
+  }
+
+  const finish = () => {
+    setIsBegin(false);
+    console.log('FINISH!!');
   }
 
   return (
@@ -28,7 +34,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Homepage start={isBegin} />} />
           <Route path='/instruction' element={<Instruction start={isBegin} begin={begin}/>} />
-          <Route path='/test' element={<Test start={isBegin} />} />
+          <Route path='/completetest' element={<CompleteTest start={isBegin} />} />
+          <Route path='/test' element={<Test start={isBegin} finish={finish} />} />
           
           <Route path='/dashboard' element={<Schedule />} />
           <Route path='/dashboard/schedule' element={<Schedule />} />

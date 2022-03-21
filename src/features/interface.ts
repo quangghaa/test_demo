@@ -9,6 +9,12 @@ export interface ICandidate {
     reporter: string;
     time: string;
     date: string;
+
+    phone: string;
+    email: string;
+    englishMark: number;
+    codingMark: number;
+    knowledgeMark: number;
 }
 
 export interface ICalendar {
@@ -16,15 +22,31 @@ export interface ICalendar {
     cans: ICandidate[];
 }
 
+// export interface IQA {
+//     id: number;
+//     code: string;
+//     type: string;
+//     question: string;
+//     A: string;
+//     B: string;
+//     C: string;
+//     D: string;
+//     answer: string;
+// }
+
+export interface IChoice {
+    id: number;
+    isTrue: number;
+    answer: string;
+}
+
 export interface IQA {
     id: number;
-    code: string;
     type: string;
-    question: string;
-    A: string;
-    B: string;
-    C: string;
-    D: string;
+    subject: string;
+    content: string;
+    level: string;
+    multipleChoiceQuestions: IChoice[]; 
     answer: string;
 }
 
@@ -35,7 +57,8 @@ export interface ITest {
     name: string;
     level: string;
     candidates: ICandidate[];
-    qas: IQA[];
+    // qas: IQA[];
+    questions: IQA[];
 }
 
 

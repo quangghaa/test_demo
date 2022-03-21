@@ -2,7 +2,6 @@ import { CheckSquareFilled, CloseCircleFilled, CloseOutlined, ConsoleSqlOutlined
 import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import useFetch from '../../../hook/useFetch';
 import { ICandidate, IQA, ITest, QA, QData } from '../../interface';
@@ -70,7 +69,8 @@ const Question = (props: any) => {
         }
     }
     const [testData, setTestData] = useState([] as ITest[]);
-    const url = 'https://demo.uiza.vn/tests';
+    // const url = 'https://demo.uiza.vn/tests';
+    const url = 'http://localhost:8080/staff/getalltest'
     const { loading, error, data } = useFetch(url, 'GET');
     useEffect(() => {
         if (error == null && data != null) {
@@ -190,23 +190,6 @@ const Question = (props: any) => {
 
     const selectedCandidate = reduxTest.candidates.length > 0 ? reduxTest.candidates[0] : null;
 
-    // useEffect(() => {
-    //     // First load 
-    //     if(reduxTest.id > 0) {
-    //         let tem = [] as ITest[];
-    //         tem.push(reduxTest);
-
-    //         if(reduxTest.candidates.length > 0) {
-    //             let temC = [] as string[];
-    //             reduxTest.candidates.map(c => {
-    //                 temC.push(c.code);
-    //             })
-    //             setCandidateCodeList(temC);
-    //         }
-    //         setTestItem(tem);
-    //     }
-    // }, [])
-
     console.log("Selected cand: ", selectedCandidate);
     const [candidatesHad, setCandidatesHad] = useState([] as ICandidate[]);
 
@@ -214,7 +197,7 @@ const Question = (props: any) => {
         let rs = [] as ICandidate[];
         if (selectedCandidate != null) {
             rs.push(selectedCandidate);
-            if (candidatesHad.length > 0) {
+            if (candidatesHad?.length > 0) {
                 // rs.push(selectedCandidate);
                 let update = [] as ICandidate[];
                 candidatesHad.forEach(c => {
@@ -229,7 +212,7 @@ const Question = (props: any) => {
                 }
             }
         } else {
-            if (candidatesHad.length > 0) {
+            if (candidatesHad?.length > 0) {
                 candidatesHad.forEach(c => {
                     rs.push(c)
                 })
@@ -274,7 +257,8 @@ const Question = (props: any) => {
                 dispatch(updateType(t.type));
                 dispatch(updateName(t.name));
                 dispatch(updateLevel(t.level));
-                dispatch(updateQas(t.qas));
+                // dispatch(updateQas(t.qas));
+                dispatch(updateQas(t.questions));
                 setTestItem(rs);
 
                 return;
@@ -357,7 +341,8 @@ const Question = (props: any) => {
             if (testItem.length > 0 && ind > -1) {
                 const oldTestItem = testItem[0];
 
-                const oldQa = testItem[0].qas;
+                // const oldQa = testItem[0].qas;
+                const oldQa = testItem[0].questions;
                 let newQa = [] as IQA[];
 
                 for (let i = 0; i < oldQa.length; i++) {
@@ -372,7 +357,8 @@ const Question = (props: any) => {
                         name: oldTestItem.name,
                         level: oldTestItem.level,
                         candidates: oldTestItem.candidates,
-                        qas: newQa
+                        // qas: newQa
+                        questions: newQa
                     }
                 ]
 
@@ -395,19 +381,19 @@ const Question = (props: any) => {
                 <div className='demo-test-box' onClick={() => handleDetail(props.index)}>
                     <span className='ic-close' onClick={() => handleRemoveQuestion(props.index)}><CloseCircleFilled /></span>
                     <div id={'demo-qa-' + props.index} className='hide-long-text'>
-                        <CheckSquareFilled /> {props.data.question}
+                        <CheckSquareFilled /> {props.data.content}
                         <div id={'ans-detail-' + props.index} className='hide'>
                             <ul className='ans-list'>
-                                {/* {props.data.choose.map((c: any) => (
-                                    <li><Checkbox>{c}</Checkbox></li>
-                                ))} */}
-                                <li><Checkbox>A.&nbsp;{props.data.A}</Checkbox></li>
+                                {props.data.multipleChoiceQuestions.map((c: any) => (
+                                    <li><Checkbox>{c.answer}</Checkbox></li>
+                                ))}
+                                {/* <li><Checkbox>A.&nbsp;{props.data.A}</Checkbox></li>
                                 <li><Checkbox>B.&nbsp;{props.data.B}</Checkbox></li>
                                 <li><Checkbox>C.&nbsp;{props.data.C}</Checkbox></li>
-                                <li><Checkbox>D.&nbsp;{props.data.D}</Checkbox></li>
+                                <li><Checkbox>D.&nbsp;{props.data.D}</Checkbox></li> */}
                             </ul>
                             <span className='row-between pd-x-20'>
-                                <span>Đáp án: {props.data.answer}</span>
+                                {/* <span>Đáp án: {props.data.answer}</span> */}
                                 <span onClick={onEdit}>Edit</span>
                             </span>
                         </div>
@@ -432,6 +418,7 @@ const Question = (props: any) => {
     }
 
     const [visible, setVisible] = useState(false);
+    const [visibleTest, setVisibleTest] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
 
@@ -445,6 +432,10 @@ const Question = (props: any) => {
         setVisible(true);
     };
 
+    const showTestModal = () => {
+        setVisibleTest(true);
+    }
+
     const handleOk = () => {
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
@@ -456,38 +447,62 @@ const Question = (props: any) => {
         setIsEdit(false);
     };
 
+    const hanldeSaveTest = () => {
+        console.log("OKE");
+    }
+
     const handleCancel = () => {
         console.log('Clicked cancel button');
         setIsEdit(false);
         setVisible(false);
     };
 
+    const handleCancelTest = () => {
+        setVisibleTest(false);
+        
+    }
+
     // ----------
     const questionTypes = [
         {
-          value: '0',
-          label: 'Trắc nghiệm'
+            value: '0',
+            label: 'Trắc nghiệm'
         },
         {
-          value: '1',
-          label: 'Điền từ'
+            value: '1',
+            label: 'Điền từ'
         },
-      ];
-      
-      function selectQuestionType(value: any) {
-        console.log(value);
-      }
+    ];
 
-      const range = [1, 2, 3, 4];
-      const mapABC = (n: number) => {
-        switch(n) {
+    const testTypes = [
+        {
+            value: '0',
+            label: 'Tiếng anh'
+        },
+        {
+            value: '1',
+            label: 'Kiến thức chung'
+        },
+    ];
+
+    function selectQuestionType(value: any) {
+        console.log(value);
+    }
+
+    function selectedTestType(value: any) {
+        console.log(value);
+    }
+
+    const range = [1, 2, 3, 4];
+    const mapABC = (n: number) => {
+        switch (n) {
             case 1: return 'A';
             case 2: return 'B';
             case 3: return 'C';
             case 4: return 'D';
             default: return 'Unkown';
         }
-      }
+    }
     //
 
     return (
@@ -521,10 +536,47 @@ const Question = (props: any) => {
                             <Button className='btn-search' onClick={handleSearch} icon={<SearchOutlined />}>
                                 Tìm
                             </Button>
-                            <Button className='btn-add' icon={<PlusOutlined />}>
+                            <Button className='btn-add' icon={<PlusOutlined />} onClick={showTestModal}>
                                 Thêm
                             </Button>
                         </span>
+
+                        <Modal
+                            title='Thêm bài test'
+                            visible={visibleTest}
+                            // confirmLoading={confirmLoading}
+                            onCancel={handleCancelTest}
+                            className="create-form"
+                            footer={[
+                                <div className='col'>
+                                    <div className='center'>
+                                        <Button key="submit" onClick={hanldeSaveTest} className='btn-login'>
+                                            Lưu bài test
+                                        </Button>
+
+                                        <Button key="cancel" onClick={handleCancelTest} className='btn-login'>
+                                            Hủy
+                                        </Button>
+                                    </div>
+                                </div>
+                                ,
+                            ]}
+                        >
+                            <span className='row-between'>
+                                <span>Loại bài test: </span>
+                                <Cascader options={testTypes} onChange={selectedTestType} placeholder="Please select" />
+                            </span>
+                            <span className='col mgt-10'>
+                                <span>Tên bài test: </span>
+                                <Input placeholder='Nhập tên bài test' className=''></Input>
+                            </span>
+
+                            <span className='col mgt-10'>
+                                <span>Cấp độ bài test: </span>
+                                <Input placeholder='Nhập tên bài test' className=''></Input>
+                            </span>
+
+                        </Modal>
                     </div>
                     <ul className='rs-test-list'>
                         {!isSearching ? testData.map((t, i) => (
@@ -559,13 +611,13 @@ const Question = (props: any) => {
                         footer={[
                             <div className='col'>
                                 <div className='center'>
-                                        <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
-                                            Lưu câu hỏi
-                                        </Button>
+                                    <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
+                                        Lưu câu hỏi
+                                    </Button>
 
-                                        <Button key="cancel" onClick={handleCancel} className='btn-login'>
-                                            Thôi
-                                        </Button>
+                                    <Button key="cancel" onClick={handleCancel} className='btn-login'>
+                                        Hủy
+                                    </Button>
                                 </div>
                             </div>
                             ,
@@ -579,7 +631,7 @@ const Question = (props: any) => {
                             <span>Câu hỏi: </span>
                             <TextArea rows={2} placeholder='Nhập câu hỏi' />
                         </span>
-                        
+
                         <div className='mgt-20'>
                             <span>Danh sách câu trả lời: </span>
                             <ul className='enter-ans-list'>
@@ -600,7 +652,7 @@ const Question = (props: any) => {
                     </Modal>
 
                     <ul className='qs-list mgt-20'>
-                        {(testItem.length > 0) ? testItem[0].qas.map((qa: any, i) => (
+                        {(testItem.length > 0) ? testItem[0].questions.map((qa: any, i) => (
                             <QuestionItem data={qa} index={i} edit={showModal} setmode={setmode} />
                         )) : <></>}
 
@@ -643,38 +695,26 @@ const Question = (props: any) => {
 
                             <Button className='btn-save mgl-10' onClick={onSave}>Lưu</Button>
                         </div>
-                        
+
                     </div>
 
                     <ul className='demo-qs-list'>
 
-                            {testItem.length > 0 ? testItem[0].qas.map((q, i) => (
-                                <li>
-                                    <span>{i + 1}.&nbsp;{q.question}</span>
-                                    <ul className='qs-ans-list'>
-                                        {/* {q.choose.length > 0 ? q.choose.map((c) => (
+                        {testItem.length > 0 ? testItem[0].questions.map((q, i) => (
+                            <li>
+                                <span>{i + 1}.&nbsp;{q.content}</span>
+                                <ul className='qs-ans-list'>
+                                    {q.multipleChoiceQuestions.length > 0 ? q.multipleChoiceQuestions.map((c) => (
                                         <li>
-                                            <Checkbox onChange={onSelectAns}>{c}</Checkbox>
+                                            <Checkbox onChange={onSelectAns}>{c.answer}</Checkbox>
                                         </li>
                                     ))
-                                    
-                                    : <></>} */}
-                                        <li>
-                                            <Checkbox onChange={onSelectAns}>A.&nbsp;{q.A}</Checkbox>
-                                        </li>
-                                        <li>
-                                            <Checkbox onChange={onSelectAns}>B.&nbsp;{q.B}</Checkbox>
-                                        </li>
-                                        <li>
-                                            <Checkbox onChange={onSelectAns}>C.&nbsp;{q.C}</Checkbox>
-                                        </li>
-                                        <li>
-                                            <Checkbox onChange={onSelectAns}>D.&nbsp;{q.D}</Checkbox>
-                                        </li>
-                                    </ul>
-                                </li>
-                            )) : <></>}
-                        </ul>
+
+                                        : <></>}
+                                </ul>
+                            </li>
+                        )) : <></>}
+                    </ul>
                 </Col>
             </Row>
 

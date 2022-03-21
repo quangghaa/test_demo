@@ -9,7 +9,8 @@ export interface TestState {
     name: string;
     level: string;
     candidates: ICandidate[];
-    qas: IQA[];
+    // qas: IQA[];
+    questions: IQA[];
 }
 
 const initialState: TestState[] = [] as TestState[]

@@ -30,33 +30,31 @@ const Homepage = (props: any) => {
     const canState = useAppSelector(selectCandidate);
     const ltState = useAppSelector(selectListTest);
 
-    const [canCode, setCanCode] = useState('');
+    const [canId, setCanId] = useState('');
 
     const [urls, setUrls] = useState([] as string[]);
 
     useEffect(() => {
         let us = [];
         
-        const canUrl = canCode.length > 0 ? 'https://demo.uiza.vn/candidates?code=' + canCode : '';
-        const ltUrl = canCode.length > 0 ? 'https://demo.uiza.vn/tests/?_where[_or][0][candidates.code_contains]='+ canCode : '';
+        // const canUrl = canCode.length > 0 ? 'https://demo.uiza.vn/candidates?code=' + canCode : '';
+        // const ltUrl = canCode.length > 0 ? 'https://demo.uiza.vn/tests/?_where[_or][0][candidates.code_contains]='+ canCode : '';
+
+        const canUrl = canId.length > 0 ? 'http://localhost:8080/staff/listcandidate/' + canId : '';
+        const ltUrl = canId.length > 0 ? 'http://localhost:8080/staff/gettestbycandidateid/'+ canId : '';
 
         if(canUrl.length > 0 && ltUrl.length > 0) {
             us.push(canUrl);
             us.push(ltUrl);
         }
         setUrls(us);
-    }, [canCode])
+    }, [canId])
 
-    const enterCode = (e: any) => {
-        setCanCode(e.target.value);
+    const enterCanId = (e: any) => {
+        setCanId(e.target.value);
     }
 
     const handleClick = () => {
-        // const urls = [
-        //     'https://demo.uiza.vn/candidates?code=BC1',
-        //     'https://demo.uiza.vn/tests?_where[_or][0][candidates.code_contains]=BC1'
-        // ];
-
         Promise.all(urls.map(url =>
             fetch(url)
                 .then(checkStatus)  // check the response of our APIs
@@ -69,10 +67,12 @@ const Homepage = (props: any) => {
                 // assign to requested URL as define in array with array index.
                 const can = data[0];
                 const test = data[1];
-                if(Array.isArray(can) && can.length > 0) {
-                    can.map(c => {
-                        dispatch(addCandidate(c));
-                    })
+
+                console.log("Candidate: ", can);
+                console.log("Exam: ", test);
+                if(can !== null || can !== undefined ) {
+                    dispatch(addCandidate(can));
+                    
                 }
                 if(Array.isArray(test) && test.length > 0) {
                     test.map(t => {
@@ -80,34 +80,6 @@ const Homepage = (props: any) => {
                     })
                 }
             })
-
-        // const fetchData = async () => {
-        //     const urls = [
-        //         'https://demo.uiza.vn/candidates?code=BC1',
-        //         'https://demo.uiza.vn/tests?_where[_or][0][candidates.code_contains]=BC1'
-        //     ];
-        //     try {
-        //         await Promise.all(urls.map(url => {
-        //             fetch(url)
-        //             .then(checkStatus)
-        //             .then(parseJSON)
-        //             .catch(err => console.log('There was a problem! ', err));
-        //         }))
-        //         .then(data => {
-        //             // assign to requested URL as define in array with array index.
-        //             const can = data[0];
-        //             const test = data[1];
-        //             console.log("Can: ", can);
-        //             console.log("Test: ", test);
-        //             setCanRes(can as any);
-        //             setTestRes(test as any);
-        //         })
-        //     } catch(error) {
-        //         console.log(error);
-        //     }
-
-        // }
-        // fetchData();
 
     }
 
@@ -123,7 +95,7 @@ const Homepage = (props: any) => {
                 <span className='hint'>Nhập code của bạn để làm bài test</span>
                 <br></br>
                 <div className='input-box'>
-                    <Input placeholder="Basic usage" onChange={enterCode} className='no-border' />
+                    <Input placeholder="Basic usage" onChange={enterCanId} className='no-border' />
                     <Link to='/instruction'>
                         <span className='position' onClick={handleClick}><LoginOutlined /></span>
                     </Link>
