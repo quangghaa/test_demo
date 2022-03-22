@@ -4,10 +4,12 @@ import { ICandidate, IQA } from "../interface";
 
 export interface TestState {
     id: number;
-    code: string;
-    type: string;
+    // code: string;
+    codeTest: string;
+    // type: string;
+    subject: number;
     name: string;
-    level: string;
+    level: number;
     candidates: ICandidate[];
     // qas: IQA[];
     questions: IQA[];
@@ -17,10 +19,10 @@ export interface TestState {
 
 const initialState: TestState = {
     id: 0,
-    code: '',
-    type: '',
+    codeTest: '',
+    subject: 0,
     name: '',
-    level: '',
+    level: 0,
     candidates: [] as ICandidate[],
     // qas: [] as IQA[],
     questions: [] as IQA[],
@@ -36,10 +38,10 @@ export const testSlice = createSlice({
             state.id = action.payload;
         },
         updateCode: (state, action) => {
-            state.code = action.payload;
+            state.codeTest = action.payload;
         },
         updateType: (state, action) => {
-            state.type = action.payload;
+            state.subject = action.payload;
         },
         updateName: (state, action) => {
             state.name = action.payload;
@@ -66,10 +68,10 @@ export const testSlice = createSlice({
         },
         clear: (state) => {
             state.id = 0;
-            state.code = '';
-            state.type = '';
+            state.codeTest = '';
+            state.subject = 0;
             state.name = '';
-            state.level = '';
+            state.level = 0;
             state.candidates = [] as ICandidate[];
             state.questions = [] as IQA[];
         }

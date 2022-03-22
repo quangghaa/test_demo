@@ -56,7 +56,7 @@ const Header = (props: any) => {
         <>
             <div className="header">
                 
-                <span className='row'>
+                <span className='row-between fullwidth'>
                     <span>LOGO</span>
                     {props.start ?  
                     <span className='row mgl-20'>
@@ -69,7 +69,8 @@ const Header = (props: any) => {
                     : <></>}
                     
                 </span>
-                <span className='lg-btn' onClick={handleLogin}>Login</span>
+                {props.start ? <></> : <span className='lg-btn' onClick={handleLogin}>Login</span>}
+                
             </div>
             <Modal
                 title='Đăng nhập'

@@ -52,10 +52,12 @@ export interface IQA {
 
 export interface ITest {
     id: number;
-    code: string;
-    type: string;
+    // code: string;
+    codeTest: string;
+    // type: string;
+    subject: number;
     name: string;
-    level: string;
+    level: number;
     candidates: ICandidate[];
     // qas: IQA[];
     questions: IQA[];

@@ -1,6 +1,7 @@
 import { CheckSquareFilled, CloseCircleFilled, CloseOutlined, ConsoleSqlOutlined, DownOutlined, FieldTimeOutlined, FilterFilled, PlusOutlined, SearchOutlined, UpOutlined } from '@ant-design/icons';
-import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row } from 'antd';
+import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row, TimePicker } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
+import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import useFetch from '../../../hook/useFetch';
@@ -28,11 +29,11 @@ const Question = (props: any) => {
         },
     ];
 
-    const [testType, setTestType] = useState('');
+    const [testSubjectSearch, setTestSubjectSearch] = useState(0);
 
     const [testname, setTestname] = useState('');
 
-    const [level, setLevel] = useState('');
+    const [level, setLevel] = useState(0);
 
     const [isSearching, setIsSearching] = useState(false);
     const [rsSearch, setRsSearch] = useState([] as ITest[]);
@@ -42,18 +43,18 @@ const Question = (props: any) => {
         setTestname(e.target.value);
     }
 
-    const engLevelList = ['B1', 'B2', 'C1', 'C2'];
-    const genLevelList = ['Fresher', 'Junior', 'Senior'];
-    const [levelList, setLevelList] = useState([] as string[]);
+    const engLevelList = [1, 2, 3, 4];
+    const genLevelList = [1, 2, 3];
+    const [levelList, setLevelList] = useState([] as number[]);
 
     function onChangeTestType(value: any) {
 
         if (value[0] === 'ENG') {
-            setTestType('ENG');
+            setTestSubjectSearch(1);
             setLevelList(engLevelList);
         }
         else if (value[0] === 'GEN') {
-            setTestType('GEN');
+            setTestSubjectSearch(2);
             setLevelList(genLevelList);
         }
     }
@@ -69,9 +70,10 @@ const Question = (props: any) => {
         }
     }
     const [testData, setTestData] = useState([] as ITest[]);
+    const [reload, setReload] = useState(false);
     // const url = 'https://demo.uiza.vn/tests';
     const url = 'http://localhost:8080/staff/getalltest'
-    const { loading, error, data } = useFetch(url, 'GET');
+    const { loading, error, data } = useFetch(url, 'GET', reload);
     useEffect(() => {
         if (error == null && data != null) {
             setTestData(data);
@@ -110,27 +112,27 @@ const Question = (props: any) => {
             })
         }
 
-        setLevel('');
+        setLevel(0);
     }
 
     const handleSearch = () => {
         let tempRs = [] as ITest[];
 
         const name = testname;
-        const type = testType;
+        const type = testSubjectSearch;
         const lv = level;
 
         if (name.length === 0) {
-            if (lv.length === 0) {
-                if (type.length !== 0) {
+            if (lv === 0) {
+                if (type > 0) {
                     testData.forEach(t => {
-                        if (t.type === type) {
+                        if (t.subject === type) {
                             tempRs.push(t);
                         }
                     });
                 }
             } else {
-                if (type.length === 0) {
+                if (type === 0) {
                     testData.forEach(t => {
                         if (t.level === lv) {
                             tempRs.push(t);
@@ -138,15 +140,15 @@ const Question = (props: any) => {
                     });
                 } else {
                     testData.forEach(t => {
-                        if (t.type === type && t.level === lv) {
+                        if (t.subject === type && t.level === lv) {
                             tempRs.push(t);
                         }
                     });
                 }
             }
         } else {
-            if (type.length === 0) {
-                if (lv.length === 0) {
+            if (type === 0) {
+                if (lv === 0) {
                     testData.forEach(t => {
                         if (t.name === name) {
                             tempRs.push(t);
@@ -160,15 +162,15 @@ const Question = (props: any) => {
                     });
                 }
             } else {
-                if (lv.length === 0) {
+                if (lv === 0) {
                     testData.forEach(t => {
-                        if (t.name === name && t.type === type) {
+                        if (t.name === name && t.subject === type) {
                             tempRs.push(t);
                         }
                     });
                 } else {
                     testData.forEach(t => {
-                        if (t.name === name && t.type === type && t.level === lv) {
+                        if (t.name === name && t.subject === type && t.level === lv) {
                             tempRs.push(t);
                         }
                     });
@@ -247,14 +249,14 @@ const Question = (props: any) => {
         !isSearching ? whereToFind = testData : whereToFind = rsSearch;
 
         whereToFind.forEach(t => {
-            if (t.code === code) {
+            if (t.codeTest === code) {
                 rs.push(t);
                 // Set list candidate for this test
                 setCandidatesHad(t.candidates);
                 // Set redux state
                 dispatch(updateId(t.id));
-                dispatch(updateCode(t.code));
-                dispatch(updateType(t.type));
+                dispatch(updateCode(t.codeTest));
+                dispatch(updateType(t.subject));
                 dispatch(updateName(t.name));
                 dispatch(updateLevel(t.level));
                 // dispatch(updateQas(t.qas));
@@ -282,7 +284,7 @@ const Question = (props: any) => {
     }, [res, err])
 
     const onSave = () => {
-        const testCode = testItem.length > 0 ? testItem[0].code : '';
+        const testCode = testItem.length > 0 ? testItem[0].codeTest : '';
         if (testCode.length === 0) return;
 
         const body = {
@@ -303,6 +305,26 @@ const Question = (props: any) => {
                 setRes(json);
             } catch (error: any) {
                 setErr(error);
+            }
+        }
+        fetchData();
+    }
+
+    const handleRemoveQuestion = (qId: number) => {
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' }
+        }
+        const fetchData = async () => {
+            try {
+                const rmUrl = 'http://localhost:8080/staff/removequestion' + '/' + qId + '/' + reduxTest.id;
+                const res = await fetch(rmUrl, requestOptions);
+                const json = await res.json();
+                if(json) {
+                    reloadTest();
+                }
+            } catch (error: any) {
+                // setErr(error);
             }
         }
         fetchData();
@@ -352,8 +374,8 @@ const Question = (props: any) => {
                 const x = [
                     {
                         id: oldTestItem.id,
-                        code: oldTestItem.code,
-                        type: oldTestItem.type,
+                        codeTest: oldTestItem.codeTest,
+                        subject: oldTestItem.subject,
                         name: oldTestItem.name,
                         level: oldTestItem.level,
                         candidates: oldTestItem.candidates,
@@ -369,6 +391,11 @@ const Question = (props: any) => {
             }
         }
 
+        const removeQuestion = (qId: any, index: any) => {
+            handleRemoveQuestion(index);
+            props.func(qId);
+        }
+
         const onEdit = () => {
             console.log('ON EDIT');
             props.setmode();
@@ -379,7 +406,7 @@ const Question = (props: any) => {
             <li key={props.index}>
                 <span className='abs'><PlusOutlined /></span>
                 <div className='demo-test-box' onClick={() => handleDetail(props.index)}>
-                    <span className='ic-close' onClick={() => handleRemoveQuestion(props.index)}><CloseCircleFilled /></span>
+                    <span className='ic-close' onClick={() => removeQuestion(props.data.id, props.index)}><CloseCircleFilled /></span>
                     <div id={'demo-qa-' + props.index} className='hide-long-text'>
                         <CheckSquareFilled /> {props.data.content}
                         <div id={'ans-detail-' + props.index} className='hide'>
@@ -387,13 +414,8 @@ const Question = (props: any) => {
                                 {props.data.multipleChoiceQuestions.map((c: any) => (
                                     <li><Checkbox>{c.answer}</Checkbox></li>
                                 ))}
-                                {/* <li><Checkbox>A.&nbsp;{props.data.A}</Checkbox></li>
-                                <li><Checkbox>B.&nbsp;{props.data.B}</Checkbox></li>
-                                <li><Checkbox>C.&nbsp;{props.data.C}</Checkbox></li>
-                                <li><Checkbox>D.&nbsp;{props.data.D}</Checkbox></li> */}
                             </ul>
                             <span className='row-between pd-x-20'>
-                                {/* <span>Đáp án: {props.data.answer}</span> */}
                                 <span onClick={onEdit}>Edit</span>
                             </span>
                         </div>
@@ -409,7 +431,14 @@ const Question = (props: any) => {
 
     const onSelectAns = () => {
         console.log('x');
-    }
+    }  
+
+
+    const [testSubject, setTestSubject] = useState(0);
+    const [testCode, setTestCode] = useState('');
+    const [testName, setTestName] = useState('');
+    const [testLevel, setTestLevel] = useState(0);
+    const [doTime, setDoTime] = useState('');
 
     // Modal Create + Edit
     const handleLogin = () => {
@@ -447,40 +476,31 @@ const Question = (props: any) => {
         setIsEdit(false);
     };
 
-    const hanldeSaveTest = () => {
-        console.log("OKE");
-    }
-
     const handleCancel = () => {
         console.log('Clicked cancel button');
         setIsEdit(false);
         setVisible(false);
     };
 
-    const handleCancelTest = () => {
-        setVisibleTest(false);
-        
-    }
-
     // ----------
     const questionTypes = [
         {
-            value: '0',
+            value: '1',
             label: 'Trắc nghiệm'
         },
         {
-            value: '1',
+            value: '2',
             label: 'Điền từ'
         },
     ];
 
     const testTypes = [
         {
-            value: '0',
+            value: '1',
             label: 'Tiếng anh'
         },
         {
-            value: '1',
+            value: '2',
             label: 'Kiến thức chung'
         },
     ];
@@ -491,6 +511,84 @@ const Question = (props: any) => {
 
     function selectedTestType(value: any) {
         console.log(value);
+        setTestSubject(parseInt(value));
+    }
+
+    const enterCode = (e: any) => {
+        setTestCode(e.target.value);
+    }
+
+    const enterName = (e: any) => {
+        setTestName(e.target.value);
+    }
+
+    const enterLevel = (e: any) => {
+        setTestLevel(parseInt(e.target.value));
+    }
+
+    const reloadTest = () => {
+        setReload(!reload);
+    }
+
+    const [addTestRes, setAddTestRes] = useState(null);
+    const [addTestErr, setAddTestErr] = useState(null);
+
+    const hanldeSaveTest = () => {
+
+        if(testSubject === 0 || testName.trim().length === 0 || testCode.trim().length === 0 || testLevel === 0) {
+            errorm();
+            return;
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(
+                {
+                    subject: testSubject,
+                    name: testName.trim(),
+                    codeTest: testCode.trim(),
+                    level: testLevel
+                }
+            )
+        }
+        const addUrl = 'http://localhost:8080/staff/addtest';
+
+        const fetchData = async () => {
+            try {
+                const res = fetch(addUrl, requestOptions);
+                const json = (await res).json();
+                json.then(value => {
+                    if(value) {
+                        success();
+                        reloadTest();
+                    }
+                })
+
+            } catch (error: any) {
+                setAddTestErr(error);
+            }
+        }
+        fetchData();
+        setVisibleTest(false);
+        setTestSubject(0);
+        setTestCode('');
+        setTestName('');
+        setTestLevel(0);
+        setDoTime('');
+    }
+
+    const handleCancelTest = () => {
+        setVisibleTest(false);
+        setTestSubject(0);
+        setTestCode('');
+        setTestName('');
+        setTestLevel(0);
+        setDoTime('');
+    }
+
+    const enterTime = (time: any, timeString: string) => {
+        setDoTime(timeString);
     }
 
     const range = [1, 2, 3, 4];
@@ -523,7 +621,7 @@ const Question = (props: any) => {
                             <div className='row-between'>
                                 <ul className='lv-list'>
                                     {levelList.map((l, i) => (
-                                        <li id={l} key={i + 1} onClick={() => handleLevelClick(l)} className='mark-lv'><span>{l}</span></li>
+                                        <li id={l.toString()} key={i + 1} onClick={() => handleLevelClick(l)} className='mark-lv'><span>{l}</span></li>
                                     ))}
                                 </ul>
                                 <Button className='btn-delete' onClick={handleRemoveLevelCLick} icon={<CloseOutlined />}>
@@ -567,27 +665,37 @@ const Question = (props: any) => {
                                 <Cascader options={testTypes} onChange={selectedTestType} placeholder="Please select" />
                             </span>
                             <span className='col mgt-10'>
+                                <span>Mã bài test: </span>
+                                <Input placeholder='Nhập mã bài test' className='' onChange={enterCode}></Input>
+                            </span>
+
+                            <span className='col mgt-10'>
                                 <span>Tên bài test: </span>
-                                <Input placeholder='Nhập tên bài test' className=''></Input>
+                                <Input placeholder='Nhập tên bài test' className=''onChange={enterName}></Input>
                             </span>
 
                             <span className='col mgt-10'>
                                 <span>Cấp độ bài test: </span>
-                                <Input placeholder='Nhập tên bài test' className=''></Input>
+                                <Input placeholder='Nhập tên bài test' className=''onChange={enterLevel}></Input>
+                            </span>
+
+                            <span className='col mgt-10'>
+                                <span>Thời gian làm bài: </span>
+                                <TimePicker onChange={enterTime} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
                             </span>
 
                         </Modal>
                     </div>
                     <ul className='rs-test-list'>
                         {!isSearching ? testData.map((t, i) => (
-                            <li key={i} onClick={() => handleTestClick(t.code)}>
+                            <li key={i} onClick={() => handleTestClick(t.codeTest)}>
 
                                 <span className='lv-cir'>{t.level}</span>
 
                                 <span>{t.name}</span>
                             </li>
                         )) : rsSearch.map((t, i) => (
-                            <li key={i} onClick={() => handleTestClick(t.code)}>
+                            <li key={i} onClick={() => handleTestClick(t.codeTest)}>
                                 <span className='lv-cir'>{t.level}</span>
                                 <span>{t.name}</span>
                             </li>
@@ -653,7 +761,7 @@ const Question = (props: any) => {
 
                     <ul className='qs-list mgt-20'>
                         {(testItem.length > 0) ? testItem[0].questions.map((qa: any, i) => (
-                            <QuestionItem data={qa} index={i} edit={showModal} setmode={setmode} />
+                            <QuestionItem data={qa} index={i} edit={showModal} setmode={setmode} func={handleRemoveQuestion} />
                         )) : <></>}
 
                     </ul>
@@ -669,7 +777,7 @@ const Question = (props: any) => {
 
                                     <ul className='lv-list'>
                                         {levelList.map((l, i) => (
-                                            <li id={l} key={i + 1}><span>{l}</span></li>
+                                            <li id={l.toString()} key={i + 1}><span>{l}</span></li>
                                         ))}
                                     </ul>
                                     <span className='row-center-y'>
