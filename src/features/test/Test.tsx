@@ -2,7 +2,7 @@ import { PropertySafetyFilled, UndoOutlined } from '@ant-design/icons';
 import { Button, Cascader, Col, Radio, Row, Space } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { type } from 'os';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import Header from '../header/Header';
 import { CacheAns, IChosen, IQA } from '../interface';
@@ -21,16 +21,16 @@ const Question = (props: any) => {
         console.log("----", data);
 
         if(Array.isArray(cacheData) && cacheData.length > 0) {
-            cacheData.map((cache) => {
+            cacheData.map((cache) => {  
                 if(cache.key === props.data.id) {
-                    setAnswer(cache.content.idAnswer);
+                    setAnswer(cache.value.idAnswer);
                 }
             })
         } else {
             console.log("Not array cache data");
         }
 
-    }, [])
+    }, [props.cache])
 
     const onChange = (e: any, id: any) => {
         console.log("CHOSE: ", e.target.value);
@@ -127,7 +127,7 @@ const EnglishTest = (props: any) => {
 
     
     useEffect(() => {
-        let arrReturn = [] as CacheAns[];
+        var arrReturn = [] as CacheAns[];
 
         let engArr = [] as CacheAns[];
         const requestOptions = {
@@ -141,29 +141,32 @@ const EnglishTest = (props: any) => {
                 const json = await res.json();
                 
                 arrReturn = toArray(json);
-               
-                // setCache(arrReturn);
+                console.log("JSON arr: ", arrReturn);
 
+                if(Array.isArray(arrReturn) && arrReturn.length > 0) {
+                    arrReturn.map((item) => {
+                        if(item.value.idTest === props.data.testId) {
+                            engArr.push(item);
+                        }
+                    })
+                } else {
+                    console.log("ArrReturn is not an Array");
+                }
+        
+                console.log('ENG arr: ', engArr);
+                
+                setCache(engArr);
+
+                console.log("Cache: ", cache);
+                // setCache(arrReturn);
+                return json;
             } catch (error: any) {
             }
         }
+
         fetchData();
-
-        console.log("ARRAY: ", arrReturn);
-
-        if(Array.isArray(arrReturn) && arrReturn.length > 0) {
-            arrReturn.map((item) => {
-                if(item.value.idTest === props.data.testId) {
-                    engArr.push(item);
-                }
-            })
-        } else {
-            console.log("ArrReturn is not an Array");
-        }
-
-        console.log('ENG arr: ', engArr);
-
-        setCache(engArr);
+        console.log("Cache OUT: ", cache);
+        // console.log("ARRAY: ", arrReturn);
 
     }, [])
 
@@ -179,11 +182,61 @@ const EnglishTest = (props: any) => {
 }
 
 const GeneralTest = (props: any) => {
+
+    // Fetch cache Redis
+    const [cache, setCache] = useState([] as CacheAns[]);
+
+    console.log("IN GEN TEST: ", props.data);
+    
+    useEffect(() => {
+        var arrReturn = [] as CacheAns[];
+
+        let engArr = [] as CacheAns[];
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        const fetchData = async () => {
+            try {
+                const doUrl = 'http://localhost:8080/testpage/getcacheans';
+                const res = await fetch(doUrl, requestOptions);
+                const json = await res.json();
+                
+                arrReturn = toArray(json);
+                console.log("JSON arr: ", arrReturn);
+
+                if(Array.isArray(arrReturn) && arrReturn.length > 0) {
+                    arrReturn.map((item) => {
+                        if(item.value.idTest === props.data.testId) {
+                            engArr.push(item);
+                        }
+                    })
+                } else {
+                    console.log("ArrReturn is not an Array");
+                }
+        
+                console.log('ENG arr: ', engArr);
+                
+                setCache(engArr);
+
+                console.log("Cache: ", cache);
+                // setCache(arrReturn);
+                return json;
+            } catch (error: any) {
+            }
+        }
+
+        fetchData();
+        console.log("Cache OUT: ", cache);
+        // console.log("ARRAY: ", arrReturn);
+
+    }, [])
+
     return (
         <ul className='list'>
-            {Array.isArray(props.data) && props.data.length > 0 ?
-                props.data.map((qa: IQA) => (
-                    <Question testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} type={props.type} />
+            {Array.isArray(props.data.content) && props.data.content.length > 0 ?
+                props.data.content.map((qa: IQA) => (
+                    <Question testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} cache={cache} type={props.type} />
                 )) : <></>
             }
         </ul>
@@ -330,6 +383,7 @@ const Test = (props: any) => {
         let engCt = {} as TestContent;
         let genCt = {} as TestContent;
         if (Array.isArray(props) && props.length > 0) {
+            console.log('TOTAL: ', props);
             props.map(t => {
                 if (t.subject === 'ENG' || t.subject === 1) {
 
@@ -341,40 +395,30 @@ const Test = (props: any) => {
                     // console.log('Eng CT: ', ct);
                     engCt = ct;
                     console.log('Eng CTtt: ', engCt);
-                } else if (t.subject === 'GEN' || t.subject === 3) {
+                } 
+                if (t.subject === 'GEN' || t.subject === 2) {
                     // gen = t.questions;
                     const ct = {
                         testId: t.id,
                         content: t.questions
                     }
                     genCt = ct;
+                    console.log("GEN TEST: ", genCt);
                 }
             })
         }
 
+        
+
         switch (switchview) {
             case 'ENG': return <EnglishTest canId={canId} data={engCt} finish={props.finish} type={switchview} />
             case 'GEN': return <GeneralTest canId={canId} data={genCt} finish={props.finish} type={switchview} />
-            default: return <EnglishTest canId={canId} data={eng} finish={props.finish} type={switchview} />
+            default: return <EnglishTest canId={canId} data={engCt} finish={props.finish} type={switchview} />
         }
     }
 
     const dispatch = useAppDispatch();
-    // useEffect(() => {
-    //     if(listTest.length > 0) {
-    //         listTest[0].tests.map((t) => {
-    //             dispatch(addCache({
-    //                 testId: t.id,
-    //                 type: t.type,
-    //                 ans: [] as Answer[]
-    //             }));
-    //             console.log('In a map: ', t);
-    //         })
-    //     }
-    // }, []);
-
-
-
+    
     return (
         <div>
             <Header start={props.start} finish={props.finish} />

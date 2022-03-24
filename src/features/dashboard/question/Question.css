@@ -149,6 +149,11 @@
 
 }
 
+.rs-test-list li:hover {
+    cursor: pointer;
+    background-color: #d9dcdf;
+}
+
 .lv-cir {
     border: 0.5px solid rgb(184, 174, 174) ;
     background-color: rgb(233, 233, 139);

@@ -1,0 +1,7 @@
+2022/03/24-13:11:47.680 8392 Reusing MANIFEST /home/quangha/react/src/test_demo/~/chrome_dev/Default/IndexedDB/https_www.youtube.com_0.indexeddb.leveldb/MANIFEST-000001
+2022/03/24-13:11:47.680 8392 Recovering log #3
+2022/03/24-13:11:47.680 8392 Reusing old log /home/quangha/react/src/test_demo/~/chrome_dev/Default/IndexedDB/https_www.youtube.com_0.indexeddb.leveldb/000003.log 
+2022/03/24-13:11:56.395 8370 Level-0 table #5: started
+2022/03/24-13:11:56.397 8370 Level-0 table #5: 1200 bytes OK
+2022/03/24-13:11:56.398 8370 Delete type=0 #3
+2022/03/24-13:11:56.398 8370 Manual compaction at level-0 from (begin) .. (end); will stop at (end)
