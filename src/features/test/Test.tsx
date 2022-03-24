@@ -5,29 +5,65 @@ import { type } from 'os';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import Header from '../header/Header';
-import { IChosen, IQA } from '../interface';
+import { CacheAns, IChosen, IQA } from '../interface';
 import { addAnswer, addCache, Answer, selectCacheAnswer } from '../reducer/cacheAnswerSlice';
+import { selectCandidate } from '../reducer/listCandidateSlice';
 import { selectListTest } from '../reducer/listTestSlice';
 import './Test.css';
 
 const Question = (props: any) => {
     const [answer, setAnswer] = useState('');
 
-    const dispatch = useAppDispatch();
-    const cache = useAppSelector(selectCacheAnswer);
+    useEffect(() => {
+        const cacheData = props.cache;
+        const data = props.data;
+        console.log("----", cacheData);
+        console.log("----", data);
 
-    console.log('cache: ', cache);
+        if(Array.isArray(cacheData) && cacheData.length > 0) {
+            cacheData.map((cache) => {
+                if(cache.key === props.data.id) {
+                    setAnswer(cache.content.idAnswer);
+                }
+            })
+        } else {
+            console.log("Not array cache data");
+        }
+
+    }, [])
 
     const onChange = (e: any, id: any) => {
         console.log("CHOSE: ", e.target.value);
         setAnswer(e.target.value);
 
-        if(cache.length > 0) {
-            const x = cache.filter((value: any) => {
-                return value
-            })
+        let body = {
+            idAnswer: parseInt(e.target.value),
+            type: parseInt(props.data.type),
+            answer: '1',
+            idCandidate: parseInt(props.canId),
+            idTest: parseInt(props.testId)
+
         }
-        dispatch(addAnswer)
+        console.log('BODY: ', body);
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        }
+        const fetchData = async () => {
+            try {
+                const doUrl = 'http://localhost:8080/testpage/doingtest';
+                const res = await fetch(doUrl, requestOptions);
+                const json = await res.json();
+                console.log("OKE JSON, ", json);
+                // json.then(() => {
+                //     console.log("OKE JSON, ", json);
+                // })
+            } catch (error: any) {
+            }
+        }
+        fetchData();
     };
 
     const mapAns = (ans: any) => {
@@ -70,13 +106,72 @@ const Question = (props: any) => {
     )
 }
 
+const toArray = (obj: any) => {
+    let resultArray = Object.keys(obj).map(function(objInd) {
+        // let person = obj[objInd];
+        
+        let ob = {
+            key: parseInt(objInd),
+            value: obj[objInd]
+        }
+        // do something with person
+        return ob;
+    });
+    return resultArray;
+}
+
 const EnglishTest = (props: any) => {
+
+    // Fetch cache Redis
+    const [cache, setCache] = useState([] as CacheAns[]);
+
+    
+    useEffect(() => {
+        let arrReturn = [] as CacheAns[];
+
+        let engArr = [] as CacheAns[];
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        const fetchData = async () => {
+            try {
+                const doUrl = 'http://localhost:8080/testpage/getcacheans';
+                const res = await fetch(doUrl, requestOptions);
+                const json = await res.json();
+                
+                arrReturn = toArray(json);
+               
+                // setCache(arrReturn);
+
+            } catch (error: any) {
+            }
+        }
+        fetchData();
+
+        console.log("ARRAY: ", arrReturn);
+
+        if(Array.isArray(arrReturn) && arrReturn.length > 0) {
+            arrReturn.map((item) => {
+                if(item.value.idTest === props.data.testId) {
+                    engArr.push(item);
+                }
+            })
+        } else {
+            console.log("ArrReturn is not an Array");
+        }
+
+        console.log('ENG arr: ', engArr);
+
+        setCache(engArr);
+
+    }, [])
 
     return (
         <ul className='list'>
-            {Array.isArray(props.data) && props.data.length > 0 ?
-                props.data.map((qa: IQA) => (
-                    <Question id={qa.id} data={qa} type={props.type} />
+            {Array.isArray(props.data.content) && props.data.content.length > 0 ?
+                props.data.content.map((qa: IQA) => (
+                    <Question testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} cache={cache} type={props.type} />
                 )) : <></>
             }
         </ul>
@@ -88,7 +183,7 @@ const GeneralTest = (props: any) => {
         <ul className='list'>
             {Array.isArray(props.data) && props.data.length > 0 ?
                 props.data.map((qa: IQA) => (
-                    <Question id={qa.id} data={qa} type={props.type} />
+                    <Question testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} type={props.type} />
                 )) : <></>
             }
         </ul>
@@ -204,10 +299,14 @@ const CodeTest = (props: any) => {
     )
 }
 
+interface TestContent {
+    testId: number,
+    content: IQA[]
+}
 
 const Test = (props: any) => {
 
-    const listTest = useAppSelector(selectListTest);
+    const listTest = useAppSelector(selectCandidate);
 
     const [switchview, setSwitchview] = useState('ENG');
 
@@ -223,39 +322,56 @@ const Test = (props: any) => {
         setSwitchview('CODE');
     }
 
-    const renderView = (props: any) => {
+    const renderView = (cId: any, props: any) => {
+        const canId = cId;
         let eng = [] as IQA[];
         let gen = [] as IQA[];
+
+        let engCt = {} as TestContent;
+        let genCt = {} as TestContent;
         if (Array.isArray(props) && props.length > 0) {
             props.map(t => {
-                if (t.type === 'ENG' || t.subject === 1) {
-                    eng = t.questions;
-                } else if (t.type === 'GEN' || t.subject === 3) {
-                    gen = t.questions;
+                if (t.subject === 'ENG' || t.subject === 1) {
+
+                    // eng = t.questions;
+                    const ct = {
+                        testId: t.id,
+                        content: t.questions
+                    }
+                    // console.log('Eng CT: ', ct);
+                    engCt = ct;
+                    console.log('Eng CTtt: ', engCt);
+                } else if (t.subject === 'GEN' || t.subject === 3) {
+                    // gen = t.questions;
+                    const ct = {
+                        testId: t.id,
+                        content: t.questions
+                    }
+                    genCt = ct;
                 }
             })
         }
 
         switch (switchview) {
-            case 'ENG': return <EnglishTest data={eng} finish={props.finish} type={switchview} />
-            case 'GEN': return <GeneralTest data={gen} finish={props.finish} type={switchview} />
-            default: return <EnglishTest data={eng} finish={props.finish} type={switchview} />
+            case 'ENG': return <EnglishTest canId={canId} data={engCt} finish={props.finish} type={switchview} />
+            case 'GEN': return <GeneralTest canId={canId} data={genCt} finish={props.finish} type={switchview} />
+            default: return <EnglishTest canId={canId} data={eng} finish={props.finish} type={switchview} />
         }
     }
 
     const dispatch = useAppDispatch();
-    useEffect(() => {
-        if(listTest.length > 0) {
-            listTest.map((t) => {
-                dispatch(addCache({
-                    testId: t.id,
-                    type: t.type,
-                    ans: [] as Answer[]
-                }));
-                console.log('In a map: ', t);
-            })
-        }
-    }, []);
+    // useEffect(() => {
+    //     if(listTest.length > 0) {
+    //         listTest[0].tests.map((t) => {
+    //             dispatch(addCache({
+    //                 testId: t.id,
+    //                 type: t.type,
+    //                 ans: [] as Answer[]
+    //             }));
+    //             console.log('In a map: ', t);
+    //         })
+    //     }
+    // }, []);
 
 
 
@@ -270,7 +386,7 @@ const Test = (props: any) => {
                 </ul>
 
                 <div className='cus-pd fullwidth'>
-                    {renderView(listTest)}
+                    {listTest.length > 0 ? renderView(listTest[0].id, listTest[0].tests) : <></>}
                 </div>
             </div>
 

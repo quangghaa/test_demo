@@ -84,8 +84,7 @@ const CandidateCard = (props: any) => {
                 <div className='center'>
                     <span className='c-time'>
                         <CalendarOutlined className='mgr-10' />
-                        <span className='mgr-10'>{props.data.time}</span>
-                        <span>{props.data.date}</span>
+                        <span>{props.data.dates}</span>
                     </span>
                 </div>
             </div>
@@ -269,7 +268,10 @@ const Schedule = () => {
         let dateList = [] as string[];
         if (sw.schedule) {
             rs.forEach(i => {
-                let x = new Date(i.date);
+                // let x = new Date(i.date);
+                const arr = i.dates.split(' ');
+                console.log('TIME: ', arr);
+                let x = new Date(arr[0]);
                 if (x > today) {
                     fu.push(i);
                 }
@@ -289,7 +291,8 @@ const Schedule = () => {
             if (sw.calendar) {
                 // Find all date from now
                 rs.forEach((c) => {
-                    const t = c.date;
+                    const arr = c.dates.split(' ');
+                    const t = arr[0];
                     const date = new Date(t);
                     if (date >= today) {
                         if (!dateList.includes(t)) dateList.push(t);
@@ -302,7 +305,9 @@ const Schedule = () => {
                     console.log("A: ", date);
                     let canList = [] as ICandidate[];
                     rs.forEach((c) => {
-                        const cDate = new Date(c.date);
+                        const arr = c.dates.split(' ');
+
+                        const cDate = new Date(arr[0]);
                         console.log("B: ", cDate);
                         if (cDate.toISOString() === date.toISOString()) {
                             console.log("X");

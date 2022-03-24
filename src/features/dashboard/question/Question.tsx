@@ -2,11 +2,11 @@ import { CheckSquareFilled, CloseCircleFilled, CloseOutlined, ConsoleSqlOutlined
 import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row, TimePicker } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import useFetch from '../../../hook/useFetch';
 import { ICandidate, IQA, ITest, QA, QData } from '../../interface';
-import { addCandidate, deleteQa, selectTest, updateCandidates, updateCode, updateId, updateLevel, updateName, updateQas, updateType } from '../../reducer/testSlice';
+import { addCandidate, addQa, deleteQa, selectTest, updateCandidates, updateCode, updateId, updateLevel, updateName, updateQas, updateType } from '../../reducer/testSlice';
 import HeaderD from '../headerD/HeaderD';
 import './Question.css';
 
@@ -440,6 +440,17 @@ const Question = (props: any) => {
     const [testLevel, setTestLevel] = useState(0);
     const [doTime, setDoTime] = useState('');
 
+    const [qType, setQType] = useState(0);
+    const [qSubject, setQSubject] = useState(0);
+    const [qLevel, setQLevel] = useState(0);
+    const [qContent, setQContent] = useState('');
+    const [mchoice, setMchoice] = useState([
+        {
+            isTrue: 0,
+            answer: ''
+        }
+    ])
+
     // Modal Create + Edit
     const handleLogin = () => {
         console.log('Login');
@@ -465,23 +476,6 @@ const Question = (props: any) => {
         setVisibleTest(true);
     }
 
-    const handleOk = () => {
-        setModalText('The modal will be closed after two seconds');
-        setConfirmLoading(true);
-        setTimeout(() => {
-            setVisible(false);
-            setConfirmLoading(false);
-        }, 2000);
-
-        setIsEdit(false);
-    };
-
-    const handleCancel = () => {
-        console.log('Clicked cancel button');
-        setIsEdit(false);
-        setVisible(false);
-    };
-
     // ----------
     const questionTypes = [
         {
@@ -505,8 +499,11 @@ const Question = (props: any) => {
         },
     ];
 
+    const [quesType, setQuesType] = useState(1);
+
     function selectQuestionType(value: any) {
         console.log(value);
+        if(value !== undefined) setQuesType(parseInt(value[0]));
     }
 
     function selectedTestType(value: any) {
@@ -591,6 +588,177 @@ const Question = (props: any) => {
         setDoTime(timeString);
     }
 
+    const enterQType = (value: any) => {
+        setQType(value);
+    }
+
+    const enterQContent = (e: any) => {
+        setQContent(e.target.value);
+    }
+
+    const [a, setA] = useState('');
+    const [b, setB] = useState('');
+    const [c, setC] = useState('');
+    const [d, setD] = useState('');
+
+    const [realAns, setRealAns] = useState('');
+
+    const enterChoice = (e: any, i: any) => {
+        console.log("XXX: ", e.target.value, i);
+        switch(i) {
+            case 0: {
+                setA(e.target.value);
+                break;
+            }
+            case 1: {
+                setB(e.target.value);
+                break;
+            }
+            case 2: {
+                setC(e.target.value);
+                break;
+            }
+            case 3: {
+                setD(e.target.value);
+                break;
+            }
+        }
+    }
+
+    const enterRealAns = (e: any) => {
+        setRealAns(e.target.value);
+    }
+
+
+    const handleOk = () => {
+        const subject = testItem.length > 0 ? testItem[0].subject : 0;
+        const level = testItem.length > 0 ? testItem[0].level : 0;
+        const type = qType;
+        const content = qContent;
+        const ra = realAns;
+
+        let mc = [{
+            isTrue: 0,
+            answer: ''
+        }];
+        mc.pop();
+        if(a.length > 0) {
+            let t = {
+                isTrue: 0,
+                answer: ''
+            }
+            if(a === ra) {
+                t = {
+                    isTrue: 1,
+                    answer: a
+                }
+                
+            } else {
+                t = {
+                    isTrue: 0,
+                    answer: a
+                }
+            }
+            mc.push(t);
+        }
+        if(b.length > 0) {
+            let t = {
+                isTrue: 0,
+                answer: ''
+            }
+            if(b === ra) {
+                t = {
+                    isTrue: 1,
+                    answer: b
+                }
+                
+            } else {
+                t = {
+                    isTrue: 0,
+                    answer: b
+                }
+            }
+            mc.push(t);
+        }
+        if(c.length > 0) {
+            let t = {
+                isTrue: 0,
+                answer: ''
+            }
+            if(c === ra) {
+                t = {
+                    isTrue: 1,
+                    answer: c
+                }
+                
+            } else {
+                t = {
+                    isTrue: 0,
+                    answer: c
+                }
+            }
+            mc.push(t);
+        }
+        if(d.length > 0) {
+            let t = {
+                isTrue: 0,
+                answer: ''
+            }
+            if(d === ra) {
+                t = {
+                    isTrue: 1,
+                    answer: d
+                }
+                
+            } else {
+                t = {
+                    isTrue: 0,
+                    answer: d
+                }
+            }
+            mc.push(t);
+        }
+
+        const body = {
+            type: type,
+            subject: subject,
+            content: content,
+            level: level,
+            multipleChoiceQuestions: mc
+        }
+
+        dispatch(addQa(body));
+
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        }
+        const fetchData = async () => {
+            try {
+                const upUrl = testItem.length > 0 ? 'http://localhost:8080/staff/addquestiontotest/' + testItem[0].id : '';
+                const res = await fetch(upUrl, requestOptions);
+                const json = await res.json();
+
+                json.then(() => {
+                    console.log('OKE DONE');
+                    setVisible(false);
+                })
+            } catch (error: any) {
+                setVisible(false);
+            }
+        }
+        fetchData();
+
+        setIsEdit(false);
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setIsEdit(false);
+        setVisible(false);
+    };
+
     const range = [1, 2, 3, 4];
     const mapABC = (n: number) => {
         switch (n) {
@@ -601,7 +769,7 @@ const Question = (props: any) => {
             default: return 'Unkown';
         }
     }
-    //
+    // 
 
     return (
         <div className='pdt-50'>
@@ -731,26 +899,34 @@ const Question = (props: any) => {
                             ,
                         ]}
                     >
+                        <span>Mã bài test: {testItem.length > 0 ? testItem[0].codeTest : 'Not found'}</span>
                         <span className='row-between'>
+                            <span>Chủ đề: {testItem.length > 0 ? testItem[0].subject : 'Not found'}</span>
+                            <span>Mức độ: {testItem.length > 0 ? testItem[0].level : 'Not found'}</span>
+                        </span>
+                        <span className='row-between mgt-20'>
                             <span>Loại câu hỏi: </span>
-                            <Cascader options={questionTypes} onChange={selectQuestionType} placeholder="Please select" />
+                            <Cascader options={questionTypes} onChange={enterQType} defaultValue={'Trắc nghiệm' as any} />
                         </span>
                         <span className='col mgt-10'>
                             <span>Câu hỏi: </span>
-                            <TextArea rows={2} placeholder='Nhập câu hỏi' />
+                            <TextArea rows={2} placeholder='Nhập câu hỏi' onChange={enterQContent}/>
                         </span>
-
+                        {quesType === 1 ? 
                         <div className='mgt-20'>
                             <span>Danh sách câu trả lời: </span>
                             <ul className='enter-ans-list'>
-                                {range.map((r) => (
-                                    <li className='row-between mgt-10 row-center-y'>
+                                {range.map((r, i) => (
+                                    <li key={i} className='row-between mgt-10 row-center-y'>
                                         <span>{mapABC(r)}:</span>
-                                        <Input className='w-250' placeholder={'Nhập phương án ' + mapABC(r)}></Input>
+                                        <Input onChange={(e: any) => enterChoice(e, i)} className='w-250' placeholder={'Nhập phương án ' + mapABC(r)}></Input>
                                     </li>
                                 ))}
                             </ul>
                         </div>
+                        :
+                        <></>
+                        }
 
                         <span className='row-between mgt-20 row-center-y'>
                             <span>Đáp án: </span>

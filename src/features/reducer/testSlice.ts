@@ -78,7 +78,7 @@ export const testSlice = createSlice({
     }
 });
 
-export const { updateId, updateCode, updateType, updateName, updateLevel, addCandidate, deleteQa, updateQas, updateCandidates, clear } = testSlice.actions;
+export const { updateId, updateCode, updateType, updateName, updateLevel, addCandidate, addQa, deleteQa, updateQas, updateCandidates, clear } = testSlice.actions;
 
 export const selectTest = (state: RootState) => state.test;
 

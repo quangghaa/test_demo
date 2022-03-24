@@ -8,7 +8,7 @@ export interface ICandidate {
     level: string;
     reporter: string;
     time: string;
-    date: string;
+    dates: string;
 
     phone: string;
     email: string;
@@ -82,6 +82,20 @@ export interface QData {
 export interface IChosen {
     id: number;
     value: string;
+}
+
+export interface ChosenAns {
+    id: number;
+    idAnswer: number;
+    type: number;
+    answer: string;
+    idCandidate: number;
+    idTest: number;
+}
+
+export interface CacheAns {
+    key: number;
+    value: ChosenAns;
 }
 
 

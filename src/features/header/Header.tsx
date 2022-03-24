@@ -49,6 +49,23 @@ const Header = (props: any) => {
 
     const handleSubmit = () => {
         console.log('...');
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        }
+        const fetchData = async () => {
+            try {
+                const doUrl = 'http://localhost:8080/testpage/submit';
+                const res = await fetch(doUrl, requestOptions);
+                const json = await res.json();
+                console.log("Nop bai OKE. ", json);
+            } catch (error: any) {
+                console.log(error);
+            }
+        }
+        fetchData();
+
         props.finish();
     }
 
