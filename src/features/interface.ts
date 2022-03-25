@@ -94,7 +94,7 @@ export interface ChosenAns {
 }
 
 export interface CacheAns {
-    key: number;
+    key: string;
     value: ChosenAns;
 }
 

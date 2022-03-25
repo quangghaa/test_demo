@@ -21,10 +21,22 @@ const Question = (props: any) => {
         console.log("----", data);
 
         if(Array.isArray(cacheData) && cacheData.length > 0) {
-            cacheData.map((cache) => {  
-                if(cache.key === props.data.id) {
-                    setAnswer(cache.value.idAnswer);
+            cacheData.map((cache) => {
+                const arr = cache.key.split(':');
+                if(Array.isArray(arr) && arr.length > 0) {
+                    console.log("Split OKE: ", arr);
+                    console.log("----", arr[0], props.data.id, props.id);
+                    if(arr[0] == props.data.id) {
+                        console.log("SPLIT OKE and EQUAL");
+                        setAnswer(cache.value.idAnswer);
+                    }
+
+                } else {
+                    console.log("SPLIT ERROR");
                 }
+                // if(cache.key === props.data.id) {
+                //     setAnswer(cache.value.idAnswer);
+                // }
             })
         } else {
             console.log("Not array cache data");
@@ -38,9 +50,9 @@ const Question = (props: any) => {
 
         let body = {
             idAnswer: parseInt(e.target.value),
-            type: parseInt(props.data.type),
-            answer: '1',
-            idCandidate: parseInt(props.canId),
+            // type: parseInt(props.data.type),
+            // answer: '1',
+            // idCandidate: parseInt(props.canId),
             idTest: parseInt(props.testId)
 
         }
@@ -53,10 +65,11 @@ const Question = (props: any) => {
         }
         const fetchData = async () => {
             try {
-                const doUrl = 'http://localhost:8080/testpage/doingtest';
+                const doUrl = 'http://localhost:8080/testpage/doingtest/' + props.id;
+                console.log("Check the URL: ", doUrl);
                 const res = await fetch(doUrl, requestOptions);
                 const json = await res.json();
-                console.log("OKE JSON, ", json);
+                // console.log("OKE JSON, ", json);
                 // json.then(() => {
                 //     console.log("OKE JSON, ", json);
                 // })
@@ -111,7 +124,7 @@ const toArray = (obj: any) => {
         // let person = obj[objInd];
         
         let ob = {
-            key: parseInt(objInd),
+            key: objInd,
             value: obj[objInd]
         }
         // do something with person
@@ -124,8 +137,6 @@ const EnglishTest = (props: any) => {
 
     // Fetch cache Redis
     const [cache, setCache] = useState([] as CacheAns[]);
-
-    
     useEffect(() => {
         var arrReturn = [] as CacheAns[];
 
