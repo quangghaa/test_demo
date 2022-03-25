@@ -13,9 +13,14 @@
 }
 
 .img-box {
-    width: 400px;
-    height: 100px;
+    width: 380px;
+    height: 180px;
     background-color: antiquewhite;
+}
+
+.img-box img {
+    width: inherit;
+    height: inherit;
 }
 
 .hint {

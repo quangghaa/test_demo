@@ -3,6 +3,9 @@
 }
 
 .nav {
+    position: fixed;
+    z-index: 1;
+
     padding: unset;
     list-style-type: none;
     height: 100%;

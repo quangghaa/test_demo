@@ -109,9 +109,9 @@ const Header = (props: any) => {
                     ,
                 ]}
             >
-                <Input size="large" placeholder="large size" />
+                <Input size="large" placeholder="Enter username" />
                 <Input.Password size='large'
-                    placeholder="input password" className='mgt-20'
+                    placeholder="Enter password" className='mgt-20'
                 />
             </Modal>
         </>

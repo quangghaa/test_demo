@@ -78,7 +78,7 @@ const Homepage = (props: any) => {
                 <span className='big-text'>Chào mừng bạn đến với</span>
                 <br></br>
                 <div className='img-box'>
-                    IMAGE
+                    <img src="./images/logo.png" alt="NO IMAGE FOUND" />
                 </div>
                 <span className='hint'>Nhập code của bạn để làm bài test</span>
                 <br></br>

@@ -98,9 +98,17 @@ const Question = (props: any) => {
         }
     }
 
+    const renderTitle = (type: any) => {
+        switch(type) {
+            case 'ENG': return <span className='qs-num'>Question {props.index}</span>
+            case 'GEN': return <span className='qs-num'>Câu {props.index}</span>
+            default: <span className='qs-num'> :( {props.index}</span>
+        }
+    }
+
     return (
         <li className='list-item mgt-20' key={props.data.id}>
-            <span className='qs-num'>Cau {props.index}</span>
+            {renderTitle(props.type)}
             <span className='qs'>{props.data.content}</span>
             <br></br>
             {
@@ -433,7 +441,7 @@ const Test = (props: any) => {
     return (
         <div>
             <Header start={props.start} finish={props.finish} />
-            <div className='fullscreen row pdt-50'>
+            <div className='full-height row'>
                 <ul className='nav'>
                     <li className='nav-item' onClick={toEng}><span className='vertical'>Tiếng anh</span></li>
                     <li className='nav-item' onClick={toGen}><span className='vertical'>Kiến thức chung</span></li>
