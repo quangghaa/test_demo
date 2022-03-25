@@ -637,6 +637,8 @@ const Question = (props: any) => {
         const content = qContent;
         const ra = realAns;
 
+        console.log("Real ans: ", ra);
+
         let mc = [{
             isTrue: 0,
             answer: ''
@@ -718,6 +720,8 @@ const Question = (props: any) => {
             }
             mc.push(t);
         }
+
+        console.log('CHeck here: ', mc);
 
         const body = {
             type: type,
@@ -830,21 +834,21 @@ const Question = (props: any) => {
                         >
                             <span className='row-between'>
                                 <span>Loại bài test: </span>
-                                <Cascader options={testTypes} onChange={selectedTestType} placeholder="Please select" />
+                                <Cascader options={testTypes} value={testSubject as any} onChange={selectedTestType} placeholder="Please select" />
                             </span>
                             <span className='col mgt-10'>
                                 <span>Mã bài test: </span>
-                                <Input placeholder='Nhập mã bài test' className='' onChange={enterCode}></Input>
+                                <Input placeholder='Nhập mã bài test' value={testCode} className='' onChange={enterCode}></Input>
                             </span>
 
                             <span className='col mgt-10'>
                                 <span>Tên bài test: </span>
-                                <Input placeholder='Nhập tên bài test' className=''onChange={enterName}></Input>
+                                <Input placeholder='Nhập tên bài test' value={testName} className=''onChange={enterName}></Input>
                             </span>
 
                             <span className='col mgt-10'>
                                 <span>Cấp độ bài test: </span>
-                                <Input placeholder='Nhập tên bài test' className=''onChange={enterLevel}></Input>
+                                <Input placeholder='Nhập tên bài test' value={testLevel} className=''onChange={enterLevel}></Input>
                             </span>
 
                             <span className='col mgt-10'>
@@ -930,7 +934,7 @@ const Question = (props: any) => {
 
                         <span className='row-between mgt-20 row-center-y'>
                             <span>Đáp án: </span>
-                            <Input placeholder='Nhập đáp án' className='w-250'></Input>
+                            <Input onChange={enterRealAns} placeholder='Nhập đáp án' className='w-250'></Input>
                         </span>
 
                     </Modal>

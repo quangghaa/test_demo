@@ -87,7 +87,7 @@ const Question = (props: any) => {
 
     return (
         <li className='list-item mgt-20' key={props.data.id}>
-            <span className='qs-num'>Cau {props.data.id}</span>
+            <span className='qs-num'>Cau {props.index}</span>
             <span className='qs'>{props.data.content}</span>
             <br></br>
             {
@@ -173,8 +173,8 @@ const EnglishTest = (props: any) => {
     return (
         <ul className='list'>
             {Array.isArray(props.data.content) && props.data.content.length > 0 ?
-                props.data.content.map((qa: IQA) => (
-                    <Question testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} cache={cache} type={props.type} />
+                props.data.content.map((qa: IQA, i: any) => (
+                    <Question index={i+1} testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} cache={cache} type={props.type} />
                 )) : <></>
             }
         </ul>
@@ -235,8 +235,8 @@ const GeneralTest = (props: any) => {
     return (
         <ul className='list'>
             {Array.isArray(props.data.content) && props.data.content.length > 0 ?
-                props.data.content.map((qa: IQA) => (
-                    <Question testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} cache={cache} type={props.type} />
+                props.data.content.map((qa: IQA, i: any) => (
+                    <Question index={i+1} testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} cache={cache} type={props.type} />
                 )) : <></>
             }
         </ul>
