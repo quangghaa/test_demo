@@ -71,8 +71,7 @@ const Question = (props: any) => {
     }
     const [testData, setTestData] = useState([] as ITest[]);
     const [reload, setReload] = useState(false);
-    // const url = 'https://demo.uiza.vn/tests';
-    const url = 'http://localhost:8080/staff/getalltest'
+    const url = `${process.env.REACT_APP_BASE_URL}staff/getalltest`
     const { loading, error, data } = useFetch(url, 'GET', reload);
     useEffect(() => {
         if (error == null && data != null) {
@@ -317,7 +316,7 @@ const Question = (props: any) => {
         }
         const fetchData = async () => {
             try {
-                const rmUrl = 'http://localhost:8080/staff/removequestion' + '/' + qId + '/' + reduxTest.id;
+                const rmUrl = `${process.env.REACT_APP_BASE_URL}staff/removequestion` + '/' + qId + '/' + reduxTest.id;
                 const res = await fetch(rmUrl, requestOptions);
                 const json = await res.json();
                 if(json) {
@@ -549,7 +548,7 @@ const Question = (props: any) => {
                 }
             )
         }
-        const addUrl = 'http://localhost:8080/staff/addtest';
+        const addUrl = `${process.env.REACT_APP_BASE_URL}staff/addtest`;
 
         const fetchData = async () => {
             try {
@@ -740,7 +739,7 @@ const Question = (props: any) => {
         }
         const fetchData = async () => {
             try {
-                const upUrl = testItem.length > 0 ? 'http://localhost:8080/staff/addquestiontotest/' + testItem[0].id : '';
+                const upUrl = testItem.length > 0 ? `${process.env.REACT_APP_BASE_URL}staff/addquestiontotest/` + testItem[0].id : '';
                 const res = await fetch(upUrl, requestOptions);
                 const json = await res.json();
 

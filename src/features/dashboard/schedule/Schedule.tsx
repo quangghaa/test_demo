@@ -329,7 +329,7 @@ const Schedule = () => {
     }
 
     // const url = 'https://demo.uiza.vn/candidates';
-    const url = 'http://localhost:8080/staff/listcandidate';
+    const url = `${process.env.REACT_APP_BASE_URL}staff/listcandidate`;
     const { loading, error, data } = useFetch(url, 'GET');
     console.log(data);
     const [candidateList, setCandidateList] = useState([] as ICandidate[]);

@@ -65,7 +65,7 @@ const Question = (props: any) => {
         }
         const fetchData = async () => {
             try {
-                const doUrl = 'http://localhost:8080/testpage/doingtest/' + props.id;
+                const doUrl = `${process.env.REACT_APP_BASE_URL}testpage/doingtest/` + props.id;
                 console.log("Check the URL: ", doUrl);
                 const res = await fetch(doUrl, requestOptions);
                 const json = await res.json();
@@ -155,7 +155,7 @@ const EnglishTest = (props: any) => {
         }
         const fetchData = async () => {
             try {
-                const doUrl = 'http://localhost:8080/testpage/getcacheans';
+                const doUrl = `${process.env.REACT_APP_SECRET_NAME}testpage/getcacheans`;
                 const res = await fetch(doUrl, requestOptions);
                 const json = await res.json();
                 
@@ -217,7 +217,7 @@ const GeneralTest = (props: any) => {
         }
         const fetchData = async () => {
             try {
-                const doUrl = 'http://localhost:8080/testpage/getcacheans';
+                const doUrl = `${process.env.REACT_APP_SECRET_NAME}testpage/getcacheans`;
                 const res = await fetch(doUrl, requestOptions);
                 const json = await res.json();
                 

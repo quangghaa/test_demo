@@ -56,7 +56,7 @@ const Header = (props: any) => {
         }
         const fetchData = async () => {
             try {
-                const doUrl = 'http://localhost:8080/testpage/submit';
+                const doUrl = `${process.env.REACT_APP_BASE_URL}testpage/submit`;
                 const res = await fetch(doUrl, requestOptions);
                 const json = await res.json();
                 console.log("Nop bai OKE. ", json);

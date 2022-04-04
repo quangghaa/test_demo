@@ -38,7 +38,7 @@ const Homepage = (props: any) => {
     const [joinUrl, setJoinUrl] = useState('');
 
     useEffect(() => {
-        const url = canId.length > 0 ? 'http://localhost:8080/jointest?code=' + canId : '';
+        const url = canId.length > 0 ? `${process.env.REACT_APP_BASE_URL}jointest?code=` + canId : '';
         setJoinUrl(url);
     }, [canId])
 
