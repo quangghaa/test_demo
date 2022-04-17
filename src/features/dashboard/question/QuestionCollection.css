@@ -1,0 +1,248 @@
+.lv-list {
+    list-style-type: none;
+    margin: unset;
+    padding: unset;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.lv-list li {
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    border: 0.5px solid rgb(202, 191, 191);
+    border-radius: 3px;
+}
+
+.lv-list li:hover {
+    cursor: pointer;
+    color: white;
+    background-color: black;
+}
+
+.btn-delete {
+    background-color: #f0f2f5;
+    color: black;
+    font-weight: 500;
+    padding: 0 20px;
+    border-radius: 20px;
+}
+
+.btn-search {
+    background-color: black;
+    color: white;
+    padding: 0px 15px;
+    margin-right: 20px;
+    border-radius: 20px;
+}
+
+.btn-add {
+    background-color: white;
+    color: black;
+    padding: 0px 15px;
+    border-radius: 20px;
+}
+
+.font {
+    font-size: 24px;
+    font-weight: 500;
+    margin-right: 20px;
+}
+
+.special {
+    border: 0.5px solid rgb(199, 185, 185);
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f0f2f5;
+}
+
+.special > input {
+    height: 32px;
+}
+
+.sticky-sec {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 50px;
+    z-index: 1;
+    background-color: white;
+}
+
+.btn-cre {
+    border: 0.5px solid rgb(180, 173, 173);
+    padding: 0 15px;
+    border-radius: 20px;
+}
+
+.box {
+    width: 300px;
+    min-width: 300px;
+    height: 32px;
+    border: 0.5px solid rgb(173, 168, 168);
+    border-radius: 5px;
+}
+
+.big-time-ic {
+    font-size: 24px;
+}
+
+.sm-box {
+    width: 64px;
+    min-width: 64px;
+    height: 24px;
+    border: 0.5px solid rgb(182, 177, 177);
+    border-radius: 3px;
+}
+
+.lar-box {
+    width: 300px;
+    min-width: 300px;
+    height: 64px;
+    border: 0.5px solid rgb(173, 168, 168);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.can-list {
+    list-style-type: none;
+    margin: unset;
+    padding: unset;
+    display: flex;
+}
+
+.can-list li {
+    margin-right: 10px;
+    padding: 0px 5px;
+    border: 0.5px solid rgb(156, 150, 150);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #f0f2f5;
+}
+
+.btn-save {
+    border-radius: 20px;
+    border: 0.5px solid black;
+    padding: 0 25px;
+    color: white;
+    background-color: black;
+}
+
+.btn-save:hover {
+    cursor: pointer;
+    color: black;
+    background-color: white;
+}
+
+.rs-test-list {
+    list-style-type: none;
+    margin: 20px 0 0 0;
+    padding: unset;
+
+}
+
+.rs-test-list li {
+    padding: 10px 20px;
+    border: 0.5px solid rgb(194, 164, 164);
+    border-radius: 5px;
+    background-color: #f0f2f5;
+
+}
+
+.rs-test-list li:hover {
+    cursor: pointer;
+    background-color: #d9dcdf;
+}
+
+.lv-cir {
+    border: 0.5px solid rgb(184, 174, 174) ;
+    background-color: rgb(233, 233, 139);
+    border-radius: 20px;
+    padding: 0 3px;
+    margin-right: 5px;
+}
+
+.qs-list {
+    list-style-type: none;
+    margin: unset;
+    padding: unset;
+
+}
+
+.qs-list li {
+    /* width: 300px; */
+  /* display: flex; */
+  padding-left: 20px;
+  position: relative;
+  margin-top: 10px;
+}
+
+.demo-test-box {
+    border: 0.5px solid rgb(170, 161, 161);
+    border-radius: 5px;
+    background-color: #f0f2f5;
+    position: relative;
+}
+
+.demo-test-box:hover {
+    cursor: pointer;
+}
+
+.abs {
+    position: absolute;
+    top: 5px;
+    left: 0;
+}
+
+.hide-long-text {
+white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ic-close {
+    position: absolute;
+    top: -12px;
+    right: -8px;
+}
+
+.ans-list {
+    list-style-type: none;
+    margin: unset;
+    padding: unset;
+
+}
+
+.sm-ic {
+    font-size: 10px;
+}
+
+.demo-qs-list {
+    list-style-type: none;
+    margin: unset;
+    padding: unset;
+    margin-top: 20px;
+}
+
+.qs-ans-list {
+    list-style-type: none;
+    margin: unset;
+    padding: unset;
+
+}
+
+.qs-ans-list li {
+    margin-left: 15px;
+}
+
+.enter-ans-list {
+    list-style-type: none;
+    margin: unset;
+    padding: unset;
+    
+}
+
+.enter-ans-list li {
+    
+}
+
