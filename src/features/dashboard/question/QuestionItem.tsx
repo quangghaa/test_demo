@@ -2,7 +2,6 @@ import { PlusOutlined, CloseCircleFilled, CheckSquareFilled, DownOutlined, UpOut
 import { Checkbox } from "antd";
 import { useState, useEffect } from "react";
 import { IQA, ITest } from "../../interface";
-import { deleteQa } from "../../reducer/testSlice";
 
 const QuestionItem = (props: any) => {
     const [testItem, setTestItem] = useState([] as ITest[]);
