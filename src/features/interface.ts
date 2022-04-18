@@ -17,22 +17,21 @@ export interface ICandidate {
     knowledgeMark: number;
 }
 
+export interface ICandidateBody {
+    name: string;
+    department: string;
+    position: string;
+    level: string;
+    date: string;
+    time: string;
+    phone: string;
+    email: string;
+}
+
 export interface ICalendar {
     date: string;
     cans: ICandidate[];
 }
-
-// export interface IQA {
-//     id: number;
-//     code: string;
-//     type: string;
-//     question: string;
-//     A: string;
-//     B: string;
-//     C: string;
-//     D: string;
-//     answer: string;
-// }
 
 export interface IChoice {
     id: number;
@@ -52,18 +51,19 @@ export interface IQA {
 
 export interface ITest {
     id: number;
-    // code: string;
     codeTest: string;
-    // type: string;
-    subject: number;
+    subject: string;
     name: string;
-    level: number;
+    level: string;
     candidates: ICandidate[];
-    // qas: IQA[];
     questions: IQA[];
 }
 
-
+export interface ITestBody {
+    name: string;
+    type: string;
+    level: string;
+}
 
 export interface QA {
     question: string;

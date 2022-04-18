@@ -4,12 +4,10 @@ import { ICandidate, IQA } from "../interface";
 
 export interface TestState {
     id: number;
-    // code: string;
     codeTest: string;
-    // type: string;
-    subject: number;
+    subject: string;
     name: string;
-    level: number;
+    level: string;
     candidates: ICandidate[];
     // qas: IQA[];
     questions: IQA[];
@@ -20,14 +18,11 @@ export interface TestState {
 const initialState: TestState = {
     id: 0,
     codeTest: '',
-    subject: 0,
+    subject: '',
     name: '',
-    level: 0,
+    level: '',
     candidates: [] as ICandidate[],
-    // qas: [] as IQA[],
     questions: [] as IQA[],
-
-    // chosen: [] as Chosen[],
 }
 
 export const testSlice = createSlice({
@@ -49,9 +44,6 @@ export const testSlice = createSlice({
         updateLevel: (state, action) => {
             state.level = action.payload;
         },
-        addCandidate: (state, action) => {
-            state.candidates.push(action.payload);    
-        },
         addQa: (state, action) => {
             state.questions = [...[state.questions], action.payload];
         },
@@ -63,15 +55,22 @@ export const testSlice = createSlice({
         updateQas: (state, action) => {
             state.questions = action.payload;
         },
+
+        addCandidate: (state, action) => {
+            state.candidates.push(action.payload);    
+        },
         updateCandidates: (state, action) => {
             state.candidates = action.payload;
+        },
+        deleteCandidate: (state, action) => {
+
         },
         clear: (state) => {
             state.id = 0;
             state.codeTest = '';
-            state.subject = 0;
+            state.subject = '';
             state.name = '';
-            state.level = 0;
+            state.level = '';
             state.candidates = [] as ICandidate[];
             state.questions = [] as IQA[];
         }

@@ -167,3 +167,8 @@
 .option-list li {
     margin-top: 10px;
 }
+
+.remove-cand-ic:hover{
+    color: rgb(173, 159, 159);
+    cursor: pointer;
+}

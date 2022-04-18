@@ -1,10 +1,11 @@
 import { CheckSquareFilled, CloseCircleFilled, CloseOutlined, ConsoleSqlOutlined, DownOutlined, FieldTimeOutlined, FilterFilled, PlusOutlined, SearchOutlined, UpOutlined } from '@ant-design/icons';
-import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row, TimePicker } from 'antd';
+import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row, Spin, TimePicker } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import useFetch from '../../../hook/useFetch';
+import { getList } from '../../../services/api';
 import { ICandidate, IQA, ITest, QA, QData } from '../../interface';
 import { addCandidate, addQa, deleteQa, selectTest, updateCandidates, updateCode, updateId, updateLevel, updateName, updateQas, updateType } from '../../reducer/testSlice';
 import HeaderD from '../headerD/HeaderD';
@@ -14,35 +15,46 @@ import QuestionItem from './QuestionItem';
 
 const Question = (props: any) => {
 
+    const lev = [
+        {
+            value: '1',
+            label: 'A1'
+        },
+        {
+            value: '2',
+            label: 'A2'
+        },
+        {
+            value: '3',
+            label: 'B1'
+        },
+        {
+            value: '4',
+            label: 'B2'
+        },
+        {
+            value: '5',
+            label: 'C1'
+        },
+        {
+            value: '6',
+            label: 'C2'
+        }
+    ];
+
+    const questionLevModal = lev;
+
+    const quesType = 1;
+
+    const [loading, setLoading] = useState(false);
+
     const [reload, setReload] = useState(false);
 
+    const [questionList, setQuestionList] = useState([] as IQA[]);
 
     const [testItem, setTestItem] = useState([] as ITest[]);
 
-    const dispatch = useAppDispatch();
-
     const reduxTest = useAppSelector(selectTest);
-
-    const handleRemoveQuestion = (qId: number) => {
-        const requestOptions = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' }
-        }
-        const fetchData = async () => {
-            try {
-                const rmUrl = `${process.env.REACT_APP_BASE_URL}staff/removequestion` + '/' + qId + '/' + reduxTest.id;
-                const res = await fetch(rmUrl, requestOptions);
-                const json = await res.json();
-                if (json) {
-                    reloadTest();
-                }
-            } catch (error: any) {
-                // setErr(error);
-            }
-        }
-        fetchData();
-    }
-
 
     const [qType, setQType] = useState(0);
     const [qContent, setQContent] = useState('');
@@ -52,16 +64,27 @@ const Question = (props: any) => {
 
     const [isEdit, setIsEdit] = useState(false);
 
-    const setmode = () => {
-        setIsEdit(true);
-    }
+    const [a, setA] = useState('');
+    const [b, setB] = useState('');
+    const [c, setC] = useState('');
+    const [d, setD] = useState('');
 
-    const showModal = () => {
-        setVisible(true);
-    };
+    const [realAns, setRealAns] = useState('');
 
-    // ----------
+    const range = [1, 2, 3, 4];
+
     const questionTypes = [
+        {
+            value: '1',
+            label: 'Tiếng anh'
+        },
+        {
+            value: '2',
+            label: 'Kiến thức chung'
+        },
+    ];
+
+    const questionKinds = [
         {
             value: '1',
             label: 'Trắc nghiệm'
@@ -72,26 +95,49 @@ const Question = (props: any) => {
         },
     ];
 
-    const [quesType, setQuesType] = useState(1);
+
+    const onSelectLev = async (value: any) => {
+
+        setLoading(true);
+        const res = await getList(`staff/getquestionbylevel/${value}`);
+        if(res.status === 200 && res.data != null) {
+            setQuestionList(res.data);
+        }
+        
+        setLoading(false);
+        // console.log("RES: ", res);
+    }
+    console.log("QLIST: ", questionList);
+
+    const onSelectType = (value: any) => {
+
+    }
+
+    const onSelectKind = (value: any) => {
+
+    }
+
+    const onSelectLevModal = (value: any) => {
+
+    }
+
+    const setmode = () => {
+        setIsEdit(true);
+    }
+
+    const showModal = () => {
+        setVisible(true);
+    };
+
+    // ----------
 
     const reloadTest = () => {
         setReload(!reload);
     }
 
-    const enterQType = (value: any) => {
-        setQType(value);
-    }
-
     const enterQContent = (e: any) => {
         setQContent(e.target.value);
     }
-
-    const [a, setA] = useState('');
-    const [b, setB] = useState('');
-    const [c, setC] = useState('');
-    const [d, setD] = useState('');
-
-    const [realAns, setRealAns] = useState('');
 
     const enterChoice = (e: any, i: any) => {
         switch (i) {
@@ -118,12 +164,7 @@ const Question = (props: any) => {
         setRealAns(e.target.value);
     }
 
-
     const handleOk = () => {
-        const subject = testItem.length > 0 ? testItem[0].subject : 0;
-        const level = testItem.length > 0 ? testItem[0].level : 0;
-        const type = qType;
-        const content = qContent;
         const ra = realAns;
 
         console.log("Real ans: ", ra);
@@ -210,40 +251,6 @@ const Question = (props: any) => {
             mc.push(t);
         }
 
-        console.log('CHeck here: ', mc);
-
-        const body = {
-            type: type,
-            subject: subject,
-            content: content,
-            level: level,
-            multipleChoiceQuestions: mc
-        }
-
-        dispatch(addQa(body));
-
-        const requestOptions = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        }
-        const fetchData = async () => {
-            try {
-                const upUrl = testItem.length > 0 ? `${process.env.REACT_APP_BASE_URL}staff/addquestiontotest/` + testItem[0].id : '';
-                const res = await fetch(upUrl, requestOptions);
-                const json = await res.json();
-
-                json.then(() => {
-                    console.log('OKE DONE');
-                    setVisible(false);
-                })
-            } catch (error: any) {
-                setVisible(false);
-            }
-        }
-        fetchData();
-
-        setIsEdit(false);
     };
 
     const handleCancel = () => {
@@ -252,7 +259,6 @@ const Question = (props: any) => {
         setVisible(false);
     };
 
-    const range = [1, 2, 3, 4];
     const mapABC = (n: number) => {
         switch (n) {
             case 1: return 'A';
@@ -269,8 +275,13 @@ const Question = (props: any) => {
 
             <div className='sticky-sec'>
                 <span className='font'>Câu hỏi</span>
+                <div>
+                    <Cascader size="small" options={lev} onChange={onSelectLev} placeholder='Which level?' />
+                    {' '}
+                    {loading ? <Spin /> : <></>}
+                </div>
                 <div className='center'>
-                    <Button className='btn-cre' onClick={showModal}>Tạo câu hỏi</Button>
+                    <Button className='btn-cre mgt-10' onClick={showModal}>Tạo câu hỏi</Button>
                 </div>
             </div>
 
@@ -295,14 +306,17 @@ const Question = (props: any) => {
                     ,
                 ]}
             >
-                <span>Mã bài test: {testItem.length > 0 ? testItem[0].codeTest : 'Not found'}</span>
                 <span className='row-between'>
-                    <span>Chủ đề: {testItem.length > 0 ? testItem[0].subject : 'Not found'}</span>
-                    <span>Mức độ: {testItem.length > 0 ? testItem[0].level : 'Not found'}</span>
-                </span>
-                <span className='row-between mgt-20'>
                     <span>Loại câu hỏi: </span>
-                    <Cascader options={questionTypes} onChange={enterQType} defaultValue={'Trắc nghiệm' as any} />
+                    <Cascader options={questionTypes} onChange={onSelectType} defaultValue={'Tiếng anh' as any} />
+                </span>
+                <span className='row-between mgt-10'>
+                    <span>Dạng câu hỏi: </span>
+                    <Cascader options={questionKinds} onChange={onSelectKind} defaultValue={'Trắc nghiệm' as any} />
+                </span>
+                <span className='row-between mgt-10'>
+                    <span>Mức độ: </span>
+                    <Cascader options={questionLevModal} onChange={onSelectLevModal} defaultValue={'A1' as any} />
                 </span>
                 <span className='col mgt-10'>
                     <span>Câu hỏi: </span>
@@ -332,10 +346,17 @@ const Question = (props: any) => {
             </Modal>
 
             <ul className='qs-list mgt-20'>
-                {(testItem.length > 0) ? testItem[0].questions.map((qa: any, i) => (
+                {/* {(testItem.length > 0) ? testItem[0].questions.map((qa: any, i) => (
                     <QuestionItem data={qa} index={i} edit={showModal} setmode={setmode} func={handleRemoveQuestion} />
-                )) : <></>}
-
+                )) : <></>} */}
+                {questionList.length > 0 ?
+                    
+                    questionList.map((q: any, i: any) => {
+                        return <QuestionItem data={q} index={i} />
+                    })
+                    :
+                    <></>
+                }
             </ul>
 
         </>

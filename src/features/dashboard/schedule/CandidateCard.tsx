@@ -1,4 +1,5 @@
 import { CloseOutlined, CalendarOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
@@ -9,6 +10,20 @@ import './Schedule.css';
 const CandidateCard = (props: any) => {
 
     const [showoptions, setShowoptions] = useState(1);
+
+    const [visibleConfirm, setVisibleConfirm] = useState(false)
+
+    const showConfirm = () => {
+        setVisibleConfirm(true)
+    }
+
+    const onYes = () => {
+        setVisibleConfirm(false)
+    }
+
+    const onNo = () => {
+        setVisibleConfirm(false)
+    }
 
     const isOdd = (n: number) => {
         if (n % 2 !== 0) return true;
@@ -49,9 +64,19 @@ const CandidateCard = (props: any) => {
                     <span>{props.data.name}</span>
                     <span>
                         <span className='mgr-10'>Edit</span>
-                        <span><CloseOutlined /></span>
+                        <span className="remove-cand-ic" onClick={showConfirm}><CloseOutlined /></span>
                     </span>
                 </div>
+                <Modal
+                    title="Xác nhận"
+                    visible={visibleConfirm}
+                    onOk={onYes}
+                    onCancel={onNo}
+                    okText="Có"
+                    cancelText="Không"
+                >
+                    <p>Xóa ứng viên?</p>
+                </Modal>
 
                 <span>
                     <span className='bold'>Code: </span>

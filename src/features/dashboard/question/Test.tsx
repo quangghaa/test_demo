@@ -1,7 +1,9 @@
-import { CloseOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
-import { Input, Cascader, Button, Modal, TimePicker } from "antd";
+import { CloseOutlined, SearchOutlined, PlusOutlined, CloseCircleFilled } from "@ant-design/icons";
+import { Input, Cascader, Button, Modal, TimePicker, Spin } from "antd";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getList } from "../../../services/api";
+import { ITest, ITestBody } from "../../interface";
 
 const Test = (props: any) => {
     const test = [
@@ -43,20 +45,48 @@ const Test = (props: any) => {
 
     const [visibleTest, setVisibleTest] = useState(false);
 
+    const [searchBody, setSearchBody] = useState({
+        name: '',
+        type: '',
+        level: ''
+    } as ITestBody)
+
+    const [testList, setTestList] = useState([] as ITest[]);
+
+    const [loading, setLoading] = useState(false);
+
+    const [reload, setReload] = useState(0);
+
+    useEffect(() => {
+        const getAllTest = async () => {
+            setLoading(true);
+
+            const res = await getList('staff/getalltest')
+
+            if (res && res.data != null) {
+                setTestList(res.data);
+            }
+
+            setLoading(false);
+        }
+
+        getAllTest();
+    }, [reload])
+
     const onSelectTest = (value: any) => {
 
     }
 
     const onSelectLev = (value: any) => {
-
+        setSearchBody({ ...searchBody, level: value });
     }
 
     const enterTestname = (e: any) => {
-
+        setSearchBody({ ...searchBody, name: e.target.value });
     }
 
     const onSelectTestType = (value: any) => {
-        
+        setSearchBody({ ...searchBody, type: value });
     }
 
     const enterCode = (e: any) => {
@@ -64,15 +94,15 @@ const Test = (props: any) => {
     }
 
     const enterName = (e: any) => {
-        
+
     }
 
     const enterLevel = (e: any) => {
-        
+
     }
 
     const enterTime = (e: any) => {
-        
+
     }
 
     const onSearch = () => {
@@ -84,11 +114,20 @@ const Test = (props: any) => {
     }
 
     const onSaveTest = () => {
-
+        setVisibleTest(false)
     }
 
     const onCancelTest = () => {
+        setVisibleTest(false)
+    }
 
+    const onTestClick = (code: any) => {
+        console.log("Click : ", code);
+    }
+
+    const onRemoveTest = (e: any, code: any) => {
+        e.stopPropagation();
+        console.log("DELETE", code);
     }
 
     const handleRemoveLevelCLick = () => {
@@ -103,8 +142,6 @@ const Test = (props: any) => {
 
         // setLevel(0);
     }
-
-
 
     return (
         <>
@@ -121,9 +158,8 @@ const Test = (props: any) => {
                     <Cascader size="small" options={test} onChange={onSelectTest} placeholder='Which type?' />
 
                     <span className='mgt-10'>Level</span>
-                    <div className='row-between'>
-
-                        <Cascader size="small" options={lev} onChange={onSelectLev} placeholder='Which type?' />
+                    <div className='row-between row-center-y'>
+                        <Cascader size="small" options={lev} onChange={onSelectLev} placeholder='Which level?' />
                         <Button className='btn-delete' onClick={handleRemoveLevelCLick} icon={<CloseOutlined />}>
                             Xóa lọc
                         </Button>
@@ -186,8 +222,29 @@ const Test = (props: any) => {
 
                 </Modal>
             </div>
-            <ul className='rs-test-list'>
-                {/* {!isSearching ? testData.map((t, i) => (
+
+            {loading ?
+                <div className="center mgt-10">
+                    <Spin size="large" />
+                </div> : <></>}
+
+            {testList.length > 0 ?
+                <ul className='rs-test-list'>
+                    {testList.map((t: any, i: any) => {
+                        return (
+                            <li key={i} onClick={() => onTestClick(t.codeTest)}>
+                                <span className='ic-close' onClick={(e: any) => onRemoveTest(e, t.codeTest)}><CloseCircleFilled /></span>
+                                {/* <span className='lv-cir'>{t.level}</span> */}
+                                <span>{t.name}</span>
+                            </li>
+                        )
+                    })}
+                </ul>
+                :
+                <></>    
+            }
+            {/* <ul className='rs-test-list'>
+                {!isSearching ? testData.map((t, i) => (
                     <li key={i} onClick={() => handleTestClick(t.codeTest)}>
 
                         <span className='lv-cir'>{t.level}</span>
@@ -200,8 +257,10 @@ const Test = (props: any) => {
                         <span>{t.name}</span>
                     </li>
                 ))
-                } */}
-            </ul>
+                }
+
+
+            </ul> */}
 
         </>
     )

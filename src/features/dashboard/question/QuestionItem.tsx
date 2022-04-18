@@ -66,6 +66,16 @@ const QuestionItem = (props: any) => {
         }
     }
 
+    const mapABC = (i: any) => {
+        switch(i) {
+            case 0: return 'A';
+            case 1: return 'B';
+            case 2: return 'C';
+            case 3: return 'D';
+            default: return 'X';
+        }
+    }
+
     const removeQuestion = (qId: any, index: any) => {
         handleRemoveQuestion(index);
         props.func(qId);
@@ -83,14 +93,14 @@ const QuestionItem = (props: any) => {
             <div className='demo-test-box' onClick={() => handleDetail(props.index)}>
                 <span className='ic-close' onClick={() => removeQuestion(props.data.id, props.index)}><CloseCircleFilled /></span>
                 <div id={'demo-qa-' + props.index} className='hide-long-text'>
-                    <CheckSquareFilled /> {props.data.content}
+                    <span>{props.data.content}</span>
                     <div id={'ans-detail-' + props.index} className='hide'>
                         <ul className='ans-list'>
-                            {props.data.multipleChoiceQuestions.map((c: any) => (
-                                <li><Checkbox>{c.answer}</Checkbox></li>
+                            {props.data.multipleChoiceQuestions.map((c: any, i: any) => (
+                                <li>{mapABC(i)}.&nbsp;{c.answer}</li>
                             ))}
                         </ul>
-                        <span className='row-between pd-x-20'>
+                        <span className='row-between mgt-10 pd-x-20'>
                             <span onClick={onEdit}>Edit</span>
                         </span>
                     </div>

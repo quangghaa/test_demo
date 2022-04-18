@@ -143,6 +143,7 @@ export {
     useContentTypeGetWithBody,
     useContentTypeCreate,
     useContentTypeUpdate,
-    useContentTypeDelete
+    useContentTypeDelete,
+    createContentType
   };
   

@@ -137,16 +137,20 @@
 .rs-test-list {
     list-style-type: none;
     margin: 20px 0 0 0;
-    padding: unset;
-
+    padding: 0 10px 0 0;
+    height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .rs-test-list li {
+    position: relative;
+    margin: 10px 0 0 0;
     padding: 10px 20px;
     border: 0.5px solid rgb(194, 164, 164);
     border-radius: 5px;
     background-color: #f0f2f5;
-
+    
 }
 
 .rs-test-list li:hover {
@@ -165,13 +169,13 @@
 .qs-list {
     list-style-type: none;
     margin: unset;
-    padding: unset;
-
+    padding: 0 10px 0 0;
+    height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .qs-list li {
-    /* width: 300px; */
-  /* display: flex; */
   padding-left: 20px;
   position: relative;
   margin-top: 10px;
@@ -182,6 +186,7 @@
     border-radius: 5px;
     background-color: #f0f2f5;
     position: relative;
+    padding: 5px 10px;
 }
 
 .demo-test-box:hover {
