@@ -1,44 +1,45 @@
-import { FieldTimeOutlined, CloseOutlined } from "@ant-design/icons";
-import { Button, Checkbox } from "antd";
+import { FieldTimeOutlined, CloseOutlined, CloseCircleOutlined, UserAddOutlined, CheckOutlined, CloseSquareOutlined } from "@ant-design/icons";
+import { Button, Checkbox, Col, Row } from "antd";
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { ITest } from "../../interface";
+import { deleteQa, selectTest } from "../../reducer/testSlice";
 
 const Demo = () => {
-    const [testItem, setTestItem] = useState([] as ITest[]);
 
-    const [levelList, setLevelList] = useState([] as number[]);
+    const [candidateCodeList, setCandidateCodeList] = useState([
+        'HA',
+        'Linh',
+        'Lam',
+        'HA',
+        'Linh',
+        'Lam',
+        'HA',
+        'Linh',
+        'Lam'
+    ] as string[]);
 
-    const [candidateCodeList, setCandidateCodeList] = useState([] as string[]);
+    const disPatch = useAppDispatch();
 
-    const onSave = () => {
-        // const testCode = testItem.length > 0 ? testItem[0].codeTest : '';
-        // if (testCode.length === 0) return;
+    const test = useAppSelector(selectTest);
 
-        // const body = {
-        //     candidates: reduxTest.candidates
-        // }
-
-        // const requestOptions = {
-        //     method: 'PUT',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(body)
-        // }
-        // const fetchData = async () => {
-        //     try {
-        //         const upUrl = 'https://demo.uiza.vn/tests/' + '' + reduxTest.id;
-        //         const res = await fetch(upUrl, requestOptions);
-        //         const json = await res.json();
-
-        //         setRes(json);
-        //     } catch (error: any) {
-        //         setErr(error);
-        //     }
-        // }
-        // fetchData();
+    const onRemoveQuestion = (q: any) => {
+        disPatch(deleteQa(q));
     }
 
-    const onSelectAns = () => {
-        console.log('x');
+    const onSave = () => {
+
+    }
+
+    const mapABC = (i: any) => {
+        switch(i) {
+            case 0: return 'A';
+            case 1: return 'B';
+            case 2: return 'C';
+            case 3: return 'D';
+            case 4: return 'E';
+            default: return 'X';
+        }
     }
 
 
@@ -46,46 +47,43 @@ const Demo = () => {
         <>
             <div className='sticky-sec col'>
                 <span className='font'>Demo</span>
-                <div className='row-center-y'>
-                    <div className='col'>
-                        <span>Tên bài test</span>
-                        <span className='box mgt-10 row-center-y'>{testItem.length > 0 ? testItem[0].name : ''}</span>
-                        <span className='row-between mgt-10'>
-
-                            <ul className='lv-list'>
-                                {levelList.map((l, i) => (
-                                    <li id={l.toString()} key={i + 1}><span>{l}</span></li>
-                                ))}
-                            </ul>
-                            <span className='row-center-y'>
-                                <FieldTimeOutlined className='big-time-ic' />
-                                <span className='sm-box'>Time here</span>
-                            </span>
+                <Row gutter={16}>
+                    <Col span={8}>
+                        <span>Tên bài test: </span>
+                        <span>{test.name}</span>
+                        <span className='row-center-y mgt-10'>
+                            <FieldTimeOutlined className='big-time-ic' />
+                            <span className='sm-box mgl-10'>{test.times}</span>
                         </span>
-                    </div>
-                    <div className='col mgl-10'>
-                        <span>Tham gia test</span>
-                        <div className='lar-box mgt-10'>
-                            <ul className='can-list'>
-                                {candidateCodeList.length > 0 ?
-                                    candidateCodeList.map(code => (
-                                        code != null ? <li>{code} <CloseOutlined className='mgl-5' /></li> : <></>
-                                    ))
-                                    :
-                                    <></>
-                                }
-                            </ul>
-                        </div>
-                    </div>
+                    </Col>
 
-                    <Button className='btn-save mgl-10' onClick={onSave}>Lưu</Button>
-                </div>
+                    <Col span={16} className='relative'>
+                        <span>Tham gia test</span>
+                        <span className="add-can"><UserAddOutlined /></span>
+                        <div className="row">
+                            <div className='lar-box mgt-10'>
+                                <ul className='can-list'>
+                                    {candidateCodeList.length > 0 ?
+                                        candidateCodeList.map(code => (
+                                            code != null ? <li>{code} <span className="rm-can-code"><CloseCircleOutlined className='mgl-5' /></span></li> : <></>
+                                        ))
+                                        :
+                                        <></>
+                                    }
+                                </ul>
+                            </div>
+                            <Button className='btn-save mgl-30' onClick={onSave}>Lưu</Button>
+                        </div>
+
+                    </Col>
+                </Row>
+
 
             </div>
 
             <ul className='demo-qs-list'>
 
-                {testItem.length > 0 ? testItem[0].questions.map((q, i) => (
+                {/* {test.questions.map((q, i) => (
                     <li>
                         <span>{i + 1}.&nbsp;{q.content}</span>
                         <ul className='qs-ans-list'>
@@ -98,7 +96,28 @@ const Demo = () => {
                                 : <></>}
                         </ul>
                     </li>
-                )) : <></>}
+                )) : <></>} */}
+
+                {test.questions.map((q: any, i: any) => {
+                    return (
+                        <li>
+                            <span className="rm-question" onClick={() => onRemoveQuestion(q)}><CloseCircleOutlined /></span>
+                            <span>{i + 1}.&nbsp;{q.content}</span>
+                            <ul className='qs-ans-list'>
+                                {q.multipleChoiceQuestions.length > 0 ? q.multipleChoiceQuestions.map((c: any, i: any) => (
+                                    <li>
+                                        {/* <Checkbox onChange={onSelectAns}>{c.answer}</Checkbox> */}
+                                        {c.isTrue != 0 ? <span className="correct-ans"><CheckOutlined /></span> : <></>}
+                                        <span>{mapABC(i)}.&nbsp;{c.answer}</span>
+                                    </li>
+                                ))
+
+                                    : <></>}
+                            </ul>
+                            
+                        </li>
+                    )
+                })}
             </ul>
 
         </>

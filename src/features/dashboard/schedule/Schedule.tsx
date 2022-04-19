@@ -1,9 +1,9 @@
 import { CloseOutlined, FileWordOutlined, FilterFilled, MailFilled, PhoneFilled, PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Cascader, Checkbox, Col, DatePicker, Input, Modal, Row, TimePicker } from 'antd';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createContentType } from '../../../hooks/useContentType';
-import { createOne } from '../../../services/api';
+import { createOne, getList } from '../../../services/api';
 import { ICalendar, ICandidate, ICandidateBody } from '../../interface';
 import HeaderD from '../headerD/HeaderD';
 import CalendarSection from './CalendarSection';
@@ -35,15 +35,15 @@ const Schedule = () => {
 
     const lev = [
         {
-            value: 'Junior',
+            value: '1',
             label: 'Junior'
         },
         {
-            value: 'Middle',
+            value: '2',
             label: 'Middle'
         },
         {
-            value: 'Senior',
+            value: '3',
             label: 'Senior'
         }
     ];
@@ -59,15 +59,39 @@ const Schedule = () => {
 
     const [calList, setCalList] = useState([] as ICalendar[]);
 
-    const [visibleModal, setVisibleModal] = useState(false)
+    const [visibleModal, setVisibleModal] = useState(false);
 
-    const [loadingModal, setLoadingModal] = useState(false)
+    const [loadingModal, setLoadingModal] = useState(false);
+
+    const [datetime, setDatetime] = useState({
+        date: '',
+        time: ''
+    })
+
+    const [loading, setLoading] = useState([
+        {
+            past: false
+        },
+        {
+            present: false
+        },
+        {
+            future: false
+        },
+        {
+            calendar: false
+        }
+    ]);
+
+    const [reload, setReload] = useState(0);
 
     const [searchBody, setSearchBody] = useState({
         name: '',
         department: '',
         position: '',
-        level: '',
+        level: {
+            id: 0
+        },
         date: '',
         time: '',
         phone: '',
@@ -78,81 +102,168 @@ const Schedule = () => {
         name: '',
         department: '',
         position: '',
-        level: '',
+        level: {
+            id: 0
+        },
         date: '',
-        time: '',
+        time:'',
         phone: '',
         email: ''
     } as ICandidateBody)
 
+
+    useEffect(() => {
+        const getOutdate = async () => {
+            setLoading([...loading, {past:true}]);
+            const res = await getList('staff/candidate/outofdate');
+            if (res && res.data != null) {
+                setPast(res.data);
+            }
+            setLoading([...loading, {past: false}]);
+
+        }
+
+        const getToday = async () => {
+            setLoading([...loading, {present: true}]);
+            const res = await getList('staff/candidate/today');
+            if (res && res.data != null) {
+                setToday(res.data);
+            }
+            setLoading([...loading, {present: false}]);
+
+        }
+
+        const getFuture = async () => {
+            setLoading([...loading, {future: true}]);
+            const res = await getList('staff/candidate/undue');
+            if (res && res.data != null) {
+                setFuture(res.data);
+            }
+            setLoading([...loading, {future: false}]);
+
+        }
+
+        getOutdate();
+        getToday();
+        getFuture();
+
+    }, [reload]);
+
+    const reloadData = () => {
+        setReload(reload => reload + 1);
+        console.log("ON RELOAD: ", reload);
+    }
+
     const enterName = (e: any) => {
-        setSearchBody({...searchBody, name: e.target.value})
+        setSearchBody({ ...searchBody, name: e.target.value[0] })
     }
 
     const onSelectDep = (value: any) => {
-        setSearchBody({...searchBody, department: value})
+        setSearchBody({ ...searchBody, department: value[0] })
     }
 
     const onSelectPos = (value: any) => {
-        setSearchBody({...searchBody, position: value})
+        setSearchBody({ ...searchBody, position: value[0] })
     }
 
     const onSelectLev = (value: any) => {
-        setSearchBody({...searchBody, level: value})
+        const obj = {
+            id: value[0]
+        }
+        setSearchBody({ ...searchBody, level: value })
     }
 
     const onSelectDate = (value: any) => {
         const selectDate = new Date(value);
-        setSearchBody({...searchBody, date: selectDate.toString()})
+        let y = selectDate.getFullYear() + '';
+        let m = selectDate.getMonth() + 1 + '';
+        let d = selectDate.getDate() + '';
+
+        if(m.length == 1) m = '0' + m;
+        if(d.length == 1) d = '0' + d;
+        const date = y + '-' + m + '-' + d;
+        // setSearchBody({ ...searchBody, date: selectDate.toString() })
+        setDatetime({...datetime, date: date});
     }
 
     const onSelectTime = (value: any) => {
-        const selectTime = new Date(value)
-        setSearchBody({...searchBody, time: selectTime.toString()})
+        const selectTime = new Date(value);
+
+        let h = selectTime.getHours() + '';
+        let m = selectTime.getMinutes() + '';
+        let s = selectTime.getSeconds() + '';
+
+        const time = h + ':' + m + ':' + s;
+        setDatetime({...datetime, time: time});
     }
 
     const enterEmail = (e: any) => {
-        setSearchBody({...searchBody, email: e.target.value})
+        setSearchBody({ ...searchBody, email: e.target.value })
     }
 
     const enterPhone = (e: any) => {
-        setSearchBody({...searchBody, phone: e.target.value})
+        setSearchBody({ ...searchBody, phone: e.target.value })
     }
 
     const onSearch = () => {
-
+        
     }
 
     const enterNameModal = (e: any) => {
-        setAddBody({...addBody, name: e.target.value})
+        setAddBody({ ...addBody, name: e.target.value })
     }
 
     const onSelectDepModal = (value: any) => {
-        setAddBody({...addBody, department: value})
+        setAddBody({ ...addBody, department: value[0] })
     }
 
     const onSelectPosModal = (value: any) => {
-        setAddBody({...addBody, position: value})
+        setAddBody({ ...addBody, position: value[0] })
     }
 
     const onSelectLevModal = (value: any) => {
-        setAddBody({...addBody, level: value})
+        const obj = {
+            id: parseInt(value[0])
+        }
+        setAddBody({ ...addBody, level: obj })
     }
 
     const onSelectDateModal = (value: any) => {
-        setAddBody({...addBody, date: new Date(value).toString()})
+        const selectDate = new Date(value);
+        let y = selectDate.getFullYear() + '';
+        let m = selectDate.getMonth() + 1 + '';
+        let d = selectDate.getDate() + '';
+
+        if(m.length == 1) m = '0' + m;
+        if(d.length == 1) d = '0' + d;
+        const date = y + '-' + m + '-' + d;
+        // setSearchBody({ ...searchBody, date: selectDate.toString() })
+        // setDatetime({...datetime, date: date});
+        setAddBody({...addBody, date: date});
     }
 
     const onSelectTimeModal = (value: any) => {
-        setAddBody({...addBody, time: new Date(value).toString()})
+        const selectTime = new Date(value);
+
+        let h = selectTime.getHours() + '';
+        let m = selectTime.getMinutes() + '';
+        let s = selectTime.getSeconds() + '';
+
+        if(h.length == 1) h = '0' + h;
+        if(m.length == 1) m = '0' + m;
+        if(s.length == 1) s = '0' + s;
+
+        const time = h + ':' + m + ':' + s;
+        // setDatetime({...datetime, time: time});
+        setAddBody({...addBody, time: time});
     }
 
     const enterEmailModal = (e: any) => {
-        setSearchBody({...addBody, email: e.target.value})
+        setAddBody({ ...addBody, email: e.target.value })
     }
 
     const enterPhoneModal = (e: any) => {
-        setSearchBody({...addBody, phone: e.target.value})
+        setAddBody({ ...addBody, phone: e.target.value })
     }
 
     const onShowModal = () => {
@@ -160,27 +271,28 @@ const Schedule = () => {
     }
 
     const onSaveModal = async () => {
-        setLoadingModal(true)
+        setLoadingModal(true);
+        try{
+            const res = await createOne("addCandidate", addBody);
+            if (res) {
+                setVisibleModal(false)
+                setReload(reload => reload + 1);
+            } 
 
-        const res = await createOne("addCandidate", addBody);
-        // console.log("???", res);
-        if(res) {
-            setLoadingModal(false)
+        } finally {
+            const reset = {
+                name: '',
+                department: '',
+                position: '',
+                level: '',
+                date: '',
+                time: '',
+                phone: '',
+                email: ''
+            }
+            setAddBody(reset);
+            setLoadingModal(false);
         }
-
-        const reset = {
-            name: '',
-            department: '',
-            position: '',
-            level: '',
-            date: '',
-            time: '',
-            phone: '',
-            email: ''
-        }
-        setAddBody(reset)
-
-        setVisibleModal(false)
     }
 
     const onCancelModal = () => {
@@ -319,8 +431,8 @@ const Schedule = () => {
                         <Checkbox className='mgl-30' checked={sw.schedule} onChange={scheduleClick}>Bảng</Checkbox>
                         <Checkbox className='mgl-30' checked={sw.calendar} onChange={calendarClick}>Lịch</Checkbox>
                     </span>
-                    {sw.schedule ? <ScheduleSection fu={future} to={today} pa={past} /> : <></>}
-                    {sw.calendar ? <CalendarSection list={calList} /> : <></>}
+                    {sw.schedule ? <ScheduleSection fu={future} to={today} pa={past} reload={reloadData}/> : <></>}
+                    {sw.calendar ? <CalendarSection list={calList} reload={reloadData}/> : <></>}
                 </Col>
             </Row>
 

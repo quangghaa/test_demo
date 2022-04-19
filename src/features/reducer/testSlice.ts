@@ -11,8 +11,7 @@ export interface TestState {
     candidates: ICandidate[];
     // qas: IQA[];
     questions: IQA[];
-
-    // chosen: Chosen[];
+    times: string;
 }
 
 const initialState: TestState = {
@@ -23,6 +22,7 @@ const initialState: TestState = {
     level: '',
     candidates: [] as ICandidate[],
     questions: [] as IQA[],
+    times: ''
 }
 
 export const testSlice = createSlice({
@@ -45,11 +45,11 @@ export const testSlice = createSlice({
             state.level = action.payload;
         },
         addQa: (state, action) => {
-            state.questions = [...[state.questions], action.payload];
+            state.questions = [...state.questions, action.payload];
         },
         deleteQa: (state, action) => {
-            state.questions = state.questions.filter((value: any, index:any) => {
-                return index != action.payload;
+            state.questions = state.questions.filter((question: any, index:any) => {
+                return question.id != action.payload.id;
             })
         },
         updateQas: (state, action) => {
@@ -63,7 +63,12 @@ export const testSlice = createSlice({
             state.candidates = action.payload;
         },
         deleteCandidate: (state, action) => {
-
+            state.candidates = state.candidates.filter((candidate: any) => {
+                return candidate.id != action.payload;
+            })
+        },
+        updateTime: (state, action) => {
+            state.times = action.payload;
         },
         clear: (state) => {
             state.id = 0;
@@ -73,11 +78,12 @@ export const testSlice = createSlice({
             state.level = '';
             state.candidates = [] as ICandidate[];
             state.questions = [] as IQA[];
+            state.times = ''
         }
     }
 });
 
-export const { updateId, updateCode, updateType, updateName, updateLevel, addCandidate, addQa, deleteQa, updateQas, updateCandidates, clear } = testSlice.actions;
+export const { updateId, updateCode, updateType, updateName, updateLevel, addCandidate, addQa, deleteQa, updateQas, updateCandidates, updateTime, clear } = testSlice.actions;
 
 export const selectTest = (state: RootState) => state.test;
 

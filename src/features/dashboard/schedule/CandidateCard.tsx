@@ -3,6 +3,7 @@ import { Modal } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { deleteOne } from "../../../services/api";
 import { addCandidate } from "../../reducer/listCandidateSlice";
 import { selectTest } from "../../reducer/testSlice";
 import './Schedule.css';
@@ -11,14 +12,31 @@ const CandidateCard = (props: any) => {
 
     const [showoptions, setShowoptions] = useState(1);
 
-    const [visibleConfirm, setVisibleConfirm] = useState(false)
+    const [visibleConfirm, setVisibleConfirm] = useState(false);
 
-    const showConfirm = () => {
+    const showConfirm = (e: any) => {
+        e.stopPropagation();
         setVisibleConfirm(true)
     }
 
-    const onYes = () => {
-        setVisibleConfirm(false)
+    const onYes = (id: any) => {
+        const removeCandidate = async () => {
+            const res = await deleteOne('staff/delete', id);
+
+            if(res && res.status == 200) {
+
+                console.log("DELETED");
+                setVisibleConfirm(false);
+                
+                props.reload();
+            } else {
+                console.log("Delete failed");
+            }
+
+        }
+
+        removeCandidate();
+
     }
 
     const onNo = () => {
@@ -58,19 +76,19 @@ const CandidateCard = (props: any) => {
     }
 
     return (
-        <li id='opstion-parent' key={props.data.code} className='mgt-20' onClick={openOptions}>
+        <li id='opstion-parent' key={props.data.id} className='mgt-20' onClick={openOptions}>
             <div className='c-card col'>
                 <div className='row-between c-h'>
                     <span>{props.data.name}</span>
                     <span>
                         <span className='mgr-10'>Edit</span>
-                        <span className="remove-cand-ic" onClick={showConfirm}><CloseOutlined /></span>
+                        <span className="remove-cand-ic" onClick={(e: any) => showConfirm(e)}><CloseOutlined /></span>
                     </span>
                 </div>
                 <Modal
                     title="Xác nhận"
                     visible={visibleConfirm}
-                    onOk={onYes}
+                    onOk={() => onYes(props.data.id)}
                     onCancel={onNo}
                     okText="Có"
                     cancelText="Không"
@@ -79,8 +97,8 @@ const CandidateCard = (props: any) => {
                 </Modal>
 
                 <span>
-                    <span className='bold'>Code: </span>
-                    {props.data.code}
+                    <span className='bold'>ID: </span>
+                    {props.data.id}
                 </span>
 
                 <span>

@@ -5,8 +5,8 @@ import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import useFetch from '../../../hook/useFetch';
-import { getList } from '../../../services/api';
-import { ICandidate, IQA, ITest, QA, QData } from '../../interface';
+import { createOne, getList } from '../../../services/api';
+import { ICandidate, IChoice, IQA, ITest, QA, QData } from '../../interface';
 import { addCandidate, addQa, deleteQa, selectTest, updateCandidates, updateCode, updateId, updateLevel, updateName, updateQas, updateType } from '../../reducer/testSlice';
 import HeaderD from '../headerD/HeaderD';
 import './QuestionCollection.css';
@@ -48,26 +48,53 @@ const Question = (props: any) => {
 
     const [loading, setLoading] = useState(false);
 
-    const [reload, setReload] = useState(false);
+    const [reload, setReload] = useState(0);
 
     const [questionList, setQuestionList] = useState([] as IQA[]);
 
-    const [testItem, setTestItem] = useState([] as ITest[]);
-
     const reduxTest = useAppSelector(selectTest);
 
-    const [qType, setQType] = useState(0);
     const [qContent, setQContent] = useState('');
 
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
 
+    const [questionBody, setQuestionBody] = useState({
+        id: 0,
+        type: {
+            id: 0
+        },
+        subject: {
+            id: 0
+        },
+        content: '',
+        level: {
+            id: 0
+        },
+        multipleChoiceQuestions: [] as IChoice[]
+    } as IQA);
+
     const [isEdit, setIsEdit] = useState(false);
 
-    const [a, setA] = useState('');
-    const [b, setB] = useState('');
-    const [c, setC] = useState('');
-    const [d, setD] = useState('');
+    const [abcd, setAbcd] = useState({
+        a: {
+            answer: '', 
+            isTrue: 0
+        },
+        b: {
+            answer: '', 
+            isTrue: 0
+        },
+        c: {
+            answer: '', 
+            isTrue: 0
+        },
+        d: {
+            answer: '', 
+            isTrue: 0
+        }
+    })
+
 
     const [realAns, setRealAns] = useState('');
 
@@ -95,30 +122,93 @@ const Question = (props: any) => {
         },
     ];
 
+    useEffect(() => {
+        try {   
+            const getQuestions =async () => {
+                setLoading(true);
+
+                const res = await getList(`staff/getallquestion`);
+                if(res.status === 200 && res.data != null) {
+                    setQuestionList(res.data);
+                }
+            }
+
+            getQuestions();
+        } finally {
+            setLoading(false);
+        }
+    }, [reload])
+
+    const reloadData = () => {
+        setReload(reload => reload + 1);
+    }
 
     const onSelectLev = async (value: any) => {
-
         setLoading(true);
-        const res = await getList(`staff/getquestionbylevel/${value}`);
-        if(res.status === 200 && res.data != null) {
-            setQuestionList(res.data);
+        try {   
+            const res = await getList(`staff/getallquestion`);
+            if(res.status === 200 && res.data != null) {
+                setQuestionList(res.data);
+            }
+        } finally {
+            setLoading(false);
         }
-        
-        setLoading(false);
-        // console.log("RES: ", res);
     }
-    console.log("QLIST: ", questionList);
 
     const onSelectType = (value: any) => {
+        const obj = {
+            id: parseInt(value[0])
+        }
 
+        setQuestionBody({...questionBody, subject: obj});
     }
 
     const onSelectKind = (value: any) => {
+        const obj = {
+            id: parseInt(value[0])
+        }
 
+        setQuestionBody({...questionBody, type: obj});
     }
 
     const onSelectLevModal = (value: any) => {
+        const obj = {
+            id: parseInt(value[0])
+        }
 
+        setQuestionBody({...questionBody, level: obj});
+    }
+
+    const enterQContent = (e: any) => {
+        setQuestionBody({...questionBody, content: e.target.value});
+    }
+
+    const enterChoice = (e: any, i: any) => {
+        switch (i) {
+            case 0: {
+                setAbcd({...abcd, a: {answer: e.target.value, isTrue: 0} });
+                break;
+            }
+            case 1: {
+                setAbcd({...abcd, b: {answer: e.target.value, isTrue: 0} });
+                break;
+            }
+            case 2: {
+                setAbcd({...abcd, c: {answer: e.target.value, isTrue: 0} });
+                break;
+            }
+            case 3: {
+                setAbcd({...abcd, d: {answer: e.target.value, isTrue: 0} });
+                break;
+            }
+            default: {
+
+            }
+        }
+    }
+
+    const enterRealAns = (e: any) => {
+        setRealAns(e.target.value);
     }
 
     const setmode = () => {
@@ -129,128 +219,74 @@ const Question = (props: any) => {
         setVisible(true);
     };
 
-    // ----------
+    const handleOk = async () => {
+        console.log("Real ans: ", realAns.toLocaleLowerCase(), abcd);
 
-    const reloadTest = () => {
-        setReload(!reload);
-    }
+        let mc = [];
 
-    const enterQContent = (e: any) => {
-        setQContent(e.target.value);
-    }
+        if(abcd.a.answer) {
+            let temp = {
+                answer: abcd.a.answer,
+                isTrue: 0
+            }
+            if(realAns.toLowerCase() === 'a') {
+                temp.isTrue = 1
+            }
+            
+            mc.push(temp);
+        } 
 
-    const enterChoice = (e: any, i: any) => {
-        switch (i) {
-            case 0: {
-                setA(e.target.value);
-                break;
+        if(abcd.b.answer) {
+            let temp = {
+                answer: abcd.b.answer,
+                isTrue: 0
             }
-            case 1: {
-                setB(e.target.value);
-                break;
+            if(realAns.toLowerCase() === 'b') {
+                temp.isTrue = 1
             }
-            case 2: {
-                setC(e.target.value);
-                break;
-            }
-            case 3: {
-                setD(e.target.value);
-                break;
-            }
-        }
-    }
-
-    const enterRealAns = (e: any) => {
-        setRealAns(e.target.value);
-    }
-
-    const handleOk = () => {
-        const ra = realAns;
-
-        console.log("Real ans: ", ra);
-
-        let mc = [{
-            isTrue: 0,
-            answer: ''
-        }];
-        mc.pop();
-        if (a.length > 0) {
-            let t = {
-                isTrue: 0,
-                answer: ''
-            }
-            if (a === ra) {
-                t = {
-                    isTrue: 1,
-                    answer: a
-                }
-
-            } else {
-                t = {
-                    isTrue: 0,
-                    answer: a
-                }
-            }
-            mc.push(t);
-        }
-        if (b.length > 0) {
-            let t = {
-                isTrue: 0,
-                answer: ''
-            }
-            if (b === ra) {
-                t = {
-                    isTrue: 1,
-                    answer: b
-                }
-
-            } else {
-                t = {
-                    isTrue: 0,
-                    answer: b
-                }
-            }
-            mc.push(t);
-        }
-        if (c.length > 0) {
-            let t = {
-                isTrue: 0,
-                answer: ''
-            }
-            if (c === ra) {
-                t = {
-                    isTrue: 1,
-                    answer: c
-                }
-
-            } else {
-                t = {
-                    isTrue: 0,
-                    answer: c
-                }
-            }
-            mc.push(t);
-        }
-        if (d.length > 0) {
-            let t = {
-                isTrue: 0,
-                answer: ''
-            }
-            if (d === ra) {
-                t = {
-                    isTrue: 1,
-                    answer: d
-                }
-
-            } else {
-                t = {
-                    isTrue: 0,
-                    answer: d
-                }
-            }
-            mc.push(t);
+            
+            mc.push(temp);
         }
 
+        if(abcd.c.answer) {
+            let temp = {
+                answer: abcd.c.answer,
+                isTrue: 0
+            }
+            if(realAns.toLowerCase() === 'c') {
+                temp.isTrue = 1
+            }
+            
+            mc.push(temp);
+        }
+
+        if(abcd.d.answer) {
+            let temp = {
+                answer: abcd.d.answer,
+                isTrue: 0
+            }
+            if(realAns.toLowerCase() === 'd') {
+                temp.isTrue = 1
+            }
+            
+            mc.push(temp);
+        }
+
+        const body = {...questionBody,  multipleChoiceQuestions: mc};
+        console.log("BODY: ", body);
+
+        try {
+            setLoading(true);
+            const res = await createOne('staff/addquestion', body);
+            if(res) {
+                
+                setVisible(false);
+                setReload(reload => reload + 1);
+            }
+
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleCancel = () => {
@@ -265,6 +301,7 @@ const Question = (props: any) => {
             case 2: return 'B';
             case 3: return 'C';
             case 4: return 'D';
+            case 5: return 'E';
             default: return 'Unkown';
         }
     }
@@ -308,15 +345,15 @@ const Question = (props: any) => {
             >
                 <span className='row-between'>
                     <span>Loại câu hỏi: </span>
-                    <Cascader options={questionTypes} onChange={onSelectType} defaultValue={'Tiếng anh' as any} />
+                    <Cascader options={questionTypes} onChange={onSelectType} placeholder='Chọn loại câu hỏi' />
                 </span>
                 <span className='row-between mgt-10'>
                     <span>Dạng câu hỏi: </span>
-                    <Cascader options={questionKinds} onChange={onSelectKind} defaultValue={'Trắc nghiệm' as any} />
+                    <Cascader options={questionKinds} onChange={onSelectKind} placeholder='Chọn dạng câu hỏi' />
                 </span>
                 <span className='row-between mgt-10'>
                     <span>Mức độ: </span>
-                    <Cascader options={questionLevModal} onChange={onSelectLevModal} defaultValue={'A1' as any} />
+                    <Cascader options={questionLevModal} onChange={onSelectLevModal} placeholder='Chọn mức độ câu hỏi' />
                 </span>
                 <span className='col mgt-10'>
                     <span>Câu hỏi: </span>
@@ -339,20 +376,17 @@ const Question = (props: any) => {
                 }
 
                 <span className='row-between mgt-20 row-center-y'>
-                    <span>Đáp án: </span>
+                    <span>Đáp án (A, B or C): </span>
                     <Input onChange={enterRealAns} placeholder='Nhập đáp án' className='w-250'></Input>
                 </span>
 
             </Modal>
 
             <ul className='qs-list mgt-20'>
-                {/* {(testItem.length > 0) ? testItem[0].questions.map((qa: any, i) => (
-                    <QuestionItem data={qa} index={i} edit={showModal} setmode={setmode} func={handleRemoveQuestion} />
-                )) : <></>} */}
                 {questionList.length > 0 ?
                     
                     questionList.map((q: any, i: any) => {
-                        return <QuestionItem data={q} index={i} />
+                        return <QuestionItem data={q} index={i} reload={reloadData} />
                     })
                     :
                     <></>

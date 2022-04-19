@@ -21,7 +21,7 @@ export interface ICandidateBody {
     name: string;
     department: string;
     position: string;
-    level: string;
+    level: any;
     date: string;
     time: string;
     phone: string;
@@ -34,17 +34,17 @@ export interface ICalendar {
 }
 
 export interface IChoice {
-    id: number;
+    // id: number;
     isTrue: number;
     answer: string;
 }
 
 export interface IQA {
     id: number;
-    type: string;
-    subject: string;
+    type: any;
+    subject: any;
     content: string;
-    level: string;
+    level: any;
     multipleChoiceQuestions: IChoice[]; 
     answer: string;
 }
@@ -60,9 +60,11 @@ export interface ITest {
 }
 
 export interface ITestBody {
+    codeTest: string;
     name: string;
-    type: string;
-    level: string;
+    subject: any;
+    level: any;
+    times: string;
 }
 
 export interface QA {

@@ -2,32 +2,34 @@ import { CloseOutlined, SearchOutlined, PlusOutlined, CloseCircleFilled } from "
 import { Input, Cascader, Button, Modal, TimePicker, Spin } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { getList } from "../../../services/api";
+import { useAppDispatch } from "../../../app/hooks";
+import { createOne, deleteOne, getList, getOne } from "../../../services/api";
 import { ITest, ITestBody } from "../../interface";
+import { updateId, updateName, updateTime } from "../../reducer/testSlice";
 
 const Test = (props: any) => {
     const test = [
         {
-            value: 'ENG',
+            value: '1',
             label: 'Tiếng anh'
         },
         {
-            value: 'GEN',
+            value: '2',
             label: 'Kiến thức chung'
         },
     ];
 
     const lev = [
         {
-            value: 'Junior',
+            value: '1',
             label: 'Junior'
         },
         {
-            value: 'Middle',
+            value: '2',
             label: 'Middle'
         },
         {
-            value: 'Senior',
+            value: '3',
             label: 'Senior'
         }
     ];
@@ -46,9 +48,15 @@ const Test = (props: any) => {
     const [visibleTest, setVisibleTest] = useState(false);
 
     const [searchBody, setSearchBody] = useState({
+        codeTest: '',
         name: '',
-        type: '',
-        level: ''
+        subject: {
+            id: 0
+        },
+        level: {
+            id: 0
+        },
+        times: ''
     } as ITestBody)
 
     const [testList, setTestList] = useState([] as ITest[]);
@@ -57,17 +65,21 @@ const Test = (props: any) => {
 
     const [reload, setReload] = useState(0);
 
+    const [visibleConfirm, setVisibleConfirm] = useState(false);
+
+
+
     useEffect(() => {
         const getAllTest = async () => {
             setLoading(true);
-
-            const res = await getList('staff/getalltest')
-
-            if (res && res.data != null) {
-                setTestList(res.data);
+            try {
+                const res = await getList('staff/getalltest');
+                if (res && res.data != null) {
+                    setTestList(res.data);
+                }
+            } finally {
+                setLoading(false);
             }
-
-            setLoading(false);
         }
 
         getAllTest();
@@ -78,7 +90,10 @@ const Test = (props: any) => {
     }
 
     const onSelectLev = (value: any) => {
-        setSearchBody({ ...searchBody, level: value });
+        const obj = {
+            id: parseInt(value[0])
+        }
+        setSearchBody({ ...searchBody, level: obj });
     }
 
     const enterTestname = (e: any) => {
@@ -86,23 +101,29 @@ const Test = (props: any) => {
     }
 
     const onSelectTestType = (value: any) => {
-        setSearchBody({ ...searchBody, type: value });
+        const obj = {
+            id: parseInt(value[0])
+        }
+        setSearchBody({ ...searchBody, subject: obj });
     }
 
     const enterCode = (e: any) => {
-
+        setSearchBody({ ...searchBody, codeTest: e.target.value });
     }
 
     const enterName = (e: any) => {
-
-    }
-
-    const enterLevel = (e: any) => {
-
+        setSearchBody({ ...searchBody, name: e.target.value });
     }
 
     const enterTime = (e: any) => {
+        let x = parseInt(e.target.value);
+        let h = Math.floor(x/60) + '';
+        let m = x%60 + '';
+        if(h.length == 1) h = '0' + h;
+        if(m.length == 1) m = '0' + m;
 
+        const time = h + ':' + m + ':' + '00';
+        setSearchBody({ ...searchBody, times: time });
     }
 
     const onSearch = () => {
@@ -113,21 +134,89 @@ const Test = (props: any) => {
         setVisibleTest(true);
     }
 
-    const onSaveTest = () => {
-        setVisibleTest(false)
+    const dispatch = useAppDispatch();
+
+    const onSaveTest = async () => {
+        try {
+            const res = await createOne('staff/addtest', searchBody);
+            if (res) {
+                setVisibleTest(false)
+                setReload(reload => reload + 1);
+            }
+        } finally {
+
+        }
+
     }
 
     const onCancelTest = () => {
         setVisibleTest(false)
     }
 
-    const onTestClick = (code: any) => {
-        console.log("Click : ", code);
+    const onTestClick = async (id: any) => {
+        console.log("Click : ", id);
+        try {
+            setLoading(true);
+            const res = await getOne('staff/gettestbyid', id);
+            if(res) {
+                console.log("data res: ", res.data);
+                dispatch(updateId(res.data.id));
+                dispatch(updateName(res.data.name));
+                dispatch(updateTime(res.data.times));
+            }
+
+
+        } finally {
+            setLoading(false)
+        }
     }
 
-    const onRemoveTest = (e: any, code: any) => {
+    const onShowConfirm = (e: any) => {
         e.stopPropagation();
-        console.log("DELETE", code);
+
+        setVisibleConfirm(true);
+    }
+
+    const onYes = async (id: any) => {
+        console.log("DELETE", id);
+
+        setLoading(true);
+
+        try {
+            const res = await deleteOne('staff/deletetest', id);
+            if (res) {
+
+                setVisibleConfirm(false);
+                setReload(reload => reload + 1);
+            }
+
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const onNo = () => {
+        setVisibleConfirm(false);
+    }
+
+    const onRemoveTest = async (e: any, id: any) => {
+        e.stopPropagation();
+
+        console.log("DELETE", id);
+
+        setLoading(true);
+
+        try {
+            const res = await deleteOne('staff/deletetest', id);
+            if (res) {
+
+                setReload(reload => reload + 1);
+
+            }
+
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleRemoveLevelCLick = () => {
@@ -212,15 +301,17 @@ const Test = (props: any) => {
 
                     <span className='col mgt-10'>
                         <span>Cấp độ bài test: </span>
-                        <Input placeholder='Nhập tên bài test' className='' onChange={enterLevel}></Input>
+                        <Cascader className='c-cas' size='large' options={lev} onChange={onSelectLev} placeholder="Which level?" />
                     </span>
 
                     <span className='col mgt-10'>
                         <span>Thời gian làm bài: </span>
-                        <TimePicker onChange={enterTime} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                        {/* <TimePicker onChange={enterTime} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} /> */}
+                        <Input placeholder='Nhập thời gian làm bài' className='' onChange={enterTime}></Input>
                     </span>
 
                 </Modal>
+
             </div>
 
             {loading ?
@@ -229,38 +320,32 @@ const Test = (props: any) => {
                 </div> : <></>}
 
             {testList.length > 0 ?
-                <ul className='rs-test-list'>
-                    {testList.map((t: any, i: any) => {
-                        return (
-                            <li key={i} onClick={() => onTestClick(t.codeTest)}>
-                                <span className='ic-close' onClick={(e: any) => onRemoveTest(e, t.codeTest)}><CloseCircleFilled /></span>
-                                {/* <span className='lv-cir'>{t.level}</span> */}
-                                <span>{t.name}</span>
-                            </li>
-                        )
-                    })}
-                </ul>
+                    <ul className='rs-test-list'>
+                        {testList.map((t: any, i: any) => {
+                            return (
+                                <>
+                                    <li key={i} onClick={() => onTestClick(t.id)}>
+                                        <span className='ic-close' onClick={(e: any) => onShowConfirm(e)}><CloseCircleFilled /></span>
+                                        {/* <span className='lv-cir'>{t.level}</span> */}
+                                        <span>{t.name}</span>
+                                    </li>
+                                    <Modal
+                                        title="Xác nhận"
+                                        visible={visibleConfirm}
+                                        onOk={() => onYes(t.id)}
+                                        onCancel={onNo}
+                                        okText="Có"
+                                        cancelText="Không"
+                                    >
+                                        <p>Xóa bài test?</p>
+                                    </Modal>
+                                </>
+                            )
+                        })}
+                    </ul>
                 :
-                <></>    
+                <></>
             }
-            {/* <ul className='rs-test-list'>
-                {!isSearching ? testData.map((t, i) => (
-                    <li key={i} onClick={() => handleTestClick(t.codeTest)}>
-
-                        <span className='lv-cir'>{t.level}</span>
-
-                        <span>{t.name}</span>
-                    </li>
-                )) : rsSearch.map((t, i) => (
-                    <li key={i} onClick={() => handleTestClick(t.codeTest)}>
-                        <span className='lv-cir'>{t.level}</span>
-                        <span>{t.name}</span>
-                    </li>
-                ))
-                }
-
-
-            </ul> */}
 
         </>
     )

@@ -10,7 +10,7 @@ const ScheduleSection = (props: any) => {
                     <span>Sắp tới</span>
                     <ul className='c-cans'>
                         {props.fu.length > 0 ? props.fu.map((up: any) => (
-                            <CandidateCard data={up} />
+                            <CandidateCard data={up} reload={props.reload} />
                         )
                         ) : <></>}
                     </ul>
@@ -22,7 +22,7 @@ const ScheduleSection = (props: any) => {
                     <span>Hôm nay</span>
                     <ul className='c-cans'>
                         {props.to.length > 0 ? props.to.map((to: any) => (
-                            <CandidateCard data={to} />
+                            <CandidateCard data={to} reload={props.reload} />
                         )) : <></>}
                     </ul>
                 </div>
@@ -33,7 +33,7 @@ const ScheduleSection = (props: any) => {
                     <span>Quá hạn</span>
                     <ul className='c-cans'>
                         {props.pa.length > 0 ? props.pa.map((pa: any) => (
-                            <CandidateCard data={pa} />
+                            <CandidateCard data={pa} reload={props.reload} />
                         )) : <></>}
                     </ul>
                 </div>
