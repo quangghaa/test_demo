@@ -2,6 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { ICandidate, IQA } from "../interface";
 
+export interface ICandCode {
+    id: number;
+    name: string;
+}
+
 export interface TestState {
     id: number;
     codeTest: string;
@@ -9,6 +14,7 @@ export interface TestState {
     name: string;
     level: string;
     candidates: ICandidate[];
+    candCodes:  ICandCode[],
     // qas: IQA[];
     questions: IQA[];
     times: string;
@@ -21,6 +27,7 @@ const initialState: TestState = {
     name: '',
     level: '',
     candidates: [] as ICandidate[],
+    candCodes: [] as ICandCode[],
     questions: [] as IQA[],
     times: ''
 }
@@ -59,6 +66,9 @@ export const testSlice = createSlice({
         addCandidate: (state, action) => {
             state.candidates.push(action.payload);    
         },
+        updateCandCodes: (state, action) => {
+            state.candCodes = action.payload;
+        },
         updateCandidates: (state, action) => {
             state.candidates = action.payload;
         },
@@ -83,7 +93,7 @@ export const testSlice = createSlice({
     }
 });
 
-export const { updateId, updateCode, updateType, updateName, updateLevel, addCandidate, addQa, deleteQa, updateQas, updateCandidates, updateTime, clear } = testSlice.actions;
+export const { updateId, updateCode, updateType, updateName, updateLevel, addCandidate, addQa, deleteQa, updateQas, updateCandidates, updateCandCodes, updateTime, clear } = testSlice.actions;
 
 export const selectTest = (state: RootState) => state.test;
 

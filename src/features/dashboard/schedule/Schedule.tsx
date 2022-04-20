@@ -106,7 +106,7 @@ const Schedule = () => {
             id: 0
         },
         date: '',
-        time:'',
+        time: '',
         phone: '',
         email: ''
     } as ICandidateBody)
@@ -114,32 +114,32 @@ const Schedule = () => {
 
     useEffect(() => {
         const getOutdate = async () => {
-            setLoading([...loading, {past:true}]);
+            setLoading([...loading, { past: true }]);
             const res = await getList('staff/candidate/outofdate');
             if (res && res.data != null) {
                 setPast(res.data);
             }
-            setLoading([...loading, {past: false}]);
+            setLoading([...loading, { past: false }]);
 
         }
 
         const getToday = async () => {
-            setLoading([...loading, {present: true}]);
+            setLoading([...loading, { present: true }]);
             const res = await getList('staff/candidate/today');
             if (res && res.data != null) {
                 setToday(res.data);
             }
-            setLoading([...loading, {present: false}]);
+            setLoading([...loading, { present: false }]);
 
         }
 
         const getFuture = async () => {
-            setLoading([...loading, {future: true}]);
+            setLoading([...loading, { future: true }]);
             const res = await getList('staff/candidate/undue');
             if (res && res.data != null) {
                 setFuture(res.data);
             }
-            setLoading([...loading, {future: false}]);
+            setLoading([...loading, { future: false }]);
 
         }
 
@@ -179,11 +179,11 @@ const Schedule = () => {
         let m = selectDate.getMonth() + 1 + '';
         let d = selectDate.getDate() + '';
 
-        if(m.length == 1) m = '0' + m;
-        if(d.length == 1) d = '0' + d;
+        if (m.length == 1) m = '0' + m;
+        if (d.length == 1) d = '0' + d;
         const date = y + '-' + m + '-' + d;
         // setSearchBody({ ...searchBody, date: selectDate.toString() })
-        setDatetime({...datetime, date: date});
+        setDatetime({ ...datetime, date: date });
     }
 
     const onSelectTime = (value: any) => {
@@ -194,7 +194,7 @@ const Schedule = () => {
         let s = selectTime.getSeconds() + '';
 
         const time = h + ':' + m + ':' + s;
-        setDatetime({...datetime, time: time});
+        setDatetime({ ...datetime, time: time });
     }
 
     const enterEmail = (e: any) => {
@@ -206,7 +206,7 @@ const Schedule = () => {
     }
 
     const onSearch = () => {
-        
+
     }
 
     const enterNameModal = (e: any) => {
@@ -234,12 +234,12 @@ const Schedule = () => {
         let m = selectDate.getMonth() + 1 + '';
         let d = selectDate.getDate() + '';
 
-        if(m.length == 1) m = '0' + m;
-        if(d.length == 1) d = '0' + d;
+        if (m.length == 1) m = '0' + m;
+        if (d.length == 1) d = '0' + d;
         const date = y + '-' + m + '-' + d;
         // setSearchBody({ ...searchBody, date: selectDate.toString() })
         // setDatetime({...datetime, date: date});
-        setAddBody({...addBody, date: date});
+        setAddBody({ ...addBody, date: date });
     }
 
     const onSelectTimeModal = (value: any) => {
@@ -249,13 +249,13 @@ const Schedule = () => {
         let m = selectTime.getMinutes() + '';
         let s = selectTime.getSeconds() + '';
 
-        if(h.length == 1) h = '0' + h;
-        if(m.length == 1) m = '0' + m;
-        if(s.length == 1) s = '0' + s;
+        if (h.length == 1) h = '0' + h;
+        if (m.length == 1) m = '0' + m;
+        if (s.length == 1) s = '0' + s;
 
         const time = h + ':' + m + ':' + s;
         // setDatetime({...datetime, time: time});
-        setAddBody({...addBody, time: time});
+        setAddBody({ ...addBody, time: time });
     }
 
     const enterEmailModal = (e: any) => {
@@ -272,12 +272,12 @@ const Schedule = () => {
 
     const onSaveModal = async () => {
         setLoadingModal(true);
-        try{
+        try {
             const res = await createOne("addCandidate", addBody);
             if (res) {
                 setVisibleModal(false)
                 setReload(reload => reload + 1);
-            } 
+            }
 
         } finally {
             const reset = {
@@ -370,59 +370,61 @@ const Schedule = () => {
                             </Button>
                         </span>
 
-                        <Modal
-                            title='Thêm ứng viên'
-                            visible={visibleModal}
-                            // confirmLoading={confirmLoading}
-                            onCancel={onCancelModal}
-                            className="create-form"
-                            footer={[
-                                <div className='col'>
-                                    <div className='center'>
-                                        <Button key="submit" onClick={onSaveModal} className='btn-login' loading={loadingModal}>
-                                            Lưu
-                                        </Button>
-
-                                        <Button key="cancel" onClick={onCancelModal} className='btn-login'>
-                                            Hủy
-                                        </Button>
-                                    </div>
-                                </div>
-                                ,
-                            ]}
-                        >
-                            <div className='col'>
-                                <span className='mgt-20'>Tên</span>
-                                <div className='name-inp'>
-                                    <Input size="large" placeholder="Enter name" onChange={enterNameModal} />
-                                    <span className='name-inp-ic'><UserOutlined /></span>
-                                </div>
-
-                                <span className='mgt-10'>Phòng ban</span>
-                                <Cascader value={'Block' as any} className='c-cas' size='large' options={dep} onChange={onSelectDepModal} placeholder="Which department?" />
-
-                                <span className='mgt-10'>Vị trí</span>
-                                <Cascader className='c-cas' size='large' options={pos} onChange={onSelectPosModal} placeholder="Which position?" />
-
-                                <span className='mgt-10'>Level</span>
-                                <Cascader className='c-cas' size='large' options={lev} onChange={onSelectLevModal} placeholder="Which level?" />
-
-                                <div className='row-between mgt-10'>
+                        {visibleModal && (
+                            <Modal
+                                title='Thêm ứng viên'
+                                visible={visibleModal}
+                                // confirmLoading={confirmLoading}
+                                onCancel={onCancelModal}
+                                className="create-form"
+                                footer={[
                                     <div className='col'>
-                                        <span>Lịch</span>
-                                        <DatePicker onChange={onSelectDateModal} />
-                                        <TimePicker className='mgt-10' onChange={onSelectTimeModal} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                                        <div className='center'>
+                                            <Button key="submit" onClick={onSaveModal} className='btn-login' loading={loadingModal}>
+                                                Lưu
+                                            </Button>
+
+                                            <Button key="cancel" onClick={onCancelModal} className='btn-login'>
+                                                Hủy
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div id='contact' className='col mgl-20'>
-                                        <span>Liên hệ</span>
-                                        <Input size="small" onChange={enterEmailModal} placeholder="Email" prefix={<MailFilled />} />
-                                        <Input className='mgt-10' onChange={enterPhoneModal} size="small" placeholder="Phone number" prefix={<PhoneFilled />} />
+                                    ,
+                                ]}
+                            >
+                                <div className='col'>
+                                    <span className='mgt-20'>Tên</span>
+                                    <div className='name-inp'>
+                                        <Input size="large" placeholder="Enter name" onChange={enterNameModal} />
+                                        <span className='name-inp-ic'><UserOutlined /></span>
                                     </div>
+
+                                    <span className='mgt-10'>Phòng ban</span>
+                                    <Cascader value={'Block' as any} className='c-cas' size='large' options={dep} onChange={onSelectDepModal} placeholder="Which department?" />
+
+                                    <span className='mgt-10'>Vị trí</span>
+                                    <Cascader className='c-cas' size='large' options={pos} onChange={onSelectPosModal} placeholder="Which position?" />
+
+                                    <span className='mgt-10'>Level</span>
+                                    <Cascader className='c-cas' size='large' options={lev} onChange={onSelectLevModal} placeholder="Which level?" />
+
+                                    <div className='row-between mgt-10'>
+                                        <div className='col'>
+                                            <span>Lịch</span>
+                                            <DatePicker onChange={onSelectDateModal} />
+                                            <TimePicker className='mgt-10' onChange={onSelectTimeModal} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                                        </div>
+                                        <div id='contact' className='col mgl-20'>
+                                            <span>Liên hệ</span>
+                                            <Input size="small" onChange={enterEmailModal} placeholder="Email" prefix={<MailFilled />} />
+                                            <Input className='mgt-10' onChange={enterPhoneModal} size="small" placeholder="Phone number" prefix={<PhoneFilled />} />
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                            </div>
-
-                        </Modal>
+                            </Modal>
+                        )}
                     </div>
                 </Col>
                 <Col span={18} className='pd-20'>
@@ -431,8 +433,8 @@ const Schedule = () => {
                         <Checkbox className='mgl-30' checked={sw.schedule} onChange={scheduleClick}>Bảng</Checkbox>
                         <Checkbox className='mgl-30' checked={sw.calendar} onChange={calendarClick}>Lịch</Checkbox>
                     </span>
-                    {sw.schedule ? <ScheduleSection fu={future} to={today} pa={past} reload={reloadData}/> : <></>}
-                    {sw.calendar ? <CalendarSection list={calList} reload={reloadData}/> : <></>}
+                    {sw.schedule ? <ScheduleSection fu={future} to={today} pa={past} reload={reloadData} /> : <></>}
+                    {sw.calendar ? <CalendarSection list={calList} reload={reloadData} /> : <></>}
                 </Col>
             </Row>
 

@@ -78,19 +78,19 @@ const Question = (props: any) => {
 
     const [abcd, setAbcd] = useState({
         a: {
-            answer: '', 
+            answer: '',
             isTrue: 0
         },
         b: {
-            answer: '', 
+            answer: '',
             isTrue: 0
         },
         c: {
-            answer: '', 
+            answer: '',
             isTrue: 0
         },
         d: {
-            answer: '', 
+            answer: '',
             isTrue: 0
         }
     })
@@ -123,12 +123,12 @@ const Question = (props: any) => {
     ];
 
     useEffect(() => {
-        try {   
-            const getQuestions =async () => {
+        try {
+            const getQuestions = async () => {
                 setLoading(true);
 
                 const res = await getList(`staff/getallquestion`);
-                if(res.status === 200 && res.data != null) {
+                if (res.status === 200 && res.data != null) {
                     setQuestionList(res.data);
                 }
             }
@@ -145,9 +145,9 @@ const Question = (props: any) => {
 
     const onSelectLev = async (value: any) => {
         setLoading(true);
-        try {   
+        try {
             const res = await getList(`staff/getallquestion`);
-            if(res.status === 200 && res.data != null) {
+            if (res.status === 200 && res.data != null) {
                 setQuestionList(res.data);
             }
         } finally {
@@ -160,7 +160,7 @@ const Question = (props: any) => {
             id: parseInt(value[0])
         }
 
-        setQuestionBody({...questionBody, subject: obj});
+        setQuestionBody({ ...questionBody, subject: obj });
     }
 
     const onSelectKind = (value: any) => {
@@ -168,7 +168,7 @@ const Question = (props: any) => {
             id: parseInt(value[0])
         }
 
-        setQuestionBody({...questionBody, type: obj});
+        setQuestionBody({ ...questionBody, type: obj });
     }
 
     const onSelectLevModal = (value: any) => {
@@ -176,29 +176,29 @@ const Question = (props: any) => {
             id: parseInt(value[0])
         }
 
-        setQuestionBody({...questionBody, level: obj});
+        setQuestionBody({ ...questionBody, level: obj });
     }
 
     const enterQContent = (e: any) => {
-        setQuestionBody({...questionBody, content: e.target.value});
+        setQuestionBody({ ...questionBody, content: e.target.value });
     }
 
     const enterChoice = (e: any, i: any) => {
         switch (i) {
             case 0: {
-                setAbcd({...abcd, a: {answer: e.target.value, isTrue: 0} });
+                setAbcd({ ...abcd, a: { answer: e.target.value, isTrue: 0 } });
                 break;
             }
             case 1: {
-                setAbcd({...abcd, b: {answer: e.target.value, isTrue: 0} });
+                setAbcd({ ...abcd, b: { answer: e.target.value, isTrue: 0 } });
                 break;
             }
             case 2: {
-                setAbcd({...abcd, c: {answer: e.target.value, isTrue: 0} });
+                setAbcd({ ...abcd, c: { answer: e.target.value, isTrue: 0 } });
                 break;
             }
             case 3: {
-                setAbcd({...abcd, d: {answer: e.target.value, isTrue: 0} });
+                setAbcd({ ...abcd, d: { answer: e.target.value, isTrue: 0 } });
                 break;
             }
             default: {
@@ -224,62 +224,62 @@ const Question = (props: any) => {
 
         let mc = [];
 
-        if(abcd.a.answer) {
+        if (abcd.a.answer) {
             let temp = {
                 answer: abcd.a.answer,
                 isTrue: 0
             }
-            if(realAns.toLowerCase() === 'a') {
+            if (realAns.toLowerCase() === 'a') {
                 temp.isTrue = 1
             }
-            
-            mc.push(temp);
-        } 
 
-        if(abcd.b.answer) {
+            mc.push(temp);
+        }
+
+        if (abcd.b.answer) {
             let temp = {
                 answer: abcd.b.answer,
                 isTrue: 0
             }
-            if(realAns.toLowerCase() === 'b') {
+            if (realAns.toLowerCase() === 'b') {
                 temp.isTrue = 1
             }
-            
+
             mc.push(temp);
         }
 
-        if(abcd.c.answer) {
+        if (abcd.c.answer) {
             let temp = {
                 answer: abcd.c.answer,
                 isTrue: 0
             }
-            if(realAns.toLowerCase() === 'c') {
+            if (realAns.toLowerCase() === 'c') {
                 temp.isTrue = 1
             }
-            
+
             mc.push(temp);
         }
 
-        if(abcd.d.answer) {
+        if (abcd.d.answer) {
             let temp = {
                 answer: abcd.d.answer,
                 isTrue: 0
             }
-            if(realAns.toLowerCase() === 'd') {
+            if (realAns.toLowerCase() === 'd') {
                 temp.isTrue = 1
             }
-            
+
             mc.push(temp);
         }
 
-        const body = {...questionBody,  multipleChoiceQuestions: mc};
+        const body = { ...questionBody, multipleChoiceQuestions: mc };
         console.log("BODY: ", body);
 
         try {
             setLoading(true);
             const res = await createOne('staff/addquestion', body);
-            if(res) {
-                
+            if (res) {
+
                 setVisible(false);
                 setReload(reload => reload + 1);
             }
@@ -322,69 +322,71 @@ const Question = (props: any) => {
                 </div>
             </div>
 
-            <Modal
-                title={!isEdit ? 'Tạo câu hỏi' : 'Sửa câu hỏi'}
-                visible={visible}
-                confirmLoading={confirmLoading}
-                onCancel={handleCancel}
-                className="create-form"
-                footer={[
-                    <div className='col'>
-                        <div className='center'>
-                            <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
-                                Lưu câu hỏi
-                            </Button>
+            {visible && (
+                <Modal
+                    title={!isEdit ? 'Tạo câu hỏi' : 'Sửa câu hỏi'}
+                    visible={visible}
+                    confirmLoading={confirmLoading}
+                    onCancel={handleCancel}
+                    className="create-form"
+                    footer={[
+                        <div className='col'>
+                            <div className='center'>
+                                <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
+                                    Lưu câu hỏi
+                                </Button>
 
-                            <Button key="cancel" onClick={handleCancel} className='btn-login'>
-                                Hủy
-                            </Button>
+                                <Button key="cancel" onClick={handleCancel} className='btn-login'>
+                                    Hủy
+                                </Button>
+                            </div>
                         </div>
-                    </div>
-                    ,
-                ]}
-            >
-                <span className='row-between'>
-                    <span>Loại câu hỏi: </span>
-                    <Cascader options={questionTypes} onChange={onSelectType} placeholder='Chọn loại câu hỏi' />
-                </span>
-                <span className='row-between mgt-10'>
-                    <span>Dạng câu hỏi: </span>
-                    <Cascader options={questionKinds} onChange={onSelectKind} placeholder='Chọn dạng câu hỏi' />
-                </span>
-                <span className='row-between mgt-10'>
-                    <span>Mức độ: </span>
-                    <Cascader options={questionLevModal} onChange={onSelectLevModal} placeholder='Chọn mức độ câu hỏi' />
-                </span>
-                <span className='col mgt-10'>
-                    <span>Câu hỏi: </span>
-                    <TextArea rows={2} placeholder='Nhập câu hỏi' onChange={enterQContent} />
-                </span>
-                {quesType === 1 ?
-                    <div className='mgt-20'>
-                        <span>Danh sách câu trả lời: </span>
-                        <ul className='enter-ans-list'>
-                            {range.map((r, i) => (
-                                <li key={i} className='row-between mgt-10 row-center-y'>
-                                    <span>{mapABC(r)}:</span>
-                                    <Input onChange={(e: any) => enterChoice(e, i)} className='w-250' placeholder={'Nhập phương án ' + mapABC(r)}></Input>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                    :
-                    <></>
-                }
+                        ,
+                    ]}
+                >
+                    <span className='row-between'>
+                        <span>Loại câu hỏi: </span>
+                        <Cascader options={questionTypes} onChange={onSelectType} placeholder='Chọn loại câu hỏi' />
+                    </span>
+                    <span className='row-between mgt-10'>
+                        <span>Dạng câu hỏi: </span>
+                        <Cascader options={questionKinds} onChange={onSelectKind} placeholder='Chọn dạng câu hỏi' />
+                    </span>
+                    <span className='row-between mgt-10'>
+                        <span>Mức độ: </span>
+                        <Cascader options={questionLevModal} onChange={onSelectLevModal} placeholder='Chọn mức độ câu hỏi' />
+                    </span>
+                    <span className='col mgt-10'>
+                        <span>Câu hỏi: </span>
+                        <TextArea rows={2} placeholder='Nhập câu hỏi' onChange={enterQContent} />
+                    </span>
+                    {quesType === 1 ?
+                        <div className='mgt-20'>
+                            <span>Danh sách câu trả lời: </span>
+                            <ul className='enter-ans-list'>
+                                {range.map((r, i) => (
+                                    <li key={i} className='row-between mgt-10 row-center-y'>
+                                        <span>{mapABC(r)}:</span>
+                                        <Input onChange={(e: any) => enterChoice(e, i)} className='w-250' placeholder={'Nhập phương án ' + mapABC(r)}></Input>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        :
+                        <></>
+                    }
 
-                <span className='row-between mgt-20 row-center-y'>
-                    <span>Đáp án (A, B or C): </span>
-                    <Input onChange={enterRealAns} placeholder='Nhập đáp án' className='w-250'></Input>
-                </span>
+                    <span className='row-between mgt-20 row-center-y'>
+                        <span>Đáp án (A, B or C): </span>
+                        <Input onChange={enterRealAns} placeholder='Nhập đáp án' className='w-250'></Input>
+                    </span>
 
-            </Modal>
+                </Modal>
+            )}
 
             <ul className='qs-list mgt-20'>
                 {questionList.length > 0 ?
-                    
+
                     questionList.map((q: any, i: any) => {
                         return <QuestionItem data={q} index={i} reload={reloadData} />
                     })
