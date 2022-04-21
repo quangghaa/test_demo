@@ -239,17 +239,25 @@ white-space: nowrap;
     margin: unset;
     padding: unset;
     margin-top: 20px;
+    height: 450px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.demo-qs-list li {
+    margin: 1em 0 0 0;
 }
 
 .qs-ans-list {
     list-style-type: none;
-    margin: unset;
+    margin: 0 0 0 0;
     padding: unset;
 
 }
 
 .qs-ans-list li {
-    margin-left: 15px;
+    /* margin-left: 15px; */
+    margin: 5px 0 0 1em;
 }
 
 .enter-ans-list {
@@ -257,6 +265,11 @@ white-space: nowrap;
     margin: unset;
     padding: unset;
     
+}
+
+.correct-ans {
+    color: rgb(136, 206, 30);
+    font-size: 16px;
 }
 
 .enter-ans-list li {

@@ -19,9 +19,11 @@ const CandidateCard = (props: any) => {
         setVisibleConfirm(true)
     }
 
-    const onYes = (id: any) => {
+    const onYes = (e: any, id: any) => {
+        e.stopPropagation();
         const removeCandidate = async () => {
             const res = await deleteOne('staff/delete', id);
+            console.log("RES: ", res, res.status);
 
             if(res && res.status == 200) {
 
@@ -39,8 +41,9 @@ const CandidateCard = (props: any) => {
 
     }
 
-    const onNo = () => {
-        setVisibleConfirm(false)
+    const onNo = (e:any) => {
+        e.stopPropagation();
+        setVisibleConfirm(false);
     }
 
     const isOdd = (n: number) => {
@@ -88,8 +91,8 @@ const CandidateCard = (props: any) => {
                 <Modal
                     title="Xác nhận"
                     visible={visibleConfirm}
-                    onOk={() => onYes(props.data.id)}
-                    onCancel={onNo}
+                    onOk={(e) => onYes(e, props.data.id)}
+                    onCancel={(e) => onNo(e)}
                     okText="Có"
                     cancelText="Không"
                 >
@@ -99,6 +102,10 @@ const CandidateCard = (props: any) => {
                 <span>
                     <span className='bold'>ID: </span>
                     {props.data.id}
+                </span>
+                <span>
+                    <span className='bold'>Name: </span>
+                    {props.data.name}
                 </span>
 
                 <span>

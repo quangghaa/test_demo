@@ -4,8 +4,8 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../app/hooks";
 import { createOne, deleteOne, getList, getOne } from "../../../services/api";
-import { ITest, ITestBody } from "../../interface";
-import { updateId, updateName, updateTime } from "../../reducer/testSlice";
+import { ICandidate, ITest, ITestBody } from "../../interface";
+import { updateAllCandidates, updateCandidates, updateId, updateLevel, updateName, updateSubject, updateTime } from "../../reducer/testSlice";
 
 const Test = (props: any) => {
     const test = [
@@ -66,6 +66,8 @@ const Test = (props: any) => {
     const [reload, setReload] = useState(0);
 
     const [visibleConfirm, setVisibleConfirm] = useState(false);
+
+    const [allCands, setAllCands] = useState([] as ICandidate[]);
 
 
 
@@ -158,11 +160,22 @@ const Test = (props: any) => {
         try {
             setLoading(true);
             const res = await getOne('staff/gettestbyid', id);
+            const res2 = await getList('staff/listcandidate');
+
             if(res) {
                 console.log("data res: ", res.data);
                 dispatch(updateId(res.data.id));
                 dispatch(updateName(res.data.name));
+                dispatch(updateSubject(res.data.subject));
+                dispatch(updateLevel(res.data.level));
                 dispatch(updateTime(res.data.times));
+                dispatch(updateCandidates(res.data.displayCandidate));
+            }
+
+            if(res2 ) {
+                console.log("ALL cands: ", res2.data);
+                dispatch(updateAllCandidates(res2.data));
+                // setAllCands(res2.data);
             }
 
 

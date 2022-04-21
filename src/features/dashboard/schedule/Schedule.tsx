@@ -92,8 +92,8 @@ const Schedule = () => {
         level: {
             id: 0
         },
-        date: '',
-        time: '',
+        dates: '',
+        times: '',
         phone: '',
         email: ''
     } as ICandidateBody)
@@ -105,8 +105,8 @@ const Schedule = () => {
         level: {
             id: 0
         },
-        date: '',
-        time: '',
+        dates: '',
+        times: '',
         phone: '',
         email: ''
     } as ICandidateBody)
@@ -143,9 +143,22 @@ const Schedule = () => {
 
         }
 
+        const getCal = async () => {
+            try {
+                setLoading([...loading, {calendar: true}]);
+                const res = await getList('staff/candidate/bydate');
+                if(res) {
+                    setCalList(res.data);
+                }
+            } finally {
+                setLoading([...loading, {calendar: false}]);
+            }
+        }
+
         getOutdate();
         getToday();
         getFuture();
+        getCal();
 
     }, [reload]);
 
@@ -239,7 +252,7 @@ const Schedule = () => {
         const date = y + '-' + m + '-' + d;
         // setSearchBody({ ...searchBody, date: selectDate.toString() })
         // setDatetime({...datetime, date: date});
-        setAddBody({ ...addBody, date: date });
+        setAddBody({ ...addBody, dates: date });
     }
 
     const onSelectTimeModal = (value: any) => {
@@ -255,7 +268,7 @@ const Schedule = () => {
 
         const time = h + ':' + m + ':' + s;
         // setDatetime({...datetime, time: time});
-        setAddBody({ ...addBody, time: time });
+        setAddBody({ ...addBody, times: time });
     }
 
     const enterEmailModal = (e: any) => {
@@ -273,7 +286,7 @@ const Schedule = () => {
     const onSaveModal = async () => {
         setLoadingModal(true);
         try {
-            const res = await createOne("addCandidate", addBody);
+            const res = await createOne("staff/addcandidate", addBody);
             if (res) {
                 setVisibleModal(false)
                 setReload(reload => reload + 1);
@@ -285,8 +298,8 @@ const Schedule = () => {
                 department: '',
                 position: '',
                 level: '',
-                date: '',
-                time: '',
+                dates: '',
+                times: '',
                 phone: '',
                 email: ''
             }
@@ -400,7 +413,7 @@ const Schedule = () => {
                                     </div>
 
                                     <span className='mgt-10'>Phòng ban</span>
-                                    <Cascader value={'Block' as any} className='c-cas' size='large' options={dep} onChange={onSelectDepModal} placeholder="Which department?" />
+                                    <Cascader className='c-cas' size='large' options={dep} onChange={onSelectDepModal} placeholder="Which department?" />
 
                                     <span className='mgt-10'>Vị trí</span>
                                     <Cascader className='c-cas' size='large' options={pos} onChange={onSelectPosModal} placeholder="Which position?" />

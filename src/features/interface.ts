@@ -22,8 +22,8 @@ export interface ICandidateBody {
     department: string;
     position: string;
     level: any;
-    date: string;
-    time: string;
+    dates: string;
+    times: string;
     phone: string;
     email: string;
 }

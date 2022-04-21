@@ -3,12 +3,8 @@ import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row, Spin, Time
 import TextArea from 'antd/lib/input/TextArea';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import useFetch from '../../../hook/useFetch';
 import { createOne, getList } from '../../../services/api';
 import { ICandidate, IChoice, IQA, ITest, QA, QData } from '../../interface';
-import { addCandidate, addQa, deleteQa, selectTest, updateCandidates, updateCode, updateId, updateLevel, updateName, updateQas, updateType } from '../../reducer/testSlice';
-import HeaderD from '../headerD/HeaderD';
 import './QuestionCollection.css';
 import QuestionItem from './QuestionItem';
 
@@ -42,6 +38,8 @@ const Question = (props: any) => {
         }
     ];
 
+    const [selectedLevel, setSelectedLevel] = useState('');
+
     const questionLevModal = lev;
 
     const quesType = 1;
@@ -51,8 +49,6 @@ const Question = (props: any) => {
     const [reload, setReload] = useState(0);
 
     const [questionList, setQuestionList] = useState([] as IQA[]);
-
-    const reduxTest = useAppSelector(selectTest);
 
     const [qContent, setQContent] = useState('');
 
@@ -123,20 +119,25 @@ const Question = (props: any) => {
     ];
 
     useEffect(() => {
-        try {
-            const getQuestions = async () => {
-                setLoading(true);
-
-                const res = await getList(`staff/getallquestion`);
-                if (res.status === 200 && res.data != null) {
-                    setQuestionList(res.data);
+        if(selectedLevel.length > 0) {
+            try {
+                const body = {
+                    id: parseInt(selectedLevel)
                 }
-            }
+                const getQuestionByLevel = async () => {
+                    setLoading(true);
+                    const res = await createOne(`staff/getquestionbylevel`, body);
+                    if (res.status === 200 && res.data != null) {
+                        setQuestionList(res.data);
+                    }
+                }
 
-            getQuestions();
-        } finally {
-            setLoading(false);
+                getQuestionByLevel();
+            } finally {
+                setLoading(false);
+            }
         }
+
     }, [reload])
 
     const reloadData = () => {
@@ -144,15 +145,23 @@ const Question = (props: any) => {
     }
 
     const onSelectLev = async (value: any) => {
-        setLoading(true);
-        try {
-            const res = await getList(`staff/getallquestion`);
-            if (res.status === 200 && res.data != null) {
-                setQuestionList(res.data);
-            }
-        } finally {
-            setLoading(false);
-        }
+
+        setSelectedLevel(value[0]);
+        setReload(reload => reload+1);
+        
+        // try {
+        //     const body = {
+        //         id: parseInt(value[0])
+        //     }
+        //     setLoading(true);
+            
+        //     const res = await getList(`staff/getquestionbylevel`, body);
+        //     if (res.status === 200 && res.data != null) {
+        //         setQuestionList(res.data);
+        //     }
+        // } finally {
+        //     setLoading(false);
+        // }
     }
 
     const onSelectType = (value: any) => {
