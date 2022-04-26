@@ -1,5 +1,5 @@
 .name-inp {
-    border: 0.5px solid black;
+    border: 0.5px solid rgb(204, 202, 202);
     border-radius: 3px;
     padding-right: 40px;
 
@@ -166,4 +166,9 @@
 
 .option-list li {
     margin-top: 10px;
+}
+
+.remove-cand-ic:hover{
+    color: rgb(173, 159, 159);
+    cursor: pointer;
 }

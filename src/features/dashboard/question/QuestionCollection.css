@@ -106,8 +106,13 @@
 .can-list {
     list-style-type: none;
     margin: unset;
-    padding: unset;
+    padding: 0 0 10px 0;
     display: flex;
+    width: 100%;
+    height: fit-content;
+    overflow-x: auto;
+    overflow-y: hidden;
+
 }
 
 .can-list li {
@@ -118,6 +123,8 @@
     font-size: 14px;
     font-weight: 500;
     background-color: #f0f2f5;
+    height: min-content;
+    min-width: fit-content;
 }
 
 .btn-save {
@@ -137,16 +144,20 @@
 .rs-test-list {
     list-style-type: none;
     margin: 20px 0 0 0;
-    padding: unset;
-
+    padding: 0 10px 0 0;
+    height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .rs-test-list li {
+    position: relative;
+    margin: 10px 0 0 0;
     padding: 10px 20px;
     border: 0.5px solid rgb(194, 164, 164);
     border-radius: 5px;
     background-color: #f0f2f5;
-
+    
 }
 
 .rs-test-list li:hover {
@@ -165,13 +176,13 @@
 .qs-list {
     list-style-type: none;
     margin: unset;
-    padding: unset;
-
+    padding: 0 10px 0 0;
+    height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .qs-list li {
-    /* width: 300px; */
-  /* display: flex; */
   padding-left: 20px;
   position: relative;
   margin-top: 10px;
@@ -182,16 +193,22 @@
     border-radius: 5px;
     background-color: #f0f2f5;
     position: relative;
+    padding: 5px 10px;
 }
 
 .demo-test-box:hover {
     cursor: pointer;
 }
 
-.abs {
+.abs-ic {
     position: absolute;
     top: 5px;
     left: 0;
+}
+
+.abs-ic:hover {
+    cursor: pointer;
+    color: rgb(40, 228, 53);
 }
 
 .hide-long-text {
@@ -222,17 +239,25 @@ white-space: nowrap;
     margin: unset;
     padding: unset;
     margin-top: 20px;
+    height: 450px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.demo-qs-list li {
+    margin: 1em 0 0 0;
 }
 
 .qs-ans-list {
     list-style-type: none;
-    margin: unset;
+    margin: 0 0 0 0;
     padding: unset;
 
 }
 
 .qs-ans-list li {
-    margin-left: 15px;
+    /* margin-left: 15px; */
+    margin: 5px 0 0 1em;
 }
 
 .enter-ans-list {
@@ -242,7 +267,51 @@ white-space: nowrap;
     
 }
 
+.correct-ans {
+    color: rgb(136, 206, 30);
+    font-size: 16px;
+}
+
 .enter-ans-list li {
     
+}
+
+.relative {
+    position: relative;
+}
+
+.add-can {
+    position: absolute;
+    left: 100px;
+    font-size: 16px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.add-can:hover {
+    cursor: pointer;
+    color: rgb(21, 160, 21);
+    font-size: 24px;
+}
+
+.rm-can-code {
+    width: fit-content;
+    height: fit-content;
+    font-size: 12px;
+}
+
+.rm-can-code:hover {
+    cursor: pointer;
+    color: rgb(143, 92, 92);
+}
+
+.rm-question {
+    font-size: 16px;
+    margin: 0 10px 0 0;
+}
+
+.rm-question:hover {
+    cursor: pointer;
+    color: rgb(168, 9, 9);
 }
 

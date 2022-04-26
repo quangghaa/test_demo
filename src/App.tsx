@@ -10,6 +10,7 @@ import Schedule from './features/dashboard/schedule/Schedule';
 import Question from './features/dashboard/question/Question';
 import Complete from './features/dashboard/complete/Complete';
 import CompleteTest from './features/completetest/CompleteTest';
+import QuestionCollection from './features/dashboard/question/QuestionCollection';
 
 
 function App() {
@@ -46,7 +47,7 @@ function App() {
           
           <Route path='/dashboard' element={<Schedule />} />
           <Route path='/dashboard/schedule' element={<Schedule />} />
-          <Route path='/dashboard/question' element={<Question />} />
+          <Route path='/dashboard/question' element={<QuestionCollection />} />
           <Route path='/dashboard/complete' element={<Complete />}/>
         </Routes>
       </Router>

@@ -2,32 +2,36 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { ICandidate, IQA } from "../interface";
 
+export interface ICandCode {
+    id: number;
+    name: string;
+}
+
 export interface TestState {
     id: number;
-    // code: string;
     codeTest: string;
-    // type: string;
-    subject: number;
+    subject: any;
     name: string;
-    level: number;
+    level: any;
     candidates: ICandidate[];
+    allCandiddates: ICandidate[];
+    candCodes:  ICandCode[],
     // qas: IQA[];
     questions: IQA[];
-
-    // chosen: Chosen[];
+    times: string;
 }
 
 const initialState: TestState = {
     id: 0,
     codeTest: '',
-    subject: 0,
+    subject: {},
     name: '',
-    level: 0,
+    level: {},
     candidates: [] as ICandidate[],
-    // qas: [] as IQA[],
+    allCandiddates: [] as ICandidate[],
+    candCodes: [] as ICandCode[],
     questions: [] as IQA[],
-
-    // chosen: [] as Chosen[],
+    times: ''
 }
 
 export const testSlice = createSlice({
@@ -40,7 +44,7 @@ export const testSlice = createSlice({
         updateCode: (state, action) => {
             state.codeTest = action.payload;
         },
-        updateType: (state, action) => {
+        updateSubject: (state, action) => {
             state.subject = action.payload;
         },
         updateName: (state, action) => {
@@ -49,36 +53,53 @@ export const testSlice = createSlice({
         updateLevel: (state, action) => {
             state.level = action.payload;
         },
-        addCandidate: (state, action) => {
-            state.candidates.push(action.payload);    
-        },
         addQa: (state, action) => {
-            state.questions = [...[state.questions], action.payload];
+            state.questions = [...state.questions, action.payload];
         },
         deleteQa: (state, action) => {
-            state.questions = state.questions.filter((value: any, index:any) => {
-                return index != action.payload;
+            state.questions = state.questions.filter((question: any, index:any) => {
+                return question.id != action.payload.id;
             })
         },
         updateQas: (state, action) => {
             state.questions = action.payload;
         },
+
+        addCandidate: (state, action) => {
+            state.candidates.push(action.payload);    
+        },
+        updateCandCodes: (state, action) => {
+            state.candCodes = action.payload;
+        },
+        updateAllCandidates: (state, action) => {
+            state.allCandiddates = action.payload;
+        },
         updateCandidates: (state, action) => {
             state.candidates = action.payload;
+        },
+        deleteCandidate: (state, action) => {
+            state.candidates = state.candidates.filter((candidate: any) => {
+                return candidate.id != action.payload;
+            })
+        },
+        updateTime: (state, action) => {
+            state.times = action.payload;
         },
         clear: (state) => {
             state.id = 0;
             state.codeTest = '';
-            state.subject = 0;
+            state.subject = '';
             state.name = '';
-            state.level = 0;
+            state.level = '';
             state.candidates = [] as ICandidate[];
+            state.allCandiddates = [] as ICandidate[];
             state.questions = [] as IQA[];
+            state.times = ''
         }
     }
 });
 
-export const { updateId, updateCode, updateType, updateName, updateLevel, addCandidate, addQa, deleteQa, updateQas, updateCandidates, clear } = testSlice.actions;
+export const { updateId, updateCode, updateSubject, updateName, updateLevel, addCandidate, addQa, deleteQa, updateQas, updateCandidates, updateAllCandidates, updateCandCodes, updateTime, deleteCandidate, clear } = testSlice.actions;
 
 export const selectTest = (state: RootState) => state.test;
 
