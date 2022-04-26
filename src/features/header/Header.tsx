@@ -1,10 +1,12 @@
 import { Button, Input, Modal, Statistic } from 'antd';
 import Countdown from 'antd/lib/statistic/Countdown';
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 
 const Header = (props: any) => {
+    const navigate = useNavigate();
+
     const handleLogin = () => {
         console.log('Login');
         setVisible(true);
@@ -14,16 +16,13 @@ const Header = (props: any) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
 
-    const showModal = () => {
-        setVisible(true);
-    };
-
     const handleOk = () => {
-        setModalText('The modal will be closed after two seconds');
+        
         setConfirmLoading(true);
         setTimeout(() => {
             setVisible(false);
             setConfirmLoading(false);
+            navigate('/dashboard');
         }, 2000);
     };
 
@@ -99,11 +98,11 @@ const Header = (props: any) => {
                     <div className='col'>
                         <div className='row-reverse'><span className='forgot-pass'>Quên mật khẩu?</span></div>
                         <div className='center'>
-                            <Link to='/dashboard'>
+                            {/* <Link to='/dashboard'> */}
                                 <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
                                     Đăng nhập
                                 </Button>
-                            </Link>
+                            {/* </Link> */}
                         </div>
                     </div>
                     ,
