@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getList } from "../../services/api";
+import { getListNoJwt } from "../../services/api";
 import { CacheAns, IQA } from "../interface";
 import Question from "./Question";
 
@@ -32,7 +32,7 @@ const EnglishTest = (props: any) => {
         const getCache = async () => {
             setLoading(true);
             try {
-                const res = await getList('testpage/getcacheans');
+                const res = await getListNoJwt('testpage/getcacheans');
                 if(res) {
                     if(Array.isArray(arrReturn) && arrReturn.length > 0) {
                         arrReturn.map((item) => {

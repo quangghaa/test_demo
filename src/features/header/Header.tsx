@@ -1,9 +1,10 @@
 import { Button, Input, Modal, Statistic } from 'antd';
 import Countdown from 'antd/lib/statistic/Countdown';
+import axios from 'axios';
 import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
-import { createOne } from '../../services/api';
+import { createOneNoJwt } from '../../services/api';
 import { updateCandidate } from '../reducer/listCandidateSlice';
 import './Header.css';
 
@@ -14,22 +15,66 @@ const Header = (props: any) => {
 
     const handleLogin = () => {
         console.log('Login');
-        setVisible(true);
+        const token = localStorage.getItem('jwt');
+
+        if(token != null) {
+            navigate('/dashboard');
+        }
+        else {
+            setVisible(true);
+        }
+        
     }
 
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
 
+    const [user, setUser] = useState({
+        username: '',
+        password: ''
+    })
+
     const handleOk = () => {
-        
-        setConfirmLoading(true);
-        setTimeout(() => {
-            setVisible(false);
-            setConfirmLoading(false);
-            navigate('/dashboard');
-        }, 2000);
+        const loadPost = async () => {
+  
+            try {
+                setConfirmLoading(true);
+                // Await make wait until that 
+                // promise settles and return its result
+                const response = await axios.post(`${process.env.REACT_APP_BASE_URL}authenticate`, user);
+    
+                // After fetching data stored it in posts state.
+                console.log("RES: ", response.data);
+                localStorage.setItem("jwt", response.data.jwt);
+                setVisible(false);
+  
+            } finally {
+                setConfirmLoading(false);
+            }
+        }
+  
+        // Call the function
+        loadPost();
+
+
+        // setConfirmLoading(true);
+        // setTimeout(() => {
+        //     setVisible(false);
+        //     setConfirmLoading(false);
+        //     navigate('/dashboard');
+        // }, 2000);
     };
+
+    const enterUsername = (e:any ) => {
+        const u = e.target.value.trim();
+        setUser({...user, username: u});
+    }
+
+    const enterPassword = (e: any) => {
+        const p = e.target.value.trim();
+        setUser({...user, password: p});
+    }
 
     const handleCancel = () => {
         console.log('Clicked cancel button');
@@ -54,7 +99,7 @@ const Header = (props: any) => {
     const handleSubmit = () => {
         const submit = async () => {
             try {
-                const res = await createOne('testpage/submit');
+                const res = await createOneNoJwt('testpage/submit');
                 if(res) {
                     console.log("ket qua: ", res.data);
                     const marks = {
@@ -118,9 +163,9 @@ const Header = (props: any) => {
                     ,
                 ]}
             >
-                <Input size="large" placeholder="Enter username" />
-                <Input.Password size='large'
-                    placeholder="Enter password" className='mgt-20'
+                <Input size="large" placeholder="Enter username" onChange={enterUsername} />
+                <Input.Password
+                    placeholder="Enter password" className='mgt-20' onChange={enterPassword}
                 />
             </Modal>
         </>

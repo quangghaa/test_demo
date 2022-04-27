@@ -1,7 +1,7 @@
 import { Radio, Space } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import React, { useEffect, useState } from "react";
-import { createOne } from "../../services/api";
+import { createOneNoJwt } from "../../services/api";
 
 const Question = (props: any) => {
     const [answer, setAnswer] = useState('');
@@ -44,7 +44,7 @@ const Question = (props: any) => {
 
         const doingTest = async () => {
             try {
-                const res = await createOne(`testpage/doingtest/${props.id}`, body);
+                const res = await createOneNoJwt(`testpage/doingtest/${props.id}`, body);
                 if(res) {
                     console.log("DOOO: ", res.data);
                 }

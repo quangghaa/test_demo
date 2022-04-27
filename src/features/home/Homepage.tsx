@@ -12,7 +12,7 @@ import { addTest, selectListTest } from '../reducer/listTestSlice';
 import { addCandidate } from '../reducer/listCandidateSlice';
 import './Homepage.css';
 import { useNavigate } from "react-router-dom";
-import { getList, getOne } from '../../services/api';
+import { getListNoJwt } from '../../services/api';
 
 const Homepage = (props: any) => {
 
@@ -21,8 +21,6 @@ const Homepage = (props: any) => {
     const navigate = useNavigate();
 
     const [canId, setCanId] = useState('');
-
-    const [joinUrl, setJoinUrl] = useState('');
 
     const [loading, setLoading] = useState(false);
 
@@ -35,7 +33,7 @@ const Homepage = (props: any) => {
         const joinTest = async () => {
             try {
                 setLoading(true);
-                const res = await getList('jointest', {code: canId});
+                const res = await getListNoJwt('jointest', {code: canId});
                 if(res) {
                     dispatch(addCandidate(res.data));
                     navigate('/instruction');

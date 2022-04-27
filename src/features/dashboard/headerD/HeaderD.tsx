@@ -15,6 +15,7 @@ const HeaderD = () => {
 
     const logout = () => {
         dispatch(clear());
+        localStorage.removeItem('jwt');
         console.log('Cleared and OUT');
     }
 
