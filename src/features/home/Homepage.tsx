@@ -12,63 +12,41 @@ import { addTest, selectListTest } from '../reducer/listTestSlice';
 import { addCandidate } from '../reducer/listCandidateSlice';
 import './Homepage.css';
 import { useNavigate } from "react-router-dom";
+import { getList, getOne } from '../../services/api';
 
 const Homepage = (props: any) => {
 
-    function checkStatus(response: any) {
-        if (response.ok) {
-            return Promise.resolve(response);
-        } else {
-            return Promise.reject(new Error(response.statusText));
-        }
-    }
-
-    function parseJSON(response: any) {
-        return response.json();
-    }
-
     const dispatch = useAppDispatch();
-    const canState = useAppSelector(selectCandidate);
-    const ltState = useAppSelector(selectListTest);
-
-    const [canId, setCanId] = useState('');
-
-    const [urls, setUrls] = useState([] as string[]);
-
-    const [joinUrl, setJoinUrl] = useState('');
-
-    useEffect(() => {
-        const url = canId.length > 0 ? `${process.env.REACT_APP_BASE_URL}jointest?code=` + canId : '';
-        setJoinUrl(url);
-    }, [canId])
-
-    const enterCanId = (e: any) => {
-        setCanId(e.target.value);
-    }
-
-    const [listTest, setListTest] = useState(null);
 
     const navigate = useNavigate();
 
+    const [canId, setCanId] = useState('');
+
+    const [joinUrl, setJoinUrl] = useState('');
+
+    const [loading, setLoading] = useState(false);
+
+    const enterCanId = (e: any) => {
+        const id = e.target.value;
+        setCanId(id.trim());
+    }
+
     const handleClick = () => {
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        }
-        const fetchData = async () => {
+        const joinTest = async () => {
             try {
-                const res = await fetch(joinUrl, requestOptions);
-                const json = await res.json();
-                console.log("In fetch");
-                dispatch(addCandidate(json));
-                navigate('/instruction');
-
-                return json;
-
-            } catch (error: any) {
+                setLoading(true);
+                const res = await getList('jointest', {code: canId});
+                if(res) {
+                    dispatch(addCandidate(res.data));
+                    navigate('/instruction');
+                }
+            } finally {
+                setLoading(false);
             }
+            
         }
-        fetchData();
+
+        joinTest();
     }
 
     return (

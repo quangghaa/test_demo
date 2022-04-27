@@ -30,11 +30,18 @@ export const listCandidateSlice = createSlice({
     reducers: {
         addCandidate: (state, action) => {
             state.push(action.payload);
+        },
+        updateCandidate: (state, action) => {
+            state.map(can => {
+                can.englishMark = action.payload.englishMark;
+                can.codingMark = action.payload.codingMark;
+                can.knowledgeMark = action.payload.knowledgeMark;
+            })
         }
     }
 });
 
-export const { addCandidate } = listCandidateSlice.actions;
+export const { addCandidate, updateCandidate } = listCandidateSlice.actions;
 
 export const selectCandidate = (state: RootState) => state.listCandidate;
 

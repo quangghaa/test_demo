@@ -115,7 +115,7 @@ const Schedule = () => {
     useEffect(() => {
         const getOutdate = async () => {
             setLoading([...loading, { past: true }]);
-            const res = await getList('staff/candidate/outofdate');
+            const res = await getList('staff/candidate/bydate/outofdate');
             if (res && res.data != null) {
                 setPast(res.data);
             }
@@ -125,7 +125,7 @@ const Schedule = () => {
 
         const getToday = async () => {
             setLoading([...loading, { present: true }]);
-            const res = await getList('staff/candidate/today');
+            const res = await getList('staff/candidate/bydate/today');
             if (res && res.data != null) {
                 setToday(res.data);
             }
@@ -135,7 +135,7 @@ const Schedule = () => {
 
         const getFuture = async () => {
             setLoading([...loading, { future: true }]);
-            const res = await getList('staff/candidate/undue');
+            const res = await getList('staff/candidate/bydate/undue');
             if (res && res.data != null) {
                 setFuture(res.data);
             }
@@ -146,7 +146,7 @@ const Schedule = () => {
         const getCal = async () => {
             try {
                 setLoading([...loading, {calendar: true}]);
-                const res = await getList('staff/candidate/bydate');
+                const res = await getList('/staff/candidate/bydate/outofdate');
                 if(res) {
                     setCalList(res.data);
                 }
