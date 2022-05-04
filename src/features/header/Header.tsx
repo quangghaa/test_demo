@@ -1,31 +1,80 @@
 import { Button, Input, Modal, Statistic } from 'antd';
 import Countdown from 'antd/lib/statistic/Countdown';
+import axios from 'axios';
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../app/hooks';
+import { createOneNoJwt } from '../../services/api';
+import { updateCandidate } from '../reducer/listCandidateSlice';
 import './Header.css';
 
 const Header = (props: any) => {
+    const navigate = useNavigate();
+
+    const dispatch = useAppDispatch();
+
     const handleLogin = () => {
         console.log('Login');
-        setVisible(true);
+        const token = localStorage.getItem('jwt');
+
+        if(token != null) {
+            navigate('/dashboard');
+        }
+        else {
+            setVisible(true);
+        }
+        
     }
 
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
 
-    const showModal = () => {
-        setVisible(true);
-    };
+    const [user, setUser] = useState({
+        username: '',
+        password: ''
+    })
 
     const handleOk = () => {
-        setModalText('The modal will be closed after two seconds');
-        setConfirmLoading(true);
-        setTimeout(() => {
-            setVisible(false);
-            setConfirmLoading(false);
-        }, 2000);
+        const loadPost = async () => {
+  
+            try {
+                setConfirmLoading(true);
+                // Await make wait until that 
+                // promise settles and return its result
+                const response = await axios.post(`${process.env.REACT_APP_BASE_URL}authenticate`, user);
+    
+                // After fetching data stored it in posts state.
+                console.log("RES: ", response.data);
+                localStorage.setItem("jwt", response.data.jwt);
+                setVisible(false);
+  
+            } finally {
+                setConfirmLoading(false);
+            }
+        }
+  
+        // Call the function
+        loadPost();
+
+
+        // setConfirmLoading(true);
+        // setTimeout(() => {
+        //     setVisible(false);
+        //     setConfirmLoading(false);
+        //     navigate('/dashboard');
+        // }, 2000);
     };
+
+    const enterUsername = (e:any ) => {
+        const u = e.target.value.trim();
+        setUser({...user, username: u});
+    }
+
+    const enterPassword = (e: any) => {
+        const p = e.target.value.trim();
+        setUser({...user, password: p});
+    }
 
     const handleCancel = () => {
         console.log('Clicked cancel button');
@@ -48,23 +97,28 @@ const Header = (props: any) => {
     }
 
     const handleSubmit = () => {
-        console.log('...');
-
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        }
-        const fetchData = async () => {
+        const submit = async () => {
             try {
-                const doUrl = `${process.env.REACT_APP_BASE_URL}testpage/submit`;
-                const res = await fetch(doUrl, requestOptions);
-                const json = await res.json();
-                console.log("Nop bai OKE. ", json);
-            } catch (error: any) {
-                console.log(error);
+                const res = await createOneNoJwt('testpage/submit');
+                if(res) {
+                    console.log("ket qua: ", res.data);
+                    const marks = {
+                        englishMark: res.data.data.englishMark!= null ? parseInt(res.data.data.englishMark) : -1,
+                        codingMark: res.data.data.codingMark != null ? parseInt(res.data.data.codingMark) : -1,
+                        knowledgeMark: res.data.data.knowledgeMark != null ? parseInt(res.data.data.knowledgeMark) : -1
+                    }
+
+                    console.log("MARKS: ", marks);
+
+                    dispatch(updateCandidate(marks));
+                    
+                }
+            } catch(err) {
+                console.log(err);
             }
         }
-        fetchData();
+
+        submit();
 
         props.finish();
     }
@@ -99,19 +153,19 @@ const Header = (props: any) => {
                     <div className='col'>
                         <div className='row-reverse'><span className='forgot-pass'>Quên mật khẩu?</span></div>
                         <div className='center'>
-                            <Link to='/dashboard'>
+                            {/* <Link to='/dashboard'> */}
                                 <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
                                     Đăng nhập
                                 </Button>
-                            </Link>
+                            {/* </Link> */}
                         </div>
                     </div>
                     ,
                 ]}
             >
-                <Input size="large" placeholder="Enter username" />
-                <Input.Password size='large'
-                    placeholder="Enter password" className='mgt-20'
+                <Input size="large" placeholder="Enter username" onChange={enterUsername} />
+                <Input.Password
+                    placeholder="Enter password" className='mgt-20' onChange={enterPassword}
                 />
             </Modal>
         </>

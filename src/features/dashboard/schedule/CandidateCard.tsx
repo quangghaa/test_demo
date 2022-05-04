@@ -120,7 +120,7 @@ const CandidateCard = (props: any) => {
 
                 <span>
                     <span className='bold'>Level: </span>
-                    {props.data.level}
+                    {props.data.level.name}
                 </span>
 
                 <span>

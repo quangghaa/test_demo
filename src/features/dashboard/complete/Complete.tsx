@@ -1,5 +1,8 @@
 import { CloseOutlined, SearchOutlined, SendOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Cascader, Checkbox, Col, Input, Row } from 'antd';
+import { useEffect, useState } from 'react';
+import { getList } from '../../../services/api';
+import { ICandidate } from '../../interface';
 import HeaderD from '../headerD/HeaderD';
 import './Complete.css';
 
@@ -32,6 +35,32 @@ const cansComData = [
 ]
 
 const Complete = () => {
+    const pos = [
+        {
+            value: 'Developer',
+            label: 'Developer'
+        },
+        {
+            value: 'PM',
+            label: 'PM'
+        }
+    ];
+
+    const lev = [
+        {
+            value: '1',
+            label: 'Junior'
+        },
+        {
+            value: '2',
+            label: 'Middle'
+        },
+        {
+            value: '3',
+            label: 'Senior'
+        }
+    ];
+
     const options = [
         {
             value: 'blockchain',
@@ -45,11 +74,40 @@ const Complete = () => {
         },
     ];
 
+    const [reload, setReload] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [listDone, setListDone] = useState([] as ICandidate[]);
+
+    useEffect(() => {
+        const getDone = async () => {
+            try {
+                setLoading(true);
+                const res = await getList('staff/candidate/done');
+                if (res && res.data != null) {
+                    setListDone(res.data);
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        getDone();
+    }, [reload]);
+
     function onChange(value: any) {
         console.log(value);
     }
 
-    
+    const onSelectPos = (value: any) => {
+        // setSearchBody({ ...searchBody, position: value[0] })
+    }
+
+    const onSelectLev = (value: any) => {
+        // const obj = {
+        //     id: value[0]
+        // }
+        // setSearchBody({ ...searchBody, level: value })
+    }
     
 
     return (
@@ -69,14 +127,10 @@ const Complete = () => {
                         <Cascader className='c-cas' size='large' options={options} onChange={onChange} placeholder="Please select" />
 
                         <span className='mgt-10'>Vị trí</span>
-                        <span className='border'>
-                            <br />
-                        </span>
-                        <ul className='level-list'>
-                            <li>Fresher</li>
-                            <li>Junior</li>
-                            <li>Senior</li>
-                        </ul>
+                        <Cascader className='c-cas' size='large' options={pos} onChange={onSelectPos} placeholder="Which position?" />
+
+                        <span className='mgt-10'>Level</span>
+                        <Cascader className='c-cas' size='large' options={lev} onChange={onSelectLev} placeholder="Which level?" />
                         
                         <span className='center mgt-30'>
                             <Button className='btn-search' icon={<SearchOutlined />}>
@@ -90,46 +144,23 @@ const Complete = () => {
                 </Col>
                 <Col span={18} className='pd-20'>
                     <ul className='com-test-list'>
-                        <li>
-                            <div className='left'>
-                                <div className='cans-info'>
-                                    <span className='cans-name'>Nguyen Van A</span>
-                                    <span className='mgt-10'><b>Phòng ban:&nbsp;</b>P.CN Blockchain</span>
-                                    <span><b>Vị trí:&nbsp;</b>P.CN Blockchain</span>
-                                    <span><b>Level:&nbsp;</b>P.CN Blockchain</span>
-                                    <span><b>Người thêm:&nbsp;</b>P.CN Blockchain</span>
-                                    <span className='row mgt-10'><b>Điểm:&nbsp;</b><Input className='com-inp' placeholder=''></Input></span>
-                                </div>
-
-                                <div className='chart'>
-                                    Chart
-                                </div>
-                            </div>
-
-                            <div className='right'>
-                                
-                                <span>
-                                    <Checkbox onChange={onChange}>SMS</Checkbox>
-                                    <span>Gửi điểm <SendOutlined /></span>
-                                </span>
-                                <span><Checkbox onChange={onChange}>Email</Checkbox></span>
-                            </div>
-                        </li>
-
-                        {cansComData.map((c) => (
+                        {listDone.map((c) => (
                             <li>
                             <div className='left'>
                                 <div className='cans-info'>
                                     <span className='cans-name'>{c.name}</span>
                                     <span className='mgt-10'><b>Phòng ban:&nbsp;</b>{c.department}</span>
                                     <span><b>Vị trí:&nbsp;</b>{c.position}</span>
-                                    <span><b>Level:&nbsp;</b>{c.level}</span>
+                                    <span><b>Level:&nbsp;</b>{c.level.name}</span>
                                     <span><b>Người thêm:&nbsp;</b>{c.reporter}</span>
-                                    <span className='row mgt-10'><b>Điểm:&nbsp;</b><Input className='com-inp' placeholder=''></Input></span>
+                                    {/* <span className='row mgt-10'><b>Điểm:&nbsp;</b><Input className='com-inp' placeholder=''></Input></span> */}
+                                    <span className='row mgt-10'><b>Điểm ngoại ngữ:&nbsp;</b>{c.englishMark != null ? c.englishMark : ''}</span>
+                                    <span className='row mgt-10'><b>Điểm kiến thức chung:&nbsp;</b>{c.knowledgeMark != null ? c.knowledgeMark : ''}</span>
+                                    <span className='row mgt-10'><b>Điểm coding:&nbsp;</b>{c.codingMark != null ? c.codingMark : ''}</span>
                                 </div>
 
                                 <div className='chart'>
-                                    Chart
+                                    {/* Chart */}
                                 </div>
                             </div>
 

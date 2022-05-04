@@ -5,7 +5,7 @@ export interface ICandidate {
     name: string;
     department: string;
     position: string;
-    level: string;
+    level: any;
     reporter: string;
     time: string;
     dates: string;

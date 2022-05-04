@@ -1,4 +1,4 @@
-import adminClient from './request';
+import { adminClient, client } from './request';
 
 const getList = (contentType, params) => {
   return adminClient.get(contentType, {
@@ -26,13 +26,36 @@ const deleteOne = (contentType, id) => {
   return adminClient.delete(contentType + '/' + id);
 };
 
-// const doLoginStrapi = () => {
-//   return adminClient.post('auth/local', {
-//     "identifier": `${process.env.REACT_APP_STRAPI_IDENTIFY}`,
-//     "password": `${process.env.REACT_APP_STRAPI_PASSWORD}`
-//   });
-// }
+// Without token (jwt)
+
+const getListNoJwt = (contentType, params) => {
+  return client.get(contentType, {
+    params,
+  });
+};
+
+const getOneNoJwt = (contentType, id) => {
+  return client.get(contentType + '/' + id);
+};
+
+const getTotalNoJwt = (contentType) => {
+  return client.get(contentType);
+}
+
+const createOneNoJwt = (contentType, payload) => {
+  return client.post(contentType, payload);
+};
+
+const updateOneNoJwt = (contentType, id, payload) => {
+  return client.put(contentType + '/' + id, payload);
+};
+
+const deleteOneNoJwt = (contentType, id) => {
+  return client.delete(contentType + '/' + id);
+};
+
 
 export {
-  getList, getOne, createOne, updateOne, deleteOne, getTotal
+  getList, getOne, createOne, updateOne, deleteOne, getTotal,
+  getListNoJwt, getOneNoJwt, createOneNoJwt, updateOneNoJwt, deleteOneNoJwt, getTotalNoJwt,
 };
