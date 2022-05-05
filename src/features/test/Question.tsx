@@ -9,16 +9,18 @@ const Question = (props: any) => {
 
     useEffect(() => {
         const cacheData = props.cache;
+        const canId = props.canId
         const data = props.data;
 
         if(Array.isArray(cacheData) && cacheData.length > 0) {
             cacheData.map((cache) => {
                 const arr = cache.key.split(':');
                 if(Array.isArray(arr) && arr.length > 0) {
-                    // console.log("Split OKE: ", arr);
-                    // console.log("----", arr[0], props.data.id, props.id);
-                    if(arr[0] == props.data.id) {
-                        // console.log("SPLIT OKE and EQUAL");
+
+                    // arr[0] -> id câu hỏi
+                    // arr[1] -> id ứng viên
+                    // tìm trong cache, câu hỏi tương ứng
+                    if(arr[1] == canId && arr[0] == props.data.id) {
                         setAnswer(cache.value.idAnswer);
                     }
 
@@ -33,7 +35,6 @@ const Question = (props: any) => {
     }, [props.cache])
 
     const onChange = (e: any, id: any) => {
-        // console.log("CHOSE: ", e.target.value);
         setAnswer(e.target.value);
 
         let body = {
