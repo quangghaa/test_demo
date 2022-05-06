@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../app/hooks";
 import { createOne, deleteOne, getList, getOne } from "../../../services/api";
 import { ICandidate, ITest, ITestBody } from "../../interface";
-import { updateAllCandidates, updateCandidates, updateId, updateLevel, updateName, updateSubject, updateTime } from "../../reducer/testSlice";
+import { updateAllCandidates, updateCandidates, updateId, updateLevel, updateName, updateQas, updateSubject, updateTime } from "../../reducer/testSlice";
 
 const Test = (props: any) => {
     const test = [
@@ -119,10 +119,10 @@ const Test = (props: any) => {
 
     const enterTime = (e: any) => {
         let x = parseInt(e.target.value);
-        let h = Math.floor(x/60) + '';
-        let m = x%60 + '';
-        if(h.length == 1) h = '0' + h;
-        if(m.length == 1) m = '0' + m;
+        let h = Math.floor(x / 60) + '';
+        let m = x % 60 + '';
+        if (h.length == 1) h = '0' + h;
+        if (m.length == 1) m = '0' + m;
 
         const time = h + ':' + m + ':' + '00';
         setSearchBody({ ...searchBody, times: time });
@@ -162,7 +162,7 @@ const Test = (props: any) => {
             const res = await getOne('staff/gettestbyid', id);
             const res2 = await getList('staff/listcandidate');
 
-            if(res) {
+            if (res) {
                 console.log("data res: ", res.data);
                 dispatch(updateId(res.data.id));
                 dispatch(updateName(res.data.name));
@@ -170,9 +170,10 @@ const Test = (props: any) => {
                 dispatch(updateLevel(res.data.level));
                 dispatch(updateTime(res.data.times));
                 dispatch(updateCandidates(res.data.displayCandidate));
+                dispatch(updateQas(res.data.questions))
             }
 
-            if(res2 ) {
+            if (res2) {
                 console.log("ALL cands: ", res2.data);
                 dispatch(updateAllCandidates(res2.data));
                 // setAllCands(res2.data);
@@ -184,10 +185,10 @@ const Test = (props: any) => {
         }
     }
 
-    const onShowConfirm = (e: any) => {
-        e.stopPropagation();
-
-        setVisibleConfirm(true);
+    const onShowConfirm = (e: any, id: any) => {
+        e.stopPropagation(id);
+        console.log(id)
+        setVisibleConfirm(id);
     }
 
     const onYes = async (id: any) => {
@@ -199,7 +200,7 @@ const Test = (props: any) => {
             const res = await deleteOne('staff/deletetest', id);
             if (res) {
 
-                setVisibleConfirm(false);
+                setVisibleConfirm(id);
                 setReload(reload => reload + 1);
             }
 
@@ -208,8 +209,9 @@ const Test = (props: any) => {
         }
     }
 
-    const onNo = () => {
+    const onNo = (id: any) => {
         setVisibleConfirm(false);
+        console.log("oh no id sai", id)
     }
 
     const onRemoveTest = async (e: any, id: any) => {
@@ -333,29 +335,29 @@ const Test = (props: any) => {
                 </div> : <></>}
 
             {testList.length > 0 ?
-                    <ul className='rs-test-list'>
-                        {testList.map((t: any, i: any) => {
-                            return (
-                                <>
-                                    <li key={i} onClick={() => onTestClick(t.id)}>
-                                        <span className='ic-close' onClick={(e: any) => onShowConfirm(e)}><CloseCircleFilled /></span>
-                                        {/* <span className='lv-cir'>{t.level}</span> */}
-                                        <span>{t.name}</span>
-                                    </li>
-                                    <Modal
-                                        title="Xác nhận"
-                                        visible={visibleConfirm}
-                                        onOk={() => onYes(t.id)}
-                                        onCancel={onNo}
-                                        okText="Có"
-                                        cancelText="Không"
-                                    >
-                                        <p>Xóa bài test?</p>
-                                    </Modal>
-                                </>
-                            )
-                        })}
-                    </ul>
+                <ul className='rs-test-list'>
+                    {testList && testList.map((t: any, i: any) => {
+                        return (
+                            <>
+                                <li key={i} onClick={() => onTestClick(t.id)}>
+                                    <span className='ic-close' onClick={(e: any) => onShowConfirm(e, t.id)}><CloseCircleFilled /></span>
+                                    {/* <span className='lv-cir'>{t.level}</span> */}
+                                    <span>{t.name}</span>
+                                </li>
+                                <Modal
+                                    title="Xác nhận"
+                                    visible={visibleConfirm === t.id}
+                                    onOk={() => onYes(t.id)}
+                                    onCancel={() => onNo(t.id)}
+                                    okText="Có"
+                                    cancelText="Không"
+                                >
+                                    <p>Xóa bài test?</p>
+                                </Modal>
+                            </>
+                        )
+                    })}
+                </ul>
                 :
                 <></>
             }

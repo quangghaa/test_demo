@@ -3,7 +3,7 @@ import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row, Spin, Time
 import TextArea from 'antd/lib/input/TextArea';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
-import { createOne, getList } from '../../../services/api';
+import { createOne, getList, getOne } from '../../../services/api';
 import { ICandidate, IChoice, IQA, ITest, QA, QData } from '../../interface';
 import './QuestionCollection.css';
 import QuestionItem from './QuestionItem';
@@ -56,7 +56,6 @@ const Question = (props: any) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
 
     const [questionBody, setQuestionBody] = useState({
-        id: 0,
         type: {
             id: 0
         },

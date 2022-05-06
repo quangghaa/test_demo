@@ -9,11 +9,11 @@ const EnglishTest = (props: any) => {
     const [cache, setCache] = useState([] as CacheAns[]);
 
     const [loading, setLoading] = useState(false);
- 
+
     const toArray = (obj: any) => {
-        let resultArray = Object.keys(obj).map(function(objInd) {
+        let resultArray = Object.keys(obj).map(function (objInd) {
             // let person = obj[objInd];
-            
+
             let ob = {
                 key: objInd,
                 value: obj[objInd]
@@ -23,7 +23,7 @@ const EnglishTest = (props: any) => {
         });
         return resultArray;
     }
-    
+
     useEffect(() => {
         var arrReturn = [] as CacheAns[];
 
@@ -33,10 +33,12 @@ const EnglishTest = (props: any) => {
             setLoading(true);
             try {
                 const res = await getListNoJwt('testpage/getcacheans');
-                if(res) {
-                    if(Array.isArray(arrReturn) && arrReturn.length > 0) {
-                        arrReturn.map((item) => {
-                            if(item.value.idTest === props.data.testId) {
+                if (res) {
+                    let arr = toArray(res.data)
+                    console.log("RES arr: ", arr)
+                    if (Array.isArray(arr) && arr.length > 0) {
+                        arr.map((item) => {
+                            if (item.value.idTest == props.data.testId) {
                                 engArr.push(item);
                             }
                         })
@@ -59,7 +61,7 @@ const EnglishTest = (props: any) => {
         <ul className='list'>
             {Array.isArray(props.data.content) && props.data.content.length > 0 ?
                 props.data.content.map((qa: IQA, i: any) => (
-                    <Question index={i+1} testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} cache={cache} type={props.type} />
+                    <Question index={i + 1} testId={props.data.testId} canId={props.canId} id={qa.id} data={qa} cache={cache} type={props.type} />
                 )) : <></>
             }
         </ul>

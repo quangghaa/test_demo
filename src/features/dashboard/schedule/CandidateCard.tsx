@@ -1,6 +1,6 @@
 import { CloseOutlined, CalendarOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { deleteOne } from "../../../services/api";
@@ -25,11 +25,11 @@ const CandidateCard = (props: any) => {
             const res = await deleteOne('staff/delete', id);
             console.log("RES: ", res, res.status);
 
-            if(res && res.status == 200) {
+            if (res && res.status == 200) {
 
                 console.log("DELETED");
                 setVisibleConfirm(false);
-                
+
                 props.reload();
             } else {
                 console.log("Delete failed");
@@ -41,7 +41,7 @@ const CandidateCard = (props: any) => {
 
     }
 
-    const onNo = (e:any) => {
+    const onNo = (e: any) => {
         e.stopPropagation();
         setVisibleConfirm(false);
     }
@@ -54,6 +54,10 @@ const CandidateCard = (props: any) => {
     const openOptions = () => {
         setShowoptions(showoptions => showoptions + 1);
     }
+
+    useEffect(() => {
+        console.log(props.data)
+    });
 
     const Options = (props: any) => {
         const dispatch = useAppDispatch();
@@ -82,7 +86,7 @@ const CandidateCard = (props: any) => {
         <li id='opstion-parent' key={props.data.id} className='mgt-20' onClick={openOptions}>
             <div className='c-card col'>
                 <div className='row-between c-h'>
-                    <span>{props.data.name}</span>
+                    <span>{props.data.id + ". " + props.data.name}</span>
                     <span>
                         <span className='mgr-10'>Edit</span>
                         <span className="remove-cand-ic" onClick={(e: any) => showConfirm(e)}><CloseOutlined /></span>
@@ -100,17 +104,13 @@ const CandidateCard = (props: any) => {
                 </Modal>
 
                 <span>
-                    <span className='bold'>ID: </span>
-                    {props.data.id}
-                </span>
-                <span>
                     <span className='bold'>Name: </span>
                     {props.data.name}
                 </span>
 
                 <span>
                     <span className='bold'>Phòng ban: </span>
-                    {props.data.department}
+                    {props.data.position}
                 </span>
 
                 <span>
@@ -119,8 +119,8 @@ const CandidateCard = (props: any) => {
                 </span>
 
                 <span>
-                    <span className='bold'>Level: </span>
-                    {props.data.level.name}
+                    <span className='bold'>Level: </span>   
+                    {props.data.level != null ? props.data.level.name : ""}
                 </span>
 
                 <span>
@@ -128,11 +128,22 @@ const CandidateCard = (props: any) => {
                     {props.data.reporter}
                 </span>
 
+                <span>
+                    <span className='bold'>Phone: </span>
+                    {props.data.phone}
+                </span>
+
+                <span>
+                    <span className='bold'>Email: </span>
+                    {props.data.email}
+                </span>
+                <p></p>
                 <div className='center'>
                     <span className='c-time'>
                         <CalendarOutlined className='mgr-10' />
                         <span>{props.data.dates}</span>
                     </span>
+                    <p></p>
                 </div>
             </div>
             <Options data={props.data} id={props.data.code} />

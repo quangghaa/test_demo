@@ -20,7 +20,7 @@ const Question = (props: any) => {
                     // arr[0] -> id câu hỏi
                     // arr[1] -> id ứng viên
                     // tìm trong cache, câu hỏi tương ứng
-                    if(arr[1] == canId && arr[0] == props.data.id) {
+                    if(arr[0] == props.data.id) {
                         setAnswer(cache.value.idAnswer);
                     }
 
