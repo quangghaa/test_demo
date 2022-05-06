@@ -1,5 +1,5 @@
-import { CloseOutlined, FileWordOutlined, FilterFilled, MailFilled, PhoneFilled, PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Cascader, Checkbox, Col, DatePicker, Input, Modal, Row, TimePicker } from 'antd';
+import { CloseOutlined, FileWordOutlined, FilterFilled, MailFilled, PhoneFilled, PlusOutlined, SearchOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Cascader, Checkbox, Col, message, DatePicker, Input, Modal, Row, TimePicker, Upload } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { createContentType } from '../../../hooks/useContentType';
@@ -108,57 +108,68 @@ const Schedule = () => {
         dates: '',
         times: '',
         phone: '',
-        email: ''
+        email: '',
     } as ICandidateBody)
 
 
     useEffect(() => {
-        const getOutdate = async () => {
+
+        const getAllCandidate = async () => {
             setLoading([...loading, { past: true }]);
-            const res = await getList('staff/candidate/bydate/outofdate');
+            const res = await getList('staff/listcandidate');
             if (res && res.data != null) {
-                setPast(res.data);
+                setCalList(res.data)
             }
             setLoading([...loading, { past: false }]);
 
         }
+        console.log(calList)
+        // const getOutdate = async () => {
+        //     setLoading([...loading, { past: true }]);
+        //     const res = await getList('staff/candidate/bydate/outofdate');
+        //     if (res && res.data != null) {
+        //         setPast(res.data);
+        //     }
+        //     setLoading([...loading, { past: false }]);
 
-        const getToday = async () => {
-            setLoading([...loading, { present: true }]);
-            const res = await getList('staff/candidate/bydate/today');
-            if (res && res.data != null) {
-                setToday(res.data);
-            }
-            setLoading([...loading, { present: false }]);
+        // }
 
-        }
+        // const getToday = async () => {
+        //     setLoading([...loading, { present: true }]);
+        //     const res = await getList('staff/candidate/bydate/today');
+        //     if (res && res.data != null) {
+        //         setToday(res.data);
+        //     }
+        //     setLoading([...loading, { present: false }]);
 
-        const getFuture = async () => {
-            setLoading([...loading, { future: true }]);
-            const res = await getList('staff/candidate/bydate/undue');
-            if (res && res.data != null) {
-                setFuture(res.data);
-            }
-            setLoading([...loading, { future: false }]);
+        // }
 
-        }
+        // const getFuture = async () => {
+        //     setLoading([...loading, { future: true }]);
+        //     const res = await getList('staff/candidate/bydate/undue');
+        //     if (res && res.data != null) {
+        //         setFuture(res.data);
+        //     }
+        //     setLoading([...loading, { future: false }]);
 
-        const getCal = async () => {
-            try {
-                setLoading([...loading, {calendar: true}]);
-                const res = await getList('/staff/candidate/bydate/outofdate');
-                if(res) {
-                    setCalList(res.data);
-                }
-            } finally {
-                setLoading([...loading, {calendar: false}]);
-            }
-        }
+        // }
 
-        getOutdate();
-        getToday();
-        getFuture();
-        getCal();
+        // const getCal = async () => {
+        //     try {
+        //         setLoading([...loading, {calendar: true}]);
+        //         const res = await getList('/staff/candidate/bydate/outofdate');
+        //         if(res) {
+        //             setCalList(res.data);
+        //         }
+        //     } finally {
+        //         setLoading([...loading, {calendar: false}]);
+        //     }
+        // }
+        getAllCandidate();
+        // getOutdate();
+        // getToday();
+        // getFuture();
+        // getCal();
 
     }, [reload]);
 
@@ -286,7 +297,9 @@ const Schedule = () => {
     const onSaveModal = async () => {
         setLoadingModal(true);
         try {
+
             const res = await createOne("staff/addcandidate", addBody);
+            console.log(res)
             if (res) {
                 setVisibleModal(false)
                 setReload(reload => reload + 1);
@@ -301,7 +314,7 @@ const Schedule = () => {
                 dates: '',
                 times: '',
                 phone: '',
-                email: ''
+                email: '',
             }
             setAddBody(reset);
             setLoadingModal(false);
@@ -314,14 +327,14 @@ const Schedule = () => {
 
     const [sw, setSw] = useState({
         schedule: true,
-        calendar: false
+        board: false
     });
 
     const scheduleClick = () => {
         console.log('Schedule click');
         setSw({
             schedule: true,
-            calendar: false
+            board: false
         })
     }
 
@@ -329,11 +342,29 @@ const Schedule = () => {
         console.log('Schedule click');
         setSw({
             schedule: false,
-            calendar: true
+            board: true
         })
     }
 
     ///////
+
+    const uploadFile = {
+        name: 'file',
+        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+        headers: {
+            authorization: 'authorization-text',
+        },
+        onChange(info: any) {
+            if (info.file.status !== 'uploading') {
+                console.log(info.file, info.fileList);
+            }
+            if (info.file.status === 'done') {
+                message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+            }
+        },
+    }
 
     return (
         <div className='pdt-50'>
@@ -421,6 +452,12 @@ const Schedule = () => {
                                     <span className='mgt-10'>Level</span>
                                     <Cascader className='c-cas' size='large' options={lev} onChange={onSelectLevModal} placeholder="Which level?" />
 
+                                    <span className='mgt-10'>Upload Photo</span>
+                                    <Upload {...uploadFile}>
+                                        <Button icon={<UploadOutlined />}>Click to upload</Button>
+                                    </Upload>
+
+
                                     <div className='row-between mgt-10'>
                                         <div className='col'>
                                             <span>Lịch</span>
@@ -443,11 +480,11 @@ const Schedule = () => {
                 <Col span={18} className='pd-20'>
                     <span>
                         <span className='filter'><FileWordOutlined className='mgr-20' />Danh sách</span>
-                        <Checkbox className='mgl-30' checked={sw.schedule} onChange={scheduleClick}>Bảng</Checkbox>
-                        <Checkbox className='mgl-30' checked={sw.calendar} onChange={calendarClick}>Lịch</Checkbox>
+                        <Checkbox className='mgl-30' checked={sw.schedule} onChange={scheduleClick}>Lịch</Checkbox>
+                        <Checkbox className='mgl-30' checked={sw.board} onChange={calendarClick}>Bảng</Checkbox>
                     </span>
                     {sw.schedule ? <ScheduleSection fu={future} to={today} pa={past} reload={reloadData} /> : <></>}
-                    {sw.calendar ? <CalendarSection list={calList} reload={reloadData} /> : <></>}
+                    {sw.board ? <CalendarSection list={calList} reload={reloadData} /> : <></>}
                 </Col>
             </Row>
 

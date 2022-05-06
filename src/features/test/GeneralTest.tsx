@@ -37,7 +37,7 @@ const GeneralTest = (props: any) => {
                 const res = await getListNoJwt('testpage/getcacheans');
                 if(res) {
                     let arr = toArray(res.data)
-
+                    console.log("RES arr: ", arr)
                     if(Array.isArray(arr) && arr.length > 0) {
                         arr.map((item) => {
                             if(item.value.idTest === props.data.testId) {

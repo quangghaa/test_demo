@@ -9,23 +9,6 @@ import { updateCandidate } from '../reducer/listCandidateSlice';
 import './Header.css';
 
 const Header = (props: any) => {
-    const navigate = useNavigate();
-
-    const dispatch = useAppDispatch();
-
-    const handleLogin = () => {
-        console.log('Login');
-        const token = localStorage.getItem('jwt');
-
-        if(token != null) {
-            navigate('/dashboard');
-        }
-        else {
-            setVisible(true);
-        }
-        
-    }
-
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
@@ -34,26 +17,42 @@ const Header = (props: any) => {
         username: '',
         password: ''
     })
+    const navigate = useNavigate();
+
+    const dispatch = useAppDispatch();
+
+    const handleLogin = () => {
+        setVisible(true);
+
+    }
+
 
     const handleOk = () => {
         const loadPost = async () => {
-  
+
             try {
                 setConfirmLoading(true);
                 // Await make wait until that 
                 // promise settles and return its result
                 const response = await axios.post(`${process.env.REACT_APP_BASE_URL}authenticate`, user);
-    
+
                 // After fetching data stored it in posts state.
                 console.log("RES: ", response.data);
                 localStorage.setItem("jwt", response.data.jwt);
                 setVisible(false);
-  
+
             } finally {
                 setConfirmLoading(false);
+                const token = localStorage.getItem('jwt');
+                if (token != null) {
+                    navigate('/dashboard');
+                }
+                else {
+                    setVisible(true);
+                }
             }
         }
-  
+
         // Call the function
         loadPost();
 
@@ -66,14 +65,14 @@ const Header = (props: any) => {
         // }, 2000);
     };
 
-    const enterUsername = (e:any ) => {
+    const enterUsername = (e: any) => {
         const u = e.target.value.trim();
-        setUser({...user, username: u});
+        setUser({ ...user, username: u });
     }
 
     const enterPassword = (e: any) => {
         const p = e.target.value.trim();
-        setUser({...user, password: p});
+        setUser({ ...user, password: p });
     }
 
     const handleCancel = () => {
@@ -83,11 +82,27 @@ const Header = (props: any) => {
 
     const { Countdown } = Statistic;
     // const deadline = Date.now() + 1000 * 60 * 60; // Moment is also OK
-    const dl = useRef(Date.now() + 1000 * 60 * 60);
-    
+    const timeTest = useRef(Date.now() + 1000 * 60 * 60);
 
-    function onFinish() {
-        console.log('finished!');
+    const onFinish = async () => {
+        try {
+            const res = await createOneNoJwt('testpage/submit');
+            if (res) {
+                console.log("ket qua: ", res.data);
+                const marks = {
+                    englishMark: res.data.data.englishMark != null ? parseInt(res.data.data.englishMark) : -1,
+                    codingMark: res.data.data.codingMark != null ? parseInt(res.data.data.codingMark) : -1,
+                    knowledgeMark: res.data.data.knowledgeMark != null ? parseInt(res.data.data.knowledgeMark) : -1
+                }
+
+                console.log("MARKS: ", marks);
+                dispatch(updateCandidate(marks));
+                navigate("/completetest")
+            }
+        } catch (err) {
+            console.log(err);
+        }
+
     }
 
     function onChange(val: any) {
@@ -100,10 +115,10 @@ const Header = (props: any) => {
         const submit = async () => {
             try {
                 const res = await createOneNoJwt('testpage/submit');
-                if(res) {
+                if (res) {
                     console.log("ket qua: ", res.data);
                     const marks = {
-                        englishMark: res.data.data.englishMark!= null ? parseInt(res.data.data.englishMark) : -1,
+                        englishMark: res.data.data.englishMark != null ? parseInt(res.data.data.englishMark) : -1,
                         codingMark: res.data.data.codingMark != null ? parseInt(res.data.data.codingMark) : -1,
                         knowledgeMark: res.data.data.knowledgeMark != null ? parseInt(res.data.data.knowledgeMark) : -1
                     }
@@ -111,9 +126,9 @@ const Header = (props: any) => {
                     console.log("MARKS: ", marks);
 
                     dispatch(updateCandidate(marks));
-                    
+
                 }
-            } catch(err) {
+            } catch (err) {
                 console.log(err);
             }
         }
@@ -126,22 +141,22 @@ const Header = (props: any) => {
     return (
         <>
             <div className="header">
-                
+
                 <span className='row-between fullwidth'>
                     <span>LOGO</span>
-                    {props.start ?  
-                    <span className='row mgl-20'>
-                        <Countdown value={dl.current} onFinish={onFinish} />
-                        <Button onClick={handleSubmit} className='btn-sub mgl-20'>
-                            <Link to='/completetest'>Nộp bài</Link>
-                            
-                        </Button>
-                    </span>
-                    : <></>}
-                    
+                    {props.start ?
+                        <span className='row mgl-20'>
+                            <Countdown value={timeTest.current} onFinish={onFinish} />
+                            <Button onClick={handleSubmit} className='btn-sub mgl-20'>
+                                <Link to='/completetest'>Nộp bài</Link>
+
+                            </Button>
+                        </span>
+                        : <></>}
+
                 </span>
                 {props.start ? <></> : <span className='lg-btn' onClick={handleLogin}>Login</span>}
-                
+
             </div>
             <Modal
                 title='Đăng nhập'
@@ -154,9 +169,9 @@ const Header = (props: any) => {
                         <div className='row-reverse'><span className='forgot-pass'>Quên mật khẩu?</span></div>
                         <div className='center'>
                             {/* <Link to='/dashboard'> */}
-                                <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
-                                    Đăng nhập
-                                </Button>
+                            <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
+                                Đăng nhập
+                            </Button>
                             {/* </Link> */}
                         </div>
                     </div>

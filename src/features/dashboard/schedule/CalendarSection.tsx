@@ -1,20 +1,27 @@
 import CandidateCard from "./CandidateCard";
+import { Space } from "antd"
 import './Schedule.css';
 
 const CalendarSection = (props: any) => {
-    console.log("LIST: ",props.list);
+    console.log("LIST: ", props.list);
     return (
         <div>
-            {props.list.map((cal: any) => (
-                <div className='col mgt-20'>
-                    <span className='cal-date'>{cal.date}</span>
-                    <ul className='c-cal'>
-                        {cal.candidates.map((c: any) => (
-                            <CandidateCard data={c} date={cal.date} reload={props.reload} />
-                        ))}
-                    </ul>
-                </div>
-            ))}
+            {props.list.map((candidate: any) => {
+                return (
+                    <Space>
+                        <div className='col mgt-20'>
+                            <span className='cal-date'>{candidate.dates}</span>
+                            <ul className='c-cal'>
+
+
+                                <CandidateCard data={candidate} date={candidate.dates} reload={props.reload} />
+
+                            </ul>
+                        </div>
+                    </Space>    
+                )
+            })}
+
         </div>
     )
 }
