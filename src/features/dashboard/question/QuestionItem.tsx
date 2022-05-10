@@ -95,7 +95,6 @@ const QuestionItem = (props: any) => {
 
     const showModal = (e: any, id: any) => {
         setVisible(id);
-        console.log(id)
     };
 
     const test = useAppSelector(selectTest);
