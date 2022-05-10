@@ -1,10 +1,11 @@
 import { CloseOutlined, SearchOutlined, PlusOutlined, CloseCircleFilled } from "@ant-design/icons";
-import { Input, Cascader, Button, Modal, TimePicker, Spin } from "antd";
+import { Input, Cascader, Button, Modal, TimePicker, Spin, message } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../app/hooks";
 import { createOne, deleteOne, getList, getOne } from "../../../services/api";
 import { ICandidate, ITest, ITestBody } from "../../interface";
+import { statusNotification } from '../../notification/Notification';
 import { updateAllCandidates, updateCandidates, updateId, updateLevel, updateName, updateQas, updateSubject, updateTime } from "../../reducer/testSlice";
 
 const Test = (props: any) => {
@@ -141,12 +142,17 @@ const Test = (props: any) => {
     const onSaveTest = async () => {
         try {
             const res = await createOne('staff/addtest', searchBody);
+            console.log(res)
             if (res) {
                 setVisibleTest(false)
                 setReload(reload => reload + 1);
+                statusNotification(true)
+            } else {
+                statusNotification(false)
+                setVisibleTest(false)
             }
         } finally {
-
+            setVisibleTest(false)
         }
 
     }

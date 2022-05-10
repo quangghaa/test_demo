@@ -1,14 +1,15 @@
 import { FieldTimeOutlined, CloseOutlined, CloseCircleOutlined, UserAddOutlined, CheckOutlined, CloseSquareOutlined } from "@ant-design/icons";
-import { Button, Cascader, Checkbox, Col, Modal, Row, Spin } from "antd";
+import { Button, Input, Checkbox, Col, Modal, Row, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { updateOne } from "../../../services/api";
+import fakeRequest from "../../../utils/fakeRequest";
 import { ITest } from "../../interface";
 import { deleteQa, selectTest, updateCandCodes, updateCandidates, deleteCandidate, clear } from "../../reducer/testSlice";
 
 const Demo = () => {
     const [loading, setloading] = useState(false);
-
+    const [testName, setTestName] = useState("")
     const [visibleSelectModal, setVisibleSelectModal] = useState(false);
 
     const [removeCandidateData, setRemoveCandidateData] = useState({
@@ -35,14 +36,14 @@ const Demo = () => {
                 value: test.candidates[i].id,
                 label: test.candidates[i].name
             }
-    
+
             defaultValue.push(test.candidates[i].id);
             candidatesInTest.push(obj);
 
             setDefaultValue(defaultValue);
             setCandidatesInTest(candidatesInTest);
         }
-    
+
         for (let i = 0; i < test.allCandiddates.length; i++) {
             const obj = {
                 value: test.allCandiddates[i].id,
@@ -52,7 +53,7 @@ const Demo = () => {
         }
 
         setAllCandidates(allCandidates);
-    
+
 
     }, [test]);
 
@@ -125,24 +126,29 @@ const Demo = () => {
         disPatch(deleteQa(q));
     }
 
+    const setNameTest = (e: any) => {
+        setTestName(e.target.value)
+
+    }
+
     const onSave = async () => {
-        if(test.id != 0) {
+
+        if (test.id != 0) {
             // const url = 'url/' + test.id;
             const body = {
                 id: test.id,
-                name: test.name,
+                name: testName || test?.name,
                 subject: test.subject,
                 level: test.level,
                 times: test.times,
                 displayCandidate: test.candidates,
                 questions: test.questions
             }
-
+            console.log(body)
             try {
                 setloading(true);
                 const res = await updateOne('staff/updatetest', test.id, body);
-
-                if(res) {   
+                if (res) {
                     console.log("OKKKKKKKKKKKKK");
                     // disPatch(clear());
                     resetAll();
@@ -153,7 +159,7 @@ const Demo = () => {
                 setloading(false);
             }
         }
-        
+
 
     }
 
@@ -176,7 +182,9 @@ const Demo = () => {
                 <Row gutter={16}>
                     <Col span={8}>
                         <span>Tên bài test: </span>
-                        <span>{test.name}</span>
+                        <p></p>
+                        <Input placeholder={test.name} onChange={setNameTest}></Input>
+                        <p></p>
                         <span className='row-center-y mgt-10'>
                             <FieldTimeOutlined className='big-time-ic' />
                             <span className='sm-box mgl-10'>{test.times}</span>

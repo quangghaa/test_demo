@@ -87,7 +87,6 @@ const Schedule = () => {
 
     const [searchBody, setSearchBody] = useState({
         name: '',
-        department: '',
         position: '',
         level: {
             id: 0
@@ -100,7 +99,6 @@ const Schedule = () => {
 
     const [addBody, setAddBody] = useState({
         name: '',
-        department: '',
         position: '',
         level: {
             id: 0
@@ -182,10 +180,6 @@ const Schedule = () => {
         setSearchBody({ ...searchBody, name: e.target.value[0] })
     }
 
-    const onSelectDep = (value: any) => {
-        setSearchBody({ ...searchBody, department: value[0] })
-    }
-
     const onSelectPos = (value: any) => {
         setSearchBody({ ...searchBody, position: value[0] })
     }
@@ -235,10 +229,6 @@ const Schedule = () => {
 
     const enterNameModal = (e: any) => {
         setAddBody({ ...addBody, name: e.target.value })
-    }
-
-    const onSelectDepModal = (value: any) => {
-        setAddBody({ ...addBody, department: value[0] })
     }
 
     const onSelectPosModal = (value: any) => {
@@ -384,8 +374,8 @@ const Schedule = () => {
 
                         </div>
 
-                        <span className='mgt-10'>Phòng ban</span>
-                        <Cascader className='c-cas' size='large' options={dep} onChange={onSelectDep} placeholder="Which department?" />
+                        {/* <span className='mgt-10'>Phòng ban</span>
+                        <Cascader className='c-cas' size='large' options={dep} onChange={onSelectDep} placeholder="Which department?" /> */}
 
                         <span className='mgt-10'>Vị trí</span>
                         <Cascader className='c-cas' size='large' options={pos} onChange={onSelectPos} placeholder="Which position?" />
@@ -453,8 +443,8 @@ const Schedule = () => {
 
                                     </div>
 
-                                    <span className='mgt-10'>Phòng ban</span>
-                                    <Cascader className='c-cas' size='large' options={dep} onChange={onSelectDepModal} placeholder="Which department?" />
+                                    {/* <span className='mgt-10'>Phòng ban</span>
+                                    <Cascader className='c-cas' size='large' options={dep} onChange={onSelectDepModal} placeholder="Which department?" /> */}
 
                                     <span className='mgt-10'>Vị trí</span>
                                     <Cascader className='c-cas' size='large' options={pos} onChange={onSelectPosModal} placeholder="Which position?" />

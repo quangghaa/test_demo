@@ -3,13 +3,11 @@ export interface ICandidate {
     id: number;
     code: string;
     name: string;
-    department: string;
     position: string;
     level: any;
     reporter: string;
     time: string;
     dates: string;
-
     phone: string;
     email: string;
     englishMark: number;
@@ -19,7 +17,6 @@ export interface ICandidate {
 
 export interface ICandidateBody {
     name: string;
-    department: string;
     position: string;
     level: any;
     dates: string;

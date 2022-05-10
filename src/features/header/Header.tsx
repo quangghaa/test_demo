@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { createOneNoJwt } from '../../services/api';
+import fakeRequest from '../../utils/fakeRequest';
 import { statusNotification } from '../notification/Notification';
 import { updateCandidate } from '../reducer/listCandidateSlice';
 import './Header.css';
@@ -47,6 +48,7 @@ const Header = (props: any) => {
                 setConfirmLoading(false);
                 const token = localStorage.getItem('jwt');
                 if (token != null) {
+                    await fakeRequest(500)
                     statusNotification(true)
                     navigate('/dashboard');
                 }
