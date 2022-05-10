@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { createOneNoJwt } from '../../services/api';
+import { statusNotification } from '../notification/Notification';
 import { updateCandidate } from '../reducer/listCandidateSlice';
 import './Header.css';
 
@@ -12,6 +13,7 @@ const Header = (props: any) => {
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
+
 
     const [user, setUser] = useState({
         username: '',
@@ -35,9 +37,9 @@ const Header = (props: any) => {
                 // Await make wait until that 
                 // promise settles and return its result
                 const response = await axios.post(`${process.env.REACT_APP_BASE_URL}authenticate`, user);
-
+                
                 // After fetching data stored it in posts state.
-                console.log("RES: ", response.data);
+                console.log("RES: ", response);
                 localStorage.setItem("jwt", response.data.jwt);
                 setVisible(false);
 
@@ -45,10 +47,12 @@ const Header = (props: any) => {
                 setConfirmLoading(false);
                 const token = localStorage.getItem('jwt');
                 if (token != null) {
+                    statusNotification(true)
                     navigate('/dashboard');
                 }
                 else {
                     setVisible(true);
+                    statusNotification(false)
                 }
             }
         }
@@ -178,10 +182,12 @@ const Header = (props: any) => {
                     ,
                 ]}
             >
+
                 <Input size="large" placeholder="Enter username" onChange={enterUsername} />
                 <Input.Password
                     placeholder="Enter password" className='mgt-20' onChange={enterPassword}
                 />
+
             </Modal>
         </>
     )

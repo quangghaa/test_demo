@@ -26,7 +26,6 @@ const responseSuccessInterceptor = (response) => {
 
 
 const clients = [adminClient];
-
 const normalClients = [client];
 
 clients.forEach(client => {

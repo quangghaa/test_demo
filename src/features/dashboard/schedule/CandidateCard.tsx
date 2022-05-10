@@ -56,7 +56,7 @@ const CandidateCard = (props: any) => {
     }
 
     useEffect(() => {
-        console.log(props.data)
+        // console.log(props.data)
     });
 
     const Options = (props: any) => {

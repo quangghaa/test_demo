@@ -1,5 +1,5 @@
 import { CloseOutlined, FileWordOutlined, FilterFilled, MailFilled, PhoneFilled, PlusOutlined, SearchOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Cascader, Checkbox, Col, message, DatePicker, Input, Modal, Row, TimePicker, Upload } from 'antd';
+import { Button, Cascader, Checkbox, Col, message, DatePicker, Input, Modal, Row, TimePicker, Upload, Form } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { createContentType } from '../../../hooks/useContentType';
@@ -123,7 +123,7 @@ const Schedule = () => {
             setLoading([...loading, { past: false }]);
 
         }
-        console.log(calList)
+
         // const getOutdate = async () => {
         //     setLoading([...loading, { past: true }]);
         //     const res = await getList('staff/candidate/bydate/outofdate');
@@ -156,13 +156,13 @@ const Schedule = () => {
 
         // const getCal = async () => {
         //     try {
-        //         setLoading([...loading, {calendar: true}]);
-        //         const res = await getList('/staff/candidate/bydate/outofdate');
-        //         if(res) {
+        //         setLoading([...loading, { calendar: true }]);
+        //         const res = await getList('/staff/candidate/undue');
+        //         if (res) {
         //             setCalList(res.data);
         //         }
         //     } finally {
-        //         setLoading([...loading, {calendar: false}]);
+        //         setLoading([...loading, { calendar: false }]);
         //     }
         // }
         getAllCandidate();
@@ -299,7 +299,7 @@ const Schedule = () => {
         try {
 
             const res = await createOne("staff/addcandidate", addBody);
-            console.log(res)
+            console.log(res.status, "ressssssss")
             if (res) {
                 setVisibleModal(false)
                 setReload(reload => reload + 1);
@@ -375,8 +375,13 @@ const Schedule = () => {
                         <span className='filter'><FilterFilled className='mgr-20' />Bộ lọc</span>
                         <span className='mgt-20'>Tên</span>
                         <div className='name-inp'>
-                            <Input size="large" placeholder="Enter name" onChange={enterName} />
+                            <Input
+                                size="large"
+                                placeholder="Enter name"
+                                status=''
+                                onChange={enterName} />
                             <span className='name-inp-ic'><UserOutlined /></span>
+
                         </div>
 
                         <span className='mgt-10'>Phòng ban</span>
@@ -436,11 +441,16 @@ const Schedule = () => {
                                     ,
                                 ]}
                             >
+
                                 <div className='col'>
+
                                     <span className='mgt-20'>Tên</span>
                                     <div className='name-inp'>
-                                        <Input size="large" placeholder="Enter name" onChange={enterNameModal} />
+                                        <Input
+
+                                            size="large" placeholder="Enter name" onChange={enterNameModal} />
                                         <span className='name-inp-ic'><UserOutlined /></span>
+
                                     </div>
 
                                     <span className='mgt-10'>Phòng ban</span>

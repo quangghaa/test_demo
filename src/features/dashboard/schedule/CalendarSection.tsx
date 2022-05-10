@@ -3,7 +3,7 @@ import { Space } from "antd"
 import './Schedule.css';
 
 const CalendarSection = (props: any) => {
-    console.log("LIST: ", props.list);
+    // console.log("LIST: ", props.list);
     return (
         <div>
             {props.list.map((candidate: any) => {

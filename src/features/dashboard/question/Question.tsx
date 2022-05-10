@@ -1,7 +1,7 @@
 import { CheckSquareFilled, CloseCircleFilled, CloseOutlined, ConsoleSqlOutlined, DownOutlined, FieldTimeOutlined, FilterFilled, PlusOutlined, SearchOutlined, UpOutlined } from '@ant-design/icons';
 import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row, Spin, TimePicker } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import moment from 'moment';
+
 import { useEffect, useRef, useState } from 'react';
 import { createOne, getList, getOne } from '../../../services/api';
 import { ICandidate, IChoice, IQA, ITest, QA, QData } from '../../interface';
