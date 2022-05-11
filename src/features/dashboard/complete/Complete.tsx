@@ -131,17 +131,24 @@ const Complete = () => {
                                         <b>Điểm ngoại ngữ:&nbsp;</b>
                                         <Progress
                                             strokeColor={{
-                                                '0%': '#108ee9',
+                                                '0%': '#bae7ff',
                                                 '100%': '#87d068',
                                             }}
-                                            percent={c.englishMark}></Progress>
-                                        <b>Điểm kiến thức chung:&nbsp;</b>{c.knowledgeMark != null ? c.knowledgeMark : ''}
-                                        <b>Điểm coding:&nbsp;</b><Progress
+                                            percent={c.englishMark || 0}></Progress>
+                                        <b>Điểm kiến thức chung:&nbsp;</b>
+                                        <Progress
                                             strokeColor={{
-                                                '0%': '#108ee9',
+                                                '0%': '#bae7ff',
                                                 '100%': '#87d068',
                                             }}
-                                            percent={c.codingMark}></Progress>
+                                            percent={c.knowledgeMark || 0}></Progress>
+                                        <b>Điểm coding:&nbsp;</b>
+                                        <Progress
+                                            strokeColor={{
+                                                '0%': '#bae7ff',
+                                                '100%': '#87d068',
+                                            }}
+                                            percent={c.codingMark || 0}></Progress>
                                     </div>
 
                                     <div className='chart'>

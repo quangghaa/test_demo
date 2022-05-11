@@ -122,52 +122,52 @@ const Schedule = () => {
 
         }
 
-        // const getOutdate = async () => {
-        //     setLoading([...loading, { past: true }]);
-        //     const res = await getList('staff/candidate/bydate/outofdate');
-        //     if (res && res.data != null) {
-        //         setPast(res.data);
-        //     }
-        //     setLoading([...loading, { past: false }]);
+        const getOutdate = async () => {
+            setLoading([...loading, { past: true }]);
+            const res = await getList('staff/candidate/bydate/outofdate');
+            if (res && res.data != null) {
+                setPast(res.data);
+            }
+            setLoading([...loading, { past: false }]);
 
-        // }
+        }
 
-        // const getToday = async () => {
-        //     setLoading([...loading, { present: true }]);
-        //     const res = await getList('staff/candidate/bydate/today');
-        //     if (res && res.data != null) {
-        //         setToday(res.data);
-        //     }
-        //     setLoading([...loading, { present: false }]);
+        const getToday = async () => {
+            setLoading([...loading, { present: true }]);
+            const res = await getList('staff/candidate/bydate/today');
+            if (res && res.data != null) {
+                setToday(res.data);
+            }
+            setLoading([...loading, { present: false }]);
 
-        // }
+        }
 
-        // const getFuture = async () => {
-        //     setLoading([...loading, { future: true }]);
-        //     const res = await getList('staff/candidate/bydate/undue');
-        //     if (res && res.data != null) {
-        //         setFuture(res.data);
-        //     }
-        //     setLoading([...loading, { future: false }]);
+        const getFuture = async () => {
+            setLoading([...loading, { future: true }]);
+            const res = await getList('staff/candidate/bydate/undue');
+            if (res && res.data != null) {
+                setFuture(res.data);
+            }
+            setLoading([...loading, { future: false }]);
 
-        // }
+        }
 
-        // const getCal = async () => {
-        //     try {
-        //         setLoading([...loading, { calendar: true }]);
-        //         const res = await getList('/staff/candidate/undue');
-        //         if (res) {
-        //             setCalList(res.data);
-        //         }
-        //     } finally {
-        //         setLoading([...loading, { calendar: false }]);
-        //     }
-        // }
+        const getCal = async () => {
+            try {
+                setLoading([...loading, { calendar: true }]);
+                const res = await getList('/staff/candidate/undue');
+                if (res) {
+                    setCalList(res.data);
+                }
+            } finally {
+                setLoading([...loading, { calendar: false }]);
+            }
+        }
         getAllCandidate();
-        // getOutdate();
-        // getToday();
-        // getFuture();
-        // getCal();
+        getOutdate();
+        getToday();
+        getFuture();
+        getCal();
 
     }, [reload]);
 

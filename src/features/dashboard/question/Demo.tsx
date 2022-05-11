@@ -1,11 +1,10 @@
-import { FieldTimeOutlined, CloseOutlined, CloseCircleOutlined, UserAddOutlined, CheckOutlined, CloseSquareOutlined } from "@ant-design/icons";
+import { FieldTimeOutlined, CloseOutlined, CloseCircleOutlined, UserAddOutlined, CheckOutlined } from "@ant-design/icons";
 import { Button, Input, Checkbox, Col, Modal, Row, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { updateOne } from "../../../services/api";
 import fakeRequest from "../../../utils/fakeRequest";
-import { ITest } from "../../interface";
-import { deleteQa, selectTest, updateCandCodes, updateCandidates, deleteCandidate, clear } from "../../reducer/testSlice";
+import { deleteQa, selectTest, updateCandidates, deleteCandidate, clear } from "../../reducer/testSlice";
 
 const Demo = () => {
     const [loading, setloading] = useState(false);

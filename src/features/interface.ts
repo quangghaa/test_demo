@@ -31,7 +31,7 @@ export interface ICalendar {
 }
 
 export interface IChoice {
-    // id: number;
+    id: number;
     isTrue: number;
     answer: string;
 }

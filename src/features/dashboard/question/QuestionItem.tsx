@@ -54,17 +54,17 @@ const QuestionItem = (props: any) => {
 
     const [questionBody, setQuestionBody] = useState({
         type: {
-            id: 0
+            id: props.data?.type.id
         },
         subject: {
-            id: 0
+            id: props.data?.subject.id
         },
-        content: '',
+        content: props.data?.content || '',
         level: {
-            id: 0
+            id: props.data?.level.id
         },
-        multipleChoiceQuestions: [] as IChoice[]
-    } as IQA);
+        multipleChoiceQuestions: props.data?.multipleChoiceQuestions || []
+    });
 
 
     const [abcd, setAbcd] = useState({
@@ -89,12 +89,13 @@ const QuestionItem = (props: any) => {
     const dispatch = useAppDispatch();
 
     const handleCancel = () => {
-        console.log('Clicked cancel button');
         setVisible(false);
     };
 
     const showModal = (e: any, id: any) => {
         setVisible(id);
+        console.log(e.multipleChoiceQuestions)
+        console.log(questionBody, "question body")
     };
 
     const test = useAppSelector(selectTest);
@@ -274,7 +275,7 @@ const QuestionItem = (props: any) => {
     }
 
     const mapABC = (i: any) => {
-        switch (i-1) {
+        switch (i - 1) {
             case 0: return 'A';
             case 1: return 'B';
             case 2: return 'C';
@@ -301,6 +302,7 @@ const QuestionItem = (props: any) => {
 
         if (abcd.a.answer) {
             let temp = {
+                id: props.data.multipleChoiceQuestions[0].id,
                 answer: abcd.a.answer,
                 isTrue: 0
             }
@@ -313,6 +315,7 @@ const QuestionItem = (props: any) => {
 
         if (abcd.b.answer) {
             let temp = {
+                id: props.data.multipleChoiceQuestions[1].id,
                 answer: abcd.b.answer,
                 isTrue: 0
             }
@@ -325,6 +328,7 @@ const QuestionItem = (props: any) => {
 
         if (abcd.c.answer) {
             let temp = {
+                id: props.data.multipleChoiceQuestions[2].id,
                 answer: abcd.c.answer,
                 isTrue: 0
             }
@@ -337,6 +341,7 @@ const QuestionItem = (props: any) => {
 
         if (abcd.d.answer) {
             let temp = {
+                id: props.data.multipleChoiceQuestions[3].id,
                 answer: abcd.d.answer,
                 isTrue: 0
             }
@@ -376,11 +381,11 @@ const QuestionItem = (props: any) => {
                     <div id={'ans-detail-' + props.index} className='hide'>
                         <ul className='ans-list'>
                             {props.data.multipleChoiceQuestions.map((c: any, i: any) => (
-                                <li>{mapABC(i+1)}.&nbsp;{c.answer}</li>
+                                <li>{mapABC(i + 1)}.&nbsp;{c.answer}</li>
                             ))}
                         </ul>
                         <span className='row-between mgt-10 pd-x-20'>
-                            <Button shape="round" onClick={(e: any) => showModal(e, props.data.id)}>Edit</Button>
+                            <Button shape="round" onClick={() => showModal(props.data, props.data.id)}>Edit</Button>
                         </span>
                     </div>
                 </div>
@@ -423,19 +428,19 @@ const QuestionItem = (props: any) => {
                 >
                     <span className='row-between'>
                         <span>Loại câu hỏi: </span>
-                        <Cascader options={questionTypes} onChange={onSelectType} placeholder='Chọn loại câu hỏi' />
+                        <Cascader options={questionTypes} onChange={onSelectType} placeholder={props.data.type.id} />
                     </span>
                     <span className='row-between mgt-10'>
                         <span>Dạng câu hỏi: </span>
-                        <Cascader options={questionKinds} onChange={onSelectKind} placeholder='Chọn dạng câu hỏi' />
+                        <Cascader options={questionKinds} onChange={onSelectKind} placeholder={props.data.type.name} />
                     </span>
                     <span className='row-between mgt-10'>
                         <span>Mức độ: </span>
-                        <Cascader options={questionLevModal} onChange={onSelectLevModal} placeholder='Chọn mức độ câu hỏi' />
+                        <Cascader options={questionLevModal} onChange={onSelectLevModal} placeholder={props.data.level.name} />
                     </span>
                     <span className='col mgt-10'>
                         <span>Câu hỏi: </span>
-                        <TextArea rows={2} placeholder='Nhập câu hỏi' onChange={enterQContent} />
+                        <TextArea rows={2} placeholder={props.data.content} onChange={enterQContent} />
                     </span>
                     {quesType === 1 ?
                         <div className='mgt-20'>
