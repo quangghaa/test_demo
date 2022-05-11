@@ -122,6 +122,10 @@ const Schedule = () => {
 
         }
 
+
+
+        console.log(calList)
+
         const getOutdate = async () => {
             setLoading([...loading, { past: true }]);
             const res = await getList('staff/candidate/bydate/outofdate');
@@ -154,6 +158,7 @@ const Schedule = () => {
 
         const getCal = async () => {
             try {
+
                 setLoading([...loading, { calendar: true }]);
                 const res = await getList('/staff/candidate/undue');
                 if (res) {
@@ -161,7 +166,13 @@ const Schedule = () => {
                 }
             } finally {
                 setLoading([...loading, { calendar: false }]);
-            }
+
+                setLoading([...loading, {calendar: true}]);
+                const res = await getList('/staff/candidate/undue');
+                if(res) {
+                    setCalList(res.data);
+                }
+            } 
         }
         getAllCandidate();
         getOutdate();
