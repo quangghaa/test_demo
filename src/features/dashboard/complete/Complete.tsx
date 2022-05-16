@@ -51,6 +51,7 @@ const Complete = () => {
     const [loading, setLoading] = useState(false);
     const [listDone, setListDone] = useState([] as ICandidate[]);
 
+
     useEffect(() => {
         const getDone = async () => {
             try {
@@ -58,6 +59,7 @@ const Complete = () => {
                 const res = await getList('staff/candidate/done');
                 if (res && res.data != null) {
                     setListDone(res.data);
+                    console.log(listDone, "-------")
                 }
             } finally {
                 setLoading(false);
@@ -124,7 +126,7 @@ const Complete = () => {
                                         <span className='cans-name'>{c.name}</span>
                                         {/* <span className='mgt-10'><b>Phòng ban:&nbsp;</b>{c.department}</span> */}
                                         <span><b>Vị trí:&nbsp;</b>{c.position}</span>
-                                        <span><b>Level:&nbsp;</b>{c.level.name}</span>
+                                        <span><b>Level:&nbsp;</b>{c.level != null ? c.level.name : ""}</span>
                                         <span><b>Người thêm:&nbsp;</b>{c.reporter}</span>
                                         {/* <span className='row mgt-10'><b>Điểm:&nbsp;</b><Input className='com-inp' placeholder=''></Input></span> */}
 

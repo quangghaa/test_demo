@@ -260,7 +260,6 @@ const QuestionItem = (props: any) => {
     }
 
     const onChooseQuestion = (id: any) => {
-        console.log(props.data);
         let isHad = false;
         test.questions.map(q => {
             if (q.id == id) isHad = true;

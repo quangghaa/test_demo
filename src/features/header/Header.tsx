@@ -141,12 +141,6 @@ const Header = (props: any) => {
 
     }
 
-    function onChange(val: any) {
-        if (4.95 * 1000 < val && val < 5 * 1000) {
-            console.log('changed!');
-        }
-    }
-
     const handleSubmit = () => {
         const submit = async () => {
             try {
