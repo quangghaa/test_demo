@@ -34,7 +34,6 @@ const Homepage = (props: any) => {
             try {
                 setLoading(true);
                 const res = await getListNoJwt('jointest', {code: canId});
-                localStorage.setItem("candidate1" ,JSON.stringify(res.data))
                 console.log(res.data)
                 if(res) {
                     dispatch(addCandidate(res.data));

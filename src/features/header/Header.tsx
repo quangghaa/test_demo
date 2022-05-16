@@ -3,18 +3,32 @@ import Countdown from 'antd/lib/statistic/Countdown';
 import axios from 'axios';
 import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { createOneNoJwt } from '../../services/api';
 import fakeRequest from '../../utils/fakeRequest';
 import { statusNotification } from '../notification/Notification';
-import { updateCandidate } from '../reducer/listCandidateSlice';
+import { selectCandidate, updateCandidate } from '../reducer/listCandidateSlice';
 import './Header.css';
 
 const Header = (props: any) => {
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
+    const [visibleSubmit, setvisibleSubmit] = useState(false);
 
+    const showModal = () => {
+        setvisibleSubmit(true);
+    };
+
+    const okSubmit = () => {
+        handleSubmit()
+        setvisibleSubmit(false);
+        navigate("/completetest")
+    };
+
+    const cancelSubmit = () => {
+        setvisibleSubmit(false);
+    };
 
     const [user, setUser] = useState({
         username: '',
@@ -38,7 +52,7 @@ const Header = (props: any) => {
                 // Await make wait until that 
                 // promise settles and return its result
                 const response = await axios.post(`${process.env.REACT_APP_BASE_URL}authenticate`, user);
-                
+
                 // After fetching data stored it in posts state.
                 console.log("RES: ", response);
                 localStorage.setItem("jwt", response.data.jwt);
@@ -88,7 +102,23 @@ const Header = (props: any) => {
 
     const { Countdown } = Statistic;
     // const deadline = Date.now() + 1000 * 60 * 60; // Moment is also OK
-    const timeTest = useRef(Date.now() + 1000 * 60 * 60);
+
+    const listTest = useAppSelector(selectCandidate);
+
+    const convertTime = (value: any) => {
+        console.log(value)
+        if (value == null) {
+            return Date.now()
+        }
+        const splitString = value.split(":")
+        console.log(splitString)
+        const splitTime = (+splitString[0] * 60 * 60 * 10) + (+splitString[1] * 60 * 10) + splitString[2]
+        const timeTest = Date.now() + parseInt(splitTime)
+        return timeTest
+
+    }
+
+    const timeTest = listTest.length != 0 ? convertTime(listTest[0].times) : Date.now()
 
     const onFinish = async () => {
         try {
@@ -152,14 +182,17 @@ const Header = (props: any) => {
                     <span>LOGO</span>
                     {props.start ?
                         <span className='row mgl-20'>
-                            <Countdown value={timeTest.current} onFinish={onFinish} />
-                            <Button onClick={handleSubmit} className='btn-sub mgl-20'>
-                                <Link to='/completetest'>Nộp bài</Link>
-
+                            <Countdown value={timeTest} onFinish={onFinish} />
+                            <Button onClick={showModal} className='btn-sub mgl-20'>
+                                {/* <Link to='/completetest'>Nộp bài</Link> */}
+                                Nộp bài
                             </Button>
                         </span>
                         : <></>}
+                    <Modal title="Xác nhận nộp bài" visible={visibleSubmit} onOk={okSubmit} okText="Xác nhận" onCancel={cancelSubmit} cancelText="Hủy">
+                        <p>Xác nhận nộp bài , nếu bạn nộp bài thì không thể quay lại trang </p>
 
+                    </Modal>
                 </span>
                 {props.start ? <></> : <span className='lg-btn' onClick={handleLogin}>Login</span>}
 
