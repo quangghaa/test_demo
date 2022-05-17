@@ -3,13 +3,11 @@ export interface ICandidate {
     id: number;
     code: string;
     name: string;
-    department: string;
     position: string;
     level: any;
     reporter: string;
     time: string;
     dates: string;
-
     phone: string;
     email: string;
     englishMark: number;
@@ -19,7 +17,6 @@ export interface ICandidate {
 
 export interface ICandidateBody {
     name: string;
-    department: string;
     position: string;
     level: any;
     dates: string;
@@ -34,7 +31,7 @@ export interface ICalendar {
 }
 
 export interface IChoice {
-    // id: number;
+    id: number;
     isTrue: number;
     answer: string;
 }
@@ -45,7 +42,7 @@ export interface IQA {
     subject: any;
     content: string;
     level: any;
-    multipleChoiceQuestions: IChoice[]; 
+    multipleChoiceQuestions: IChoice[];
     answer: string;
 }
 
@@ -100,4 +97,18 @@ export interface CacheAns {
     value: ChosenAns;
 }
 
+export interface ConditionSearch {
+    CANDIDATE_BYLEVEL: string;
+    CANDIDATE_BYDATE: string;
+    CANDIDATE_BYNAME: string;
+    CANDIDATE_BYPOSTION: string;
+    CANDIDATE_BYEMAIL: string;
+    CANDIDATE_BYPHONE: string;
 
+}
+
+export interface ConditionSearch2 {
+    TEST_BYNAME: string;
+    TEST_BYSUBJECT: string;
+    TEST_BYLEVEL: string;
+}

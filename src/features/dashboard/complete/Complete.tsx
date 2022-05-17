@@ -1,38 +1,11 @@
 import { CloseOutlined, SearchOutlined, SendOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Cascader, Checkbox, Col, Input, Row } from 'antd';
+import { Button, Cascader, Checkbox, Col, Input, Row, Progress } from 'antd';
 import { useEffect, useState } from 'react';
 import { getList } from '../../../services/api';
 import { ICandidate } from '../../interface';
 import HeaderD from '../headerD/HeaderD';
 import './Complete.css';
 
-const cansComData = [
-    {
-        name: 'Nguyen Van A',
-        department: 'Phòng CN.Blockchain',
-        position: 'Employee',
-        level: 'Fresher',
-        reporter: 'Quang Ha',
-        complete: [80, 70, 80]
-    },
-    {
-        name: 'Nguyen Van B',
-        department: 'Phòng CN.Blockchain',
-        position: 'Employee',
-        level: 'Leader',
-        reporter: 'Quang Ha',
-        complete: [80, 70, 80]
-    },
-    {
-        name: 'Nguyen Van C',
-        department: 'Phòng CN.Blockchain',
-        position: 'Employee',
-        level: 'Fresher',
-        reporter: 'Quang Ha',
-        complete: [80, 70, 80]
-    }
-
-]
 
 const Complete = () => {
     const pos = [
@@ -78,6 +51,7 @@ const Complete = () => {
     const [loading, setLoading] = useState(false);
     const [listDone, setListDone] = useState([] as ICandidate[]);
 
+
     useEffect(() => {
         const getDone = async () => {
             try {
@@ -85,6 +59,7 @@ const Complete = () => {
                 const res = await getList('staff/candidate/done');
                 if (res && res.data != null) {
                     setListDone(res.data);
+                    console.log(listDone, "-------")
                 }
             } finally {
                 setLoading(false);
@@ -108,7 +83,7 @@ const Complete = () => {
         // }
         // setSearchBody({ ...searchBody, level: value })
     }
-    
+
 
     return (
         <div className='pdt-50'>
@@ -116,7 +91,7 @@ const Complete = () => {
             <Row>
                 <Col span={6} className='pd-20'>
                     <div className='col pdr-20'>
-                        
+
                         <span className='mgt-20'>Tên</span>
                         <div className='name-inp'>
                             <Input size="large" placeholder="large size" />
@@ -131,7 +106,7 @@ const Complete = () => {
 
                         <span className='mgt-10'>Level</span>
                         <Cascader className='c-cas' size='large' options={lev} onChange={onSelectLev} placeholder="Which level?" />
-                        
+
                         <span className='center mgt-30'>
                             <Button className='btn-search' icon={<SearchOutlined />}>
                                 Tìm
@@ -146,38 +121,57 @@ const Complete = () => {
                     <ul className='com-test-list'>
                         {listDone.map((c) => (
                             <li>
-                            <div className='left'>
-                                <div className='cans-info'>
-                                    <span className='cans-name'>{c.name}</span>
-                                    <span className='mgt-10'><b>Phòng ban:&nbsp;</b>{c.department}</span>
-                                    <span><b>Vị trí:&nbsp;</b>{c.position}</span>
-                                    <span><b>Level:&nbsp;</b>{c.level.name}</span>
-                                    <span><b>Người thêm:&nbsp;</b>{c.reporter}</span>
-                                    {/* <span className='row mgt-10'><b>Điểm:&nbsp;</b><Input className='com-inp' placeholder=''></Input></span> */}
-                                    <span className='row mgt-10'><b>Điểm ngoại ngữ:&nbsp;</b>{c.englishMark != null ? c.englishMark : ''}</span>
-                                    <span className='row mgt-10'><b>Điểm kiến thức chung:&nbsp;</b>{c.knowledgeMark != null ? c.knowledgeMark : ''}</span>
-                                    <span className='row mgt-10'><b>Điểm coding:&nbsp;</b>{c.codingMark != null ? c.codingMark : ''}</span>
+                                <div className='left'>
+                                    <div className='cans-info'>
+                                        <span className='cans-name'>{c.name}</span>
+                                        {/* <span className='mgt-10'><b>Phòng ban:&nbsp;</b>{c.department}</span> */}
+                                        <span><b>Vị trí:&nbsp;</b>{c.position}</span>
+                                        <span><b>Level:&nbsp;</b>{c.level != null ? c.level.name : ""}</span>
+                                        <span><b>Người thêm:&nbsp;</b>{c.reporter}</span>
+                                        {/* <span className='row mgt-10'><b>Điểm:&nbsp;</b><Input className='com-inp' placeholder=''></Input></span> */}
+
+                                        <b>Điểm ngoại ngữ:&nbsp;</b>
+                                        <Progress
+                                            strokeColor={{
+                                                '0%': '#bae7ff',
+                                                '100%': '#87d068',
+                                            }}
+                                            percent={c.englishMark || 0}></Progress>
+                                        <b>Điểm kiến thức chung:&nbsp;</b>
+                                        <Progress
+                                            strokeColor={{
+                                                '0%': '#bae7ff',
+                                                '100%': '#87d068',
+                                            }}
+                                            percent={c.knowledgeMark || 0}></Progress>
+                                        <b>Điểm coding:&nbsp;</b>
+                                        <Progress
+                                            strokeColor={{
+                                                '0%': '#bae7ff',
+                                                '100%': '#87d068',
+                                            }}
+                                            percent={c.codingMark || 0}></Progress>
+                                    </div>
+
+                                    <div className='chart'>
+                                        {/* Chart */}
+                                    </div>
                                 </div>
 
-                                <div className='chart'>
-                                    {/* Chart */}
+                                <div className='right'>
+                                    <span>
+                                        <Checkbox onChange={onChange}>SMS</Checkbox>
+                                        <span>Gửi điểm <SendOutlined /></span>
+                                    </span>
+                                    <span><Checkbox onChange={onChange}>Email</Checkbox></span>
                                 </div>
-                            </div>
-
-                            <div className='right'>
-                                <span>
-                                    <Checkbox onChange={onChange}>SMS</Checkbox>
-                                    <span>Gửi điểm <SendOutlined /></span>
-                                </span>
-                                <span><Checkbox onChange={onChange}>Email</Checkbox></span>
-                            </div>
-                        </li>
+                            </li>
                         ))}
                     </ul>
                 </Col>
             </Row>
 
-        </div>
+        </div >
     )
 }
 

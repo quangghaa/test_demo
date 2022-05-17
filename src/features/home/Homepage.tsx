@@ -34,6 +34,7 @@ const Homepage = (props: any) => {
             try {
                 setLoading(true);
                 const res = await getListNoJwt('jointest', {code: canId});
+                console.log(res.data)
                 if(res) {
                     dispatch(addCandidate(res.data));
                     navigate('/instruction');
