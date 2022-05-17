@@ -1,11 +1,11 @@
 import { message } from "antd"
 
 
-export const statusNotification = (status: any) => {
+export const statusNotification = (status: any, messageNoti: string) => {
     if (status === true) {
-        message.success('This is a success message');
+        message.success(`${messageNoti}`);
     } else {
-        message.error('This is an error message');
+        message.error(`${messageNoti}`);
     }
 }
 

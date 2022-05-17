@@ -7,6 +7,7 @@ import { deleteOne, updateOne } from "../../../services/api";
 import { IQA, ITest, IChoice } from "../../interface";
 
 import { addQa, selectTest } from "../../reducer/testSlice";
+import statusNotification from "../../notification/Notification";
 
 const QuestionItem = (props: any) => {
     const [testItem, setTestItem] = useState([] as ITest[]);
@@ -24,27 +25,15 @@ const QuestionItem = (props: any) => {
     const lev = [
         {
             value: '1',
-            label: 'A1'
+            label: 'Intern'
         },
         {
             value: '2',
-            label: 'A2'
+            label: 'Fresher'
         },
         {
             value: '3',
-            label: 'B1'
-        },
-        {
-            value: '4',
-            label: 'B2'
-        },
-        {
-            value: '5',
-            label: 'C1'
-        },
-        {
-            value: '6',
-            label: 'C2'
+            label: 'Junior'
         }
     ];
     const questionLevModal = lev;
@@ -193,8 +182,10 @@ const QuestionItem = (props: any) => {
 
                 setVisibleConfirm(false);
                 props.reload();
+                statusNotification(true, "Xóa câu hỏi thành công")
             }
-
+        } catch (error) {
+            statusNotification(true, "Xóa câu hỏi thành công")
         } finally {
             setLoading(false);
         }
@@ -366,6 +357,7 @@ const QuestionItem = (props: any) => {
 
         } finally {
             setLoading(false);
+            window.location.reload()
         }
     };
 

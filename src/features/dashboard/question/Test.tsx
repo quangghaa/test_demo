@@ -4,7 +4,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../app/hooks";
 import { createOne, deleteOne, getList, getOne } from "../../../services/api";
-import { ICandidate, ITest, ITestBody } from "../../interface";
+import { ConditionSearch, ConditionSearch2, ICandidate, ITest, ITestBody } from "../../interface";
 import { statusNotification } from '../../notification/Notification';
 import { updateAllCandidates, updateCandidates, updateId, updateLevel, updateName, updateQas, updateSubject, updateTime } from "../../reducer/testSlice";
 
@@ -23,11 +23,11 @@ const Test = (props: any) => {
     const lev = [
         {
             value: '1',
-            label: 'Junior'
+            label: 'Intern'
         },
         {
             value: '2',
-            label: 'Middle'
+            label: 'Fresher'
         },
         {
             value: '3',
@@ -49,6 +49,10 @@ const Test = (props: any) => {
     const [visibleTest, setVisibleTest] = useState(false);
 
     const [searchBody, setSearchBody] = useState({
+
+    } as ConditionSearch2)
+
+    const [addBody, setAddBody] = useState({
         codeTest: '',
         name: '',
         subject: {
@@ -84,38 +88,70 @@ const Test = (props: any) => {
                 setLoading(false);
             }
         }
-
+        const getAllCandidate = async () => {
+            const res2 = await getList('staff/listcandidate');
+            if (res2) {
+                console.log("ALL cands: ", res2.data);
+                dispatch(updateAllCandidates(res2.data));
+                // setAllCands(res2.data);
+            }
+        }
+        getAllCandidate();
         getAllTest();
     }, [reload])
 
+    //SEARCH
     const onSelectTest = (value: any) => {
+        if (value === undefined) {
+            setSearchBody({ ...searchBody })
+        } else {
+            setSearchBody({ ...searchBody, TEST_BYSUBJECT: value[0] })
+        }
 
     }
 
+    const onSelectLevel = (value: any) => {
+        if (value === undefined) {
+            setSearchBody({ ...searchBody })
+        } else {
+            setSearchBody({ ...searchBody, TEST_BYLEVEL: value[0] });
+        }
+
+    }
+
+    const enterTestname = (e: any) => {
+        if (e.target.value === '') {
+            setSearchBody({ ...searchBody })
+        } else {
+            setSearchBody({ ...searchBody, TEST_BYNAME: e.target.value });
+        }
+
+    }
+    //SEARCH
+
+    //ADD
     const onSelectLev = (value: any) => {
         const obj = {
             id: parseInt(value[0])
         }
-        setSearchBody({ ...searchBody, level: obj });
+        setAddBody({ ...addBody, level: obj });
     }
 
-    const enterTestname = (e: any) => {
-        setSearchBody({ ...searchBody, name: e.target.value });
-    }
+
 
     const onSelectTestType = (value: any) => {
         const obj = {
             id: parseInt(value[0])
         }
-        setSearchBody({ ...searchBody, subject: obj });
+        setAddBody({ ...addBody, subject: obj });
     }
 
     const enterCode = (e: any) => {
-        setSearchBody({ ...searchBody, codeTest: e.target.value });
+        setAddBody({ ...addBody, codeTest: e.target.value });
     }
 
     const enterName = (e: any) => {
-        setSearchBody({ ...searchBody, name: e.target.value });
+        setAddBody({ ...addBody, name: e.target.value });
     }
 
     const enterTime = (e: any) => {
@@ -126,36 +162,52 @@ const Test = (props: any) => {
         if (m.length == 1) m = '0' + m;
 
         const time = h + ':' + m + ':' + '00';
-        setSearchBody({ ...searchBody, times: time });
+        setAddBody({ ...addBody, times: time });
     }
 
-    const onSearch = () => {
+    //ADD
 
+    //API SEARCH
+    const onSearch = async () => {
+        try {
+            const condition: any = {
+                condition: {
+                    ...searchBody
+                }
+            }
+            console.log(searchBody, "searchbody")
+            const res = await createOne('staff/search', condition)
+            setTestList(res.data)
+        } catch (error) {
+            console.log(error)
+        }
     }
-
+    //API SEARCH
     const showTestModal = () => {
         setVisibleTest(true);
     }
 
     const dispatch = useAppDispatch();
-
+    //API ADD
     const onSaveTest = async () => {
         try {
-            const res = await createOne('staff/addtest', searchBody);
+            const res = await createOne('staff/addtest', addBody);
             console.log(res)
             if (res) {
                 setVisibleTest(false)
                 setReload(reload => reload + 1);
-                statusNotification(true)
+                statusNotification(true, "Thêm bài test thành công")
             } else {
-                statusNotification(false)
                 setVisibleTest(false)
             }
+        } catch (error) {
+            statusNotification(false, "Thêm bài test thất bại")
         } finally {
             setVisibleTest(false)
         }
 
     }
+    //API ADD
 
     const onCancelTest = () => {
         setVisibleTest(false)
@@ -166,7 +218,6 @@ const Test = (props: any) => {
         try {
             setLoading(true);
             const res = await getOne('staff/gettestbyid', id);
-            const res2 = await getList('staff/listcandidate');
 
             if (res) {
                 console.log("data res: ", res.data);
@@ -177,12 +228,6 @@ const Test = (props: any) => {
                 dispatch(updateTime(res.data.times));
                 dispatch(updateCandidates(res.data.displayCandidate));
                 dispatch(updateQas(res.data.questions))
-            }
-
-            if (res2) {
-                console.log("ALL cands: ", res2.data);
-                dispatch(updateAllCandidates(res2.data));
-                // setAllCands(res2.data);
             }
 
 
@@ -208,8 +253,10 @@ const Test = (props: any) => {
 
                 setVisibleConfirm(id);
                 setReload(reload => reload + 1);
+                statusNotification(true, "Xóa bài test thành công")
             }
-
+        } catch (error) {
+            statusNotification(false, "Xóa bài test thất bại")
         } finally {
             setLoading(false)
         }
@@ -220,37 +267,11 @@ const Test = (props: any) => {
         console.log("oh no id sai", id)
     }
 
-    const onRemoveTest = async (e: any, id: any) => {
-        e.stopPropagation();
-
-        console.log("DELETE", id);
-
-        setLoading(true);
-
-        try {
-            const res = await deleteOne('staff/deletetest', id);
-            if (res) {
-
-                setReload(reload => reload + 1);
-
-            }
-
-        } finally {
-            setLoading(false)
-        }
-    }
-
     const handleRemoveLevelCLick = () => {
-        // const li = document.getElementsByClassName('mark-lv');
-        // if (li != null) {
-        //     const ar = Array.from(li);
-        //     ar.forEach((el: any) => {
-        //         el.style.color = 'black';
-        //         el.style.backgroundColor = 'white';
-        //     })
-        // }
+        const reset = ({
 
-        // setLevel(0);
+        } as ConditionSearch2)
+        setSearchBody(reset)
     }
 
     return (
@@ -269,7 +290,7 @@ const Test = (props: any) => {
 
                     <span className='mgt-10'>Level</span>
                     <div className='row-between row-center-y'>
-                        <Cascader size="small" options={lev} onChange={onSelectLev} placeholder='Which level?' />
+                        <Cascader size="small" options={lev} onChange={onSelectLevel} placeholder='Which level?' />
                         <Button className='btn-delete' onClick={handleRemoveLevelCLick} icon={<CloseOutlined />}>
                             Xóa lọc
                         </Button>

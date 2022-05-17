@@ -1,10 +1,11 @@
-import { CheckSquareFilled, CloseCircleFilled, CloseOutlined, ConsoleSqlOutlined, DownOutlined, FieldTimeOutlined, FilterFilled, PlusOutlined, SearchOutlined, UpOutlined } from '@ant-design/icons';
-import { Button, Cascader, Checkbox, Col, Input, message, Modal, Row, Spin, TimePicker } from 'antd';
+
+import { Button, Cascader, Input, Modal, Spin } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 
-import { useEffect, useRef, useState } from 'react';
-import { createOne, getList, getOne } from '../../../services/api';
-import { ICandidate, IChoice, IQA, ITest, QA, QData } from '../../interface';
+import { useEffect, useState } from 'react';
+import { createOne } from '../../../services/api';
+import { IChoice, IQA } from '../../interface';
+import statusNotification from '../../notification/Notification';
 import './QuestionCollection.css';
 import QuestionItem from './QuestionItem';
 
@@ -14,27 +15,15 @@ const Question = (props: any) => {
     const lev = [
         {
             value: '1',
-            label: 'A1'
+            label: 'Intern'
         },
         {
             value: '2',
-            label: 'A2'
+            label: 'Fresher'
         },
         {
             value: '3',
-            label: 'B1'
-        },
-        {
-            value: '4',
-            label: 'B2'
-        },
-        {
-            value: '5',
-            label: 'C1'
-        },
-        {
-            value: '6',
-            label: 'C2'
+            label: 'Junior'
         }
     ];
 
@@ -118,7 +107,7 @@ const Question = (props: any) => {
     ];
 
     useEffect(() => {
-        if(selectedLevel.length > 0) {
+        if (selectedLevel.length > 0) {
             try {
                 const body = {
                     id: parseInt(selectedLevel)
@@ -146,14 +135,14 @@ const Question = (props: any) => {
     const onSelectLev = async (value: any) => {
 
         setSelectedLevel(value[0]);
-        setReload(reload => reload+1);
-        
+        setReload(reload => reload + 1);
+
         // try {
         //     const body = {
         //         id: parseInt(value[0])
         //     }
         //     setLoading(true);
-            
+
         //     const res = await getList(`staff/getquestionbylevel`, body);
         //     if (res.status === 200 && res.data != null) {
         //         setQuestionList(res.data);
@@ -286,12 +275,14 @@ const Question = (props: any) => {
         try {
             setLoading(true);
             const res = await createOne('staff/addquestion', body);
-            if (res) {
 
+            if (res) {
                 setVisible(false);
                 setReload(reload => reload + 1);
+                statusNotification(true, "Thêm câu hỏi thành công")
             }
-
+        } catch (error) {
+            statusNotification(false, "Thêm câu hỏi thất bại")
         } finally {
             setLoading(false);
         }

@@ -57,18 +57,20 @@ const Header = (props: any) => {
                 console.log("RES: ", response);
                 localStorage.setItem("jwt", response.data.jwt);
                 setVisible(false);
+            } catch (error) {
+                statusNotification(false, "Đăng nhập thất bại")
 
             } finally {
                 setConfirmLoading(false);
                 const token = localStorage.getItem('jwt');
                 if (token != null) {
                     await fakeRequest(500)
-                    statusNotification(true)
+                    statusNotification(true, "Đăng nhập thành công")
                     navigate('/dashboard');
                 }
                 else {
                     setVisible(true);
-                    statusNotification(false)
+
                 }
             }
         }
@@ -106,12 +108,10 @@ const Header = (props: any) => {
     const listTest = useAppSelector(selectCandidate);
 
     const convertTime = (value: any) => {
-        console.log(value)
         if (value == null) {
             return Date.now()
         }
         const splitString = value.split(":")
-        console.log(splitString)
         const splitTime = (+splitString[0] * 60 * 60 * 10) + (+splitString[1] * 60 * 10) + splitString[2]
         const timeTest = Date.now() + parseInt(splitTime)
         return timeTest
@@ -120,26 +120,26 @@ const Header = (props: any) => {
 
     const timeTest = listTest.length != 0 ? convertTime(listTest[0].times) : Date.now()
 
-    const onFinish = async () => {
-        try {
-            const res = await createOneNoJwt('testpage/submit');
-            if (res) {
-                console.log("ket qua: ", res.data);
-                const marks = {
-                    englishMark: res.data.data.englishMark != null ? parseInt(res.data.data.englishMark) : -1,
-                    codingMark: res.data.data.codingMark != null ? parseInt(res.data.data.codingMark) : -1,
-                    knowledgeMark: res.data.data.knowledgeMark != null ? parseInt(res.data.data.knowledgeMark) : -1
-                }
+    // const onFinish = async () => {
+    //     try {
+    //         const res = await createOneNoJwt('testpage/submit');
+    //         if (res) {
+    //             console.log("ket qua: ", res.data);
+    //             const marks = {
+    //                 englishMark: res.data.data.englishMark != null ? parseInt(res.data.data.englishMark) : -1,
+    //                 codingMark: res.data.data.codingMark != null ? parseInt(res.data.data.codingMark) : -1,
+    //                 knowledgeMark: res.data.data.knowledgeMark != null ? parseInt(res.data.data.knowledgeMark) : -1
+    //             }
 
-                console.log("MARKS: ", marks);
-                dispatch(updateCandidate(marks));
-                navigate("/completetest")
-            }
-        } catch (err) {
-            console.log(err);
-        }
+    //             console.log("MARKS: ", marks);
+    //             dispatch(updateCandidate(marks));
+    //             navigate("/completetest")
+    //         }
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
 
-    }
+    // }
 
     const handleSubmit = () => {
         const submit = async () => {
@@ -176,7 +176,7 @@ const Header = (props: any) => {
                     <span>LOGO</span>
                     {props.start ?
                         <span className='row mgl-20'>
-                            <Countdown value={timeTest} onFinish={onFinish} />
+                            <Countdown value={timeTest}  />
                             <Button onClick={showModal} className='btn-sub mgl-20'>
                                 {/* <Link to='/completetest'>Nộp bài</Link> */}
                                 Nộp bài

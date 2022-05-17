@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { updateOne } from "../../../services/api";
 import fakeRequest from "../../../utils/fakeRequest";
+import statusNotification from "../../notification/Notification";
 import { deleteQa, selectTest, updateCandidates, deleteCandidate, clear } from "../../reducer/testSlice";
 
 const Demo = () => {
@@ -149,13 +150,17 @@ const Demo = () => {
                 const res = await updateOne('staff/updatetest', test.id, body);
                 if (res) {
                     console.log("OKKKKKKKKKKKKK");
-                    // disPatch(clear());
+                   
+                    statusNotification(true, "Cập nhật bài test thành công")
                     resetAll();
                 }
 
+            } catch (error) {
+                statusNotification(false , "Cập nhật bài test thất bại")
 
             } finally {
                 setloading(false);
+                
             }
         }
 

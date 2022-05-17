@@ -11,6 +11,7 @@ import { addCandidate } from "../../reducer/listCandidateSlice";
 import { selectTest } from "../../reducer/testSlice";
 
 import './Schedule.css';
+import statusNotification from "../../notification/Notification";
 const dep = [
     {
         value: 'Blockchain',
@@ -50,7 +51,7 @@ const lev = [
 const CandidateCard = (props: any) => {
 
     const [showoptions, setShowoptions] = useState(1);
-
+    const [reload, setReload] = useState(0);
     const [visibleConfirmDelete, setVisibleConfirmDelete] = useState(false);
     const [visibleConfirmEdit, setVisibleConfirmEdit] = useState(false);
 
@@ -69,7 +70,7 @@ const CandidateCard = (props: any) => {
         department: props.data?.department || '',
         position: props.data?.position || '',
         level: {
-            id: 0
+            id: props.data?.level.id || 0,
         },
         dates: props.data?.dates || '',
         times: props.data?.times || '',
@@ -92,8 +93,6 @@ const CandidateCard = (props: any) => {
         setAddBody({ ...addBody, level: obj })
     }
 
-    console.log(props.data)
-
     const onSelectDateModal = (value: any) => {
         const selectDate = new Date(value);
         let y = selectDate.getFullYear() + '';
@@ -110,25 +109,19 @@ const CandidateCard = (props: any) => {
 
     const editCandidate = async (id: any) => {
         try {
-
+            console.log(addBody)
             const res = await updateOne("staff/candidate/update", id, addBody);
             console.log(res.status, "ressssssss")
             if (res) {
                 setVisibleConfirmEdit(false)
+                statusNotification(true, "Cập nhật ứng viên thành công")
             }
 
-        } finally {
-            const reset = {
-                name: '',
-                department: '',
-                position: '',
-                level: '',
-                dates: '',
-                times: '',
-                phone: '',
-                email: '',
-            }
-            setAddBody(reset);
+        } catch (error) {
+            console.log(error)
+            statusNotification(false, "Cập nhật ứng viên thất bại")
+        } finally{
+            window.location.reload()
         }
     }
 
@@ -166,10 +159,11 @@ const CandidateCard = (props: any) => {
 
                 console.log("DELETED");
                 setVisibleConfirmDelete(false);
-
+                statusNotification(true, "Xóa ứng viên thành công")
                 props.reload();
             } else {
                 console.log("Delete failed");
+                statusNotification(false, "Xóa ứng viên thất bại")
             }
 
         }
@@ -201,38 +195,14 @@ const CandidateCard = (props: any) => {
         setShowoptions(showoptions => showoptions + 1);
     }
 
-
-    const Options = (props: any) => {
-        const dispatch = useAppDispatch();
-        const test = useAppSelector(selectTest);
-
-        const onSetupTest = () => {
-
-            if (!test.candidates.includes(props.data)) dispatch(addCandidate(props.data));
-        }
-
-        return (
-            <ul id='ol' className='option-list' style={{ display: isOdd(showoptions) ? 'none' : '' }}>
-                <li>Chọn</li>
-                <li>Gửi code</li>
-                <li>Xem liên hệ</li>
-                <li onClick={onSetupTest}>
-                    <Link to='/dashboard/question'>Thiết lập bài test</Link>
-                </li>
-                <li >Chỉnh sửa thông tin</li>
-                <li>Xóa ứng viên</li>
-            </ul>
-        )
-    }
-
     return (
         <li id='opstion-parent' key={props.data.id} className='mgt-20' onClick={openOptions}>
             <div className='c-card col'>
                 <div className='row-between c-h'>
                     <span>{props.data.id + ". " + props.data.name}</span>
                     <span>
-                        <span className='mgr-10' onClick={(e: any) => showConfirmEdit(e)}><EditOutlined /></span>
-                        <span className="remove-cand-ic" onClick={(e: any) => showConfirmDelete(e)}><CloseOutlined /></span>
+                        <span className='remove-cand-ic-edit' onClick={(e: any) => showConfirmEdit(e)}><EditOutlined /></span>
+                        <span className="remove-cand-ic-delete" onClick={(e: any) => showConfirmDelete(e)}><CloseOutlined /></span>
                     </span>
                 </div>
                 <Modal
@@ -273,7 +243,7 @@ const CandidateCard = (props: any) => {
                             <span className='mgt-20'>Tên</span>
                             <div className='name-inp'>
                                 <Input
-                                
+
                                     size="large" placeholder={props.data.name} onChange={enterNameModal} />
                                 <span className='name-inp-ic'><UserOutlined /></span>
 
@@ -283,7 +253,7 @@ const CandidateCard = (props: any) => {
                             <Cascader className='c-cas' size='large' options={pos} onChange={onSelectPosModal} placeholder={props.data.position} />
 
                             <span className='mgt-10'>Level</span>
-                            <Cascader className='c-cas' size='large' options={lev} onChange={onSelectLevModal} placeholder={props.data.level.name   } />
+                            <Cascader className='c-cas' size='large' options={lev} onChange={onSelectLevModal} placeholder={props.data.level.name} />
 
                             {/* <span className='mgt-10'>Upload Photo</span>
                              <Upload {...uploadFile}>
@@ -294,7 +264,7 @@ const CandidateCard = (props: any) => {
                             <div className='row-between mgt-10'>
                                 <div className='col'>
                                     <span>Lịch</span>
-                                    <DatePicker onChange={onSelectDateModal} placeholder={props.data.dates}/>
+                                    <DatePicker onChange={onSelectDateModal} placeholder={props.data.dates} />
                                     <TimePicker className='mgt-10' onChange={onSelectTimeModal} placeholder={props.data.times} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
                                 </div>
                                 <div id='contact' className='col mgl-20'>
