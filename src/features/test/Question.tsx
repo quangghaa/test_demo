@@ -11,12 +11,13 @@ const Question = (props: any) => {
         const cacheData = props.cache;
         const canId = props.canId
         const data = props.data;
-
+        // console.log(data)
         if(Array.isArray(cacheData) && cacheData.length > 0) {
             cacheData.map((cache) => {
                 const arr = cache.key.split(':');
+                console.log(arr, "-------------arr")
                 if(Array.isArray(arr) && arr.length > 0) {
-
+                    
                     // arr[0] -> id câu hỏi
                     // arr[1] -> id ứng viên
                     // tìm trong cache, câu hỏi tương ứng
@@ -36,7 +37,7 @@ const Question = (props: any) => {
 
     const onChange = (e: any, id: any) => {
         setAnswer(e.target.value);
-
+       
         let body = {
             idAnswer: parseInt(e.target.value),
             idTest: parseInt(props.testId)

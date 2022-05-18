@@ -255,28 +255,30 @@ const Schedule = () => {
                     ...searchBody
                 }
             }
-            const res = await createOne("staff/search", condition);
-            console.log(res.data, "ressssssss")
-            setCalList(res.data)
-            // setFuture(res.data)
-            // setPast(res.data)
-            // setToday(res.data)
-            if (res) {
-                setReload(reload => reload + 1);
+
+            const checkCondition: any = {
+                condition: {
+
+                }
             }
 
+
+            if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == true) {
+                const res = await getList('staff/listcandidate');
+                if (res && res.data != null) {
+                    setCalList(res.data)
+                }
+            } else if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == false) {
+                const res = await createOne("staff/search", condition);
+                setCalList(res.data)
+                if (res) {
+                    setReload(reload => reload + 1);
+                }
+                statusNotification(true, "Tim kiem thanh cong")
+            }
+
+
         } finally {
-            // const reset = {
-            //     name: '',
-            //     department: '',
-            //     position: '',
-            //     level: '',
-            //     dates: '',
-            //     times: '',
-            //     phone: '',
-            //     email: '',
-            // }
-            // setAddBody(reset);
             setLoadingModal(false);
         }
     }
@@ -391,7 +393,7 @@ const Schedule = () => {
         })
     }
 
-    const resetForm = (e:any) => {
+    const resetForm = (e: any) => {
         const body = ({
         } as ConditionSearch)
         setSearchBody(body)

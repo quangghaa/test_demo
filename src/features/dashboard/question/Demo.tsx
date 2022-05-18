@@ -66,7 +66,9 @@ const Demo = () => {
     }
 
     const onSelectCandidate = (value: any) => {
+        //value la id
         setCandidateCode(value);
+        console.log(value)
     }
 
     const showSelectModal = () => {

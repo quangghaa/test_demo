@@ -88,15 +88,7 @@ const Test = (props: any) => {
                 setLoading(false);
             }
         }
-        const getAllCandidate = async () => {
-            const res2 = await getList('staff/listcandidate');
-            if (res2) {
-                console.log("ALL cands: ", res2.data);
-                dispatch(updateAllCandidates(res2.data));
-                // setAllCands(res2.data);
-            }
-        }
-        getAllCandidate();
+
         getAllTest();
     }, [reload])
 
@@ -175,9 +167,24 @@ const Test = (props: any) => {
                     ...searchBody
                 }
             }
-            console.log(searchBody, "searchbody")
-            const res = await createOne('staff/search', condition)
-            setTestList(res.data)
+
+            const checkCondition: any = {
+                condition: {
+
+                }
+            }
+
+            if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == true) {
+                const res = await getList('staff/getalltest');
+                if (res && res.data != null) {
+                    setTestList(res.data);
+                }
+            } else if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == false) {
+                const res = await createOne('staff/search', condition)
+                setTestList(res.data)
+            }
+
+            // console.log(searchBody, "searchbody")
         } catch (error) {
             console.log(error)
         }
@@ -230,7 +237,12 @@ const Test = (props: any) => {
                 dispatch(updateQas(res.data.questions))
             }
 
-
+            const res2 = await getList('staff/listcandidate');
+            if (res2) {
+                console.log("ALL cands: ", res2.data);
+                dispatch(updateAllCandidates(res2.data));
+                // setAllCands(res2.data);
+            }
         } finally {
             setLoading(false)
         }
