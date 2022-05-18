@@ -284,6 +284,7 @@ const Test = (props: any) => {
 
         } as ConditionSearch2)
         setSearchBody(reset)
+        window.location.reload();
     }
 
     return (
