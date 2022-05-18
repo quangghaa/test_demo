@@ -168,7 +168,13 @@
     margin-top: 10px;
 }
 
-.remove-cand-ic:hover{
-    color: rgb(173, 159, 159);
+.remove-cand-ic-edit:hover{
+    color: rgb(55, 55, 214);
     cursor: pointer;
+    
+}
+.remove-cand-ic-delete:hover{
+    color: rgb(241, 22, 40);
+    cursor: pointer;
+    
 }

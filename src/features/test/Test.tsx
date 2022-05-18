@@ -70,7 +70,7 @@ const Test = (props: any) => {
         switch (switchview) {
             case 'ENG': return <EnglishTest canId={canId} data={engCt} finish={props.finish} type={switchview} />
             case 'GEN': return <GeneralTest canId={canId} data={genCt} finish={props.finish} type={switchview} />
-            default: return <EnglishTest canId={canId} data={engCt} finish={props.finish} type={switchview} />
+          
         }
     }
 

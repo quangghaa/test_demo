@@ -3,6 +3,7 @@ import { RootState } from "../../app/store";
 import { IQA } from "../interface";
 
 export interface CandidateState {
+    times: string;
     id: number;
     code: string;
     name: string;

@@ -1,10 +1,11 @@
 import { CloseOutlined, FileWordOutlined, FilterFilled, MailFilled, PhoneFilled, PlusOutlined, SearchOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Cascader, Checkbox, Col, message, DatePicker, Input, Modal, Row, TimePicker, Upload } from 'antd';
+import { Button, Cascader, Checkbox, Col, message, DatePicker, Input, Modal, Row, TimePicker, Upload, Form } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { createContentType } from '../../../hooks/useContentType';
 import { createOne, getList } from '../../../services/api';
-import { ICalendar, ICandidate, ICandidateBody } from '../../interface';
+import { ConditionSearch, ICalendar, ICandidate, ICandidateBody } from '../../interface';
+import statusNotification from '../../notification/Notification';
 import HeaderD from '../headerD/HeaderD';
 import CalendarSection from './CalendarSection';
 import './Schedule.css';
@@ -36,11 +37,11 @@ const Schedule = () => {
     const lev = [
         {
             value: '1',
-            label: 'Junior'
+            label: 'Intern'
         },
         {
             value: '2',
-            label: 'Middle'
+            label: 'Fresher'
         },
         {
             value: '3',
@@ -86,21 +87,11 @@ const Schedule = () => {
     const [reload, setReload] = useState(0);
 
     const [searchBody, setSearchBody] = useState({
-        name: '',
-        department: '',
-        position: '',
-        level: {
-            id: 0
-        },
-        dates: '',
-        times: '',
-        phone: '',
-        email: ''
-    } as ICandidateBody)
+
+    } as ConditionSearch)
 
     const [addBody, setAddBody] = useState({
         name: '',
-        department: '',
         position: '',
         level: {
             id: 0
@@ -114,16 +105,16 @@ const Schedule = () => {
 
     useEffect(() => {
 
-        const getAllCandidate = async () => {
-            setLoading([...loading, { past: true }]);
-            const res = await getList('staff/listcandidate');
-            if (res && res.data != null) {
-                setCalList(res.data)
-            }
-            setLoading([...loading, { past: false }]);
+        // const getAllCandidate = async () => {
+        //     setLoading([...loading, { past: true }]);
+        //     const res = await getList('staff/listcandidate');
+        //     if (res && res.data != null) {
+        //         setCalList(res.data)
+        //     }
+        //     setLoading([...loading, { past: false }]);
 
-        }
-        console.log(calList)
+        // }
+
         const getOutdate = async () => {
             setLoading([...loading, { past: true }]);
             const res = await getList('staff/candidate/bydate/outofdate');
@@ -154,22 +145,29 @@ const Schedule = () => {
 
         }
 
-        const getCal = async () => {
-            try {
-                setLoading([...loading, {calendar: true}]);
-                const res = await getList('/staff/candidate/undue');
-                if(res) {
-                    setCalList(res.data);
-                }
-            } finally {
-                setLoading([...loading, {calendar: false}]);
-            }
-        }
-        getAllCandidate();
+        // const getCal = async () => {
+        //     try {
+
+        //         setLoading([...loading, { calendar: true }]);
+        //         const res = await getList('/staff/candidate/undue');
+        //         if (res) {
+        //             setCalList(res.data);
+        //         }
+        //     } finally {
+        //         setLoading([...loading, { calendar: false }]);
+
+        //         setLoading([...loading, {calendar: true}]);
+        //         const res = await getList('/staff/candidate/undue');
+        //         if(res) {
+        //             setCalList(res.data);
+        //         }
+        //     } 
+        // }
+        // getAllCandidate();
         getOutdate();
         getToday();
         getFuture();
-        getCal();
+        // getCal();
 
     }, [reload]);
 
@@ -179,22 +177,29 @@ const Schedule = () => {
     }
 
     const enterName = (e: any) => {
-        setSearchBody({ ...searchBody, name: e.target.value[0] })
-    }
+        if (e.target.value === '') {
+            setSearchBody({ ...searchBody })
+        } else {
+            setSearchBody({ ...searchBody, CANDIDATE_BYNAME: e.target.value[0] })
+        }
 
-    const onSelectDep = (value: any) => {
-        setSearchBody({ ...searchBody, department: value[0] })
     }
 
     const onSelectPos = (value: any) => {
-        setSearchBody({ ...searchBody, position: value[0] })
+        if (value === undefined) {
+            setSearchBody({ ...searchBody })
+        } else {
+            setSearchBody({ ...searchBody, CANDIDATE_BYPOSTION: value[0] })
+        }
     }
 
     const onSelectLev = (value: any) => {
-        const obj = {
-            id: value[0]
+        if (value === []) {
+            setSearchBody({ ...searchBody })
+        } else {
+            setSearchBody({ ...searchBody, CANDIDATE_BYLEVEL: value[0] })
         }
-        setSearchBody({ ...searchBody, level: value })
+        console.log(searchBody)
     }
 
     const onSelectDate = (value: any) => {
@@ -207,7 +212,11 @@ const Schedule = () => {
         if (d.length == 1) d = '0' + d;
         const date = y + '-' + m + '-' + d;
         // setSearchBody({ ...searchBody, date: selectDate.toString() })
-        setDatetime({ ...datetime, date: date });
+        if (value === null) {
+            setSearchBody({ ...searchBody })
+        } else {
+            setSearchBody({ ...searchBody, CANDIDATE_BYDATE: date });
+        }
     }
 
     const onSelectTime = (value: any) => {
@@ -218,27 +227,62 @@ const Schedule = () => {
         let s = selectTime.getSeconds() + '';
 
         const time = h + ':' + m + ':' + s;
-        setDatetime({ ...datetime, time: time });
+        // setSearchBody({ ...searchBody, times: time });
     }
 
     const enterEmail = (e: any) => {
-        setSearchBody({ ...searchBody, email: e.target.value })
+        if (e.target.value === '') {
+            setSearchBody({ ...searchBody })
+        } else {
+            setSearchBody({ ...searchBody, CANDIDATE_BYEMAIL: e.target.value })
+        }
+
     }
 
     const enterPhone = (e: any) => {
-        setSearchBody({ ...searchBody, phone: e.target.value })
+        if (e.target.value === '') {
+            setSearchBody({ ...searchBody })
+        } else {
+            setSearchBody({ ...searchBody, CANDIDATE_BYPHONE: e.target.value })
+        }
     }
 
-    const onSearch = () => {
+    const onSearch = async () => {
+        setLoadingModal(true);
+        try {
+            const condition: any = {
+                condition: {
+                    ...searchBody
+                }
+            }
+            const res = await createOne("staff/search", condition);
+            console.log(res.data, "ressssssss")
+            setCalList(res.data)
+            // setFuture(res.data)
+            // setPast(res.data)
+            // setToday(res.data)
+            if (res) {
+                setReload(reload => reload + 1);
+            }
 
+        } finally {
+            // const reset = {
+            //     name: '',
+            //     department: '',
+            //     position: '',
+            //     level: '',
+            //     dates: '',
+            //     times: '',
+            //     phone: '',
+            //     email: '',
+            // }
+            // setAddBody(reset);
+            setLoadingModal(false);
+        }
     }
 
     const enterNameModal = (e: any) => {
         setAddBody({ ...addBody, name: e.target.value })
-    }
-
-    const onSelectDepModal = (value: any) => {
-        setAddBody({ ...addBody, department: value[0] })
     }
 
     const onSelectPosModal = (value: any) => {
@@ -299,10 +343,19 @@ const Schedule = () => {
         try {
 
             const res = await createOne("staff/addcandidate", addBody);
-            console.log(res)
+            console.log(res.status, "ressssssss")
             if (res) {
                 setVisibleModal(false)
                 setReload(reload => reload + 1);
+                statusNotification(true, "Thêm thành công")
+            }
+
+        } catch (error) {
+            console.log(error)
+            if (error === "Request failed with status code 400") {
+                statusNotification(false, "Thêm  ứng viên thất bại hãy nhập đủ thông tin")
+            } else if (error === "Request failed with status code 500") {
+                statusNotification(false, "Thêm  ứng viên thất bại ứng viên bị trùng email hoặc số điện thoại")
             }
 
         } finally {
@@ -326,8 +379,8 @@ const Schedule = () => {
     }
 
     const [sw, setSw] = useState({
-        schedule: true,
-        board: false
+        schedule: false,
+        board: true
     });
 
     const scheduleClick = () => {
@@ -338,6 +391,14 @@ const Schedule = () => {
         })
     }
 
+    const resetForm = (e:any) => {
+        const body = ({
+        } as ConditionSearch)
+        setSearchBody(body)
+        console.log(searchBody)
+        window.location.reload();
+    }
+
     const calendarClick = () => {
         console.log('Schedule click');
         setSw({
@@ -346,7 +407,6 @@ const Schedule = () => {
         })
     }
 
-    ///////
 
     const uploadFile = {
         name: 'file',
@@ -375,12 +435,16 @@ const Schedule = () => {
                         <span className='filter'><FilterFilled className='mgr-20' />Bộ lọc</span>
                         <span className='mgt-20'>Tên</span>
                         <div className='name-inp'>
-                            <Input size="large" placeholder="Enter name" onChange={enterName} />
+                            <Input
+                                size="large"
+                                placeholder="Enter name"
+                                onChange={enterName} />
                             <span className='name-inp-ic'><UserOutlined /></span>
+
                         </div>
 
-                        <span className='mgt-10'>Phòng ban</span>
-                        <Cascader className='c-cas' size='large' options={dep} onChange={onSelectDep} placeholder="Which department?" />
+                        {/* <span className='mgt-10'>Phòng ban</span>
+                        <Cascader className='c-cas' size='large' options={dep} onChange={onSelectDep} placeholder="Which department?" /> */}
 
                         <span className='mgt-10'>Vị trí</span>
                         <Cascader className='c-cas' size='large' options={pos} onChange={onSelectPos} placeholder="Which position?" />
@@ -409,7 +473,7 @@ const Schedule = () => {
                             </Button>
                         </span>
                         <span className='center mgt-20'>
-                            <Button className='btn-delete' icon={<CloseOutlined />}>
+                            <Button className='btn-delete' onClick={resetForm} icon={<CloseOutlined />}>
                                 Xóa lọc
                             </Button>
                         </span>
@@ -436,15 +500,20 @@ const Schedule = () => {
                                     ,
                                 ]}
                             >
+
                                 <div className='col'>
+
                                     <span className='mgt-20'>Tên</span>
                                     <div className='name-inp'>
-                                        <Input size="large" placeholder="Enter name" onChange={enterNameModal} />
+                                        <Input
+
+                                            size="large" placeholder="Enter name" onChange={enterNameModal} />
                                         <span className='name-inp-ic'><UserOutlined /></span>
+
                                     </div>
 
-                                    <span className='mgt-10'>Phòng ban</span>
-                                    <Cascader className='c-cas' size='large' options={dep} onChange={onSelectDepModal} placeholder="Which department?" />
+                                    {/* <span className='mgt-10'>Phòng ban</span>
+                                    <Cascader className='c-cas' size='large' options={dep} onChange={onSelectDepModal} placeholder="Which department?" /> */}
 
                                     <span className='mgt-10'>Vị trí</span>
                                     <Cascader className='c-cas' size='large' options={pos} onChange={onSelectPosModal} placeholder="Which position?" />
@@ -480,11 +549,12 @@ const Schedule = () => {
                 <Col span={18} className='pd-20'>
                     <span>
                         <span className='filter'><FileWordOutlined className='mgr-20' />Danh sách</span>
-                        <Checkbox className='mgl-30' checked={sw.schedule} onChange={scheduleClick}>Lịch</Checkbox>
                         <Checkbox className='mgl-30' checked={sw.board} onChange={calendarClick}>Bảng</Checkbox>
+                        <Checkbox className='mgl-30' checked={sw.schedule} onChange={scheduleClick}>Lịch</Checkbox>
                     </span>
-                    {sw.schedule ? <ScheduleSection fu={future} to={today} pa={past} reload={reloadData} /> : <></>}
+
                     {sw.board ? <CalendarSection list={calList} reload={reloadData} /> : <></>}
+                    {sw.schedule ? <ScheduleSection fu={future} to={today} pa={past} reload={reloadData} /> : <></>}
                 </Col>
             </Row>
 

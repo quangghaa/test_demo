@@ -1,10 +1,13 @@
-import { HolderOutlined, MenuOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Col, Row } from 'antd';
+import { HolderOutlined, MenuOutlined, UserSwitchOutlined , UserOutlined  } from '@ant-design/icons';
+import { Col, Row , Menu , Typography } from 'antd';
+import SubMenu from 'antd/lib/menu/SubMenu';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../../app/hooks';
 import { clear } from '../../reducer/testSlice';
 import './HeaderD.css';
+
+const { Text, Title } = Typography;
 
 const HeaderD = () => {
     const dispatch = useAppDispatch();
@@ -20,7 +23,7 @@ const HeaderD = () => {
     }
 
     const [popup, setPopup] = useState(false);
-    
+
 
     return (
         <div>
@@ -32,7 +35,7 @@ const HeaderD = () => {
 
                 <Col span={12}>
                     <ul className='nav-header'>
-                        
+
                         <li onClick={clearState}>
                             <Link to='/dashboard/schedule'>Lịch test</Link>
                         </li>
@@ -46,11 +49,17 @@ const HeaderD = () => {
                     </ul>
                 </Col>
 
-                <Col span = {6} className='row-reverse'>
-                    <span className='logout-ic' onClick={logout}>
+                <Col span={6} className='row-reverse'>
+                    <Menu mode="horizontal">
+                        <SubMenu  icon={<UserOutlined />} title={<Text strong>Tài khoản</Text>}>
+                            <Menu.Item key="account" ><Link to="/manageaccount" />Quản lý tài khoản</Menu.Item>
+                            <Menu.Item key="logout" onClick={logout}><Link to="/" />Đăng xuất</Menu.Item>
+                        </SubMenu>
+                    </Menu>
+                    {/* <span className='logout-ic' onClick={logout}>
                         <Link to='/'><UserSwitchOutlined /></Link>
                     </span>
-                    <span className='mgr-20'><HolderOutlined /></span>
+                    <span className='mgr-20'><HolderOutlined /></span> */}
                 </Col>
             </Row>
         </div>
