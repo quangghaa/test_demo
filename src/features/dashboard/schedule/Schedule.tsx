@@ -12,16 +12,6 @@ import './Schedule.css';
 import ScheduleSection from './ScheduleSection';
 
 const Schedule = () => {
-    const dep = [
-        {
-            value: 'Blockchain',
-            label: 'Blockchain'
-        },
-        {
-            value: 'database',
-            label: 'Database'
-        }
-    ];
 
     const pos = [
         {
@@ -49,11 +39,6 @@ const Schedule = () => {
         }
     ];
 
-    const testValue = {
-        value: 'Blockchain',
-        label: 'Blockchain'
-    }
-
     const [today, setToday] = useState([] as ICandidate[]);
     const [future, setFuture] = useState([] as ICandidate[]);
     const [past, setPast] = useState([] as ICandidate[]);
@@ -63,11 +48,6 @@ const Schedule = () => {
     const [visibleModal, setVisibleModal] = useState(false);
 
     const [loadingModal, setLoadingModal] = useState(false);
-
-    const [datetime, setDatetime] = useState({
-        date: '',
-        time: ''
-    })
 
     const [loading, setLoading] = useState([
         {
@@ -81,6 +61,9 @@ const Schedule = () => {
         },
         {
             calendar: false
+        },
+        {
+            calList: false
         }
     ]);
 
@@ -105,15 +88,20 @@ const Schedule = () => {
 
     useEffect(() => {
 
-        // const getAllCandidate = async () => {
-        //     setLoading([...loading, { past: true }]);
-        //     const res = await getList('staff/listcandidate');
-        //     if (res && res.data != null) {
-        //         setCalList(res.data)
-        //     }
-        //     setLoading([...loading, { past: false }]);
+        const getAllCandidate = async () => {
+            setLoading([...loading, { calList: true }])
+            try {
 
-        // }
+                const res = await getList('staff/listcandidate');
+                if (res && res.data != null) {
+                    setCalList(res.data)
+                }
+
+            } finally {
+                setLoading([...loading, { calList: false }])
+            }
+        }
+        getAllCandidate();
 
         const getOutdate = async () => {
             setLoading([...loading, { past: true }]);
@@ -124,6 +112,7 @@ const Schedule = () => {
             setLoading([...loading, { past: false }]);
 
         }
+        getOutdate();
 
         const getToday = async () => {
             setLoading([...loading, { present: true }]);
@@ -134,40 +123,21 @@ const Schedule = () => {
             setLoading([...loading, { present: false }]);
 
         }
+        getToday();
 
         const getFuture = async () => {
             setLoading([...loading, { future: true }]);
             const res = await getList('staff/candidate/bydate/undue');
             if (res && res.data != null) {
                 setFuture(res.data);
+                
             }
             setLoading([...loading, { future: false }]);
 
         }
-
-        // const getCal = async () => {
-        //     try {
-
-        //         setLoading([...loading, { calendar: true }]);
-        //         const res = await getList('/staff/candidate/undue');
-        //         if (res) {
-        //             setCalList(res.data);
-        //         }
-        //     } finally {
-        //         setLoading([...loading, { calendar: false }]);
-
-        //         setLoading([...loading, {calendar: true}]);
-        //         const res = await getList('/staff/candidate/undue');
-        //         if(res) {
-        //             setCalList(res.data);
-        //         }
-        //     } 
-        // }
-        // getAllCandidate();
-        getOutdate();
-        getToday();
         getFuture();
-        // getCal();
+
+
 
     }, [reload]);
 
@@ -180,7 +150,7 @@ const Schedule = () => {
         if (e.target.value === '') {
             setSearchBody({ ...searchBody })
         } else {
-            setSearchBody({ ...searchBody, CANDIDATE_BYNAME: e.target.value[0] })
+            setSearchBody({ ...searchBody, CANDIDATE_BYNAME: e.target.value })
         }
 
     }
@@ -194,6 +164,7 @@ const Schedule = () => {
     }
 
     const onSelectLev = (value: any) => {
+        console.log(value)
         if (value === []) {
             setSearchBody({ ...searchBody })
         } else {
@@ -255,29 +226,30 @@ const Schedule = () => {
                     ...searchBody
                 }
             }
-            const res = await createOne("staff/search", condition);
-            console.log(res.data, "ressssssss")
-            setCalList(res.data)
-            // setFuture(res.data)
-            // setPast(res.data)
-            // setToday(res.data)
-            if (res) {
-                setReload(reload => reload + 1);
+
+            const checkCondition: any = {
+                condition: {
+
+                }
             }
 
-        } finally {
-            // const reset = {
-            //     name: '',
-            //     department: '',
-            //     position: '',
-            //     level: '',
-            //     dates: '',
-            //     times: '',
-            //     phone: '',
-            //     email: '',
-            // }
-            // setAddBody(reset);
-            setLoadingModal(false);
+
+            if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == true) {
+                const res = await getList('staff/listcandidate');
+
+                if (res && res.data != null) {
+                    setCalList(res.data)
+                  
+                }
+            } else if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == false) {
+                const res = await createOne("staff/search", condition);
+                console.log(condition)
+                setCalList(res.data)
+                statusNotification(true, "Success Search")
+            }
+        } catch (error) {
+            console.log(error)
+            statusNotification(false, "Fail Search")
         }
     }
 
@@ -352,9 +324,9 @@ const Schedule = () => {
 
         } catch (error) {
             console.log(error)
-            if (error === "Request failed with status code 400") {
+            if (error == `Error: Request failed with status code 400`) {
                 statusNotification(false, "Thêm  ứng viên thất bại hãy nhập đủ thông tin")
-            } else if (error === "Request failed with status code 500") {
+            } else if (error === `Request failed with status code 500`) {
                 statusNotification(false, "Thêm  ứng viên thất bại ứng viên bị trùng email hoặc số điện thoại")
             }
 
@@ -391,11 +363,10 @@ const Schedule = () => {
         })
     }
 
-    const resetForm = (e:any) => {
+    const resetForm = (e: any) => {
         const body = ({
         } as ConditionSearch)
         setSearchBody(body)
-        console.log(searchBody)
         window.location.reload();
     }
 

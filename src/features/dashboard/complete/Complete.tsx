@@ -22,15 +22,15 @@ const Complete = () => {
     const lev = [
         {
             value: '1',
-            label: 'Junior'
+            label: 'Intern'
         },
         {
             value: '2',
-            label: 'Middle'
+            label: 'Freshser'
         },
         {
             value: '3',
-            label: 'Senior'
+            label: 'Junior'
         }
     ];
 

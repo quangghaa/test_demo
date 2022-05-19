@@ -156,10 +156,12 @@ const Header = (props: any) => {
                     console.log("MARKS: ", marks);
 
                     dispatch(updateCandidate(marks));
-
+                    fakeRequest(1000)
                 }
             } catch (err) {
                 console.log(err);
+            } finally {
+               navigate("/completetest")
             }
         }
 
@@ -176,14 +178,14 @@ const Header = (props: any) => {
                     <span>LOGO</span>
                     {props.start ?
                         <span className='row mgl-20'>
-                            <Countdown value={timeTest}  />
+                            <Countdown value={timeTest} />
                             <Button onClick={showModal} className='btn-sub mgl-20'>
                                 {/* <Link to='/completetest'>Nộp bài</Link> */}
                                 Nộp bài
                             </Button>
                         </span>
                         : <></>}
-                    <Modal title="Xác nhận nộp bài" visible={visibleSubmit} onOk={okSubmit} okText="Xác nhận" onCancel={cancelSubmit} cancelText="Hủy">
+                    <Modal title="Xác nhận nộp bài" visible={visibleSubmit} onOk={handleSubmit} okText="Xác nhận" onCancel={cancelSubmit} cancelText="Hủy">
                         <p>Xác nhận nộp bài , nếu bạn nộp bài thì không thể quay lại trang </p>
 
                     </Modal>

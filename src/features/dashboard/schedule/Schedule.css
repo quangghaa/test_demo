@@ -83,34 +83,39 @@
 
 .c-cas {
     width: inherit;
+    
 }
 
 .c-cans {
     list-style-type: none;
     margin: unset;
     padding: unset;
+    
 }
 
 .c-card {
     width: auto;
     height: auto;
-    border: 0.5px solid black;
+    border: 0.5px solid rgb(20, 20, 20);
     border-radius: 5px;
-
+    
     position: relative;
 }
 
 .c-card > span {
     padding-left: 20px;
+    
 }
 
 .c-card > div {
     padding: 5px 20px;
+    
 }
 
 .c-h {
-    background-color: black;
+    background-color: rgba(23, 149, 207, 0.911);
     color: white;
+    
 }
 
 .c-time {
@@ -118,7 +123,9 @@
     border-radius: 10px;
     padding: 5px 15px;
     background-color: #f0f2f5;
+    font-weight: 500;
     width: fit-content;
+    border: 0.5px solid black;
 }
 
 .c-cal {
