@@ -34,26 +34,26 @@ function App() {
   }
 
   return (
-    
+
 
     <div className="App">
       <Router>
-            
+
         <Routes>
           <Route path="/" element={<Homepage start={isBegin} join={setJoin} />} />
           <Route path='/instruction' element={<Instruction start={isBegin} begin={begin} join={direct} />} />
           <Route path='/completetest' element={<CompleteTest start={isBegin} />} />
           <Route path='/test' element={<Test start={isBegin} finish={finish} />} />
-          
+
           <Route path='/dashboard' element={<Schedule />} />
           <Route path='/dashboard/schedule' element={<Schedule />} />
           <Route path='/dashboard/question' element={<QuestionCollection />} />
-          <Route path='/dashboard/complete' element={<Complete />}/>
+          <Route path='/dashboard/complete' element={<Complete />} />
         </Routes>
       </Router>
-      
+
     </div>
-    
+
   );
 }
 

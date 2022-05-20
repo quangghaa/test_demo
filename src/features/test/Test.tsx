@@ -1,5 +1,6 @@
+
 import { PropertySafetyFilled, UndoOutlined } from '@ant-design/icons';
-import { Button, Cascader, Col, Radio, Row, Space } from 'antd';
+import { Button, Cascader, Col, Radio, Row, Space, Form } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { type } from 'os';
 import { useEffect, useRef, useState } from 'react';
@@ -22,7 +23,7 @@ const Test = (props: any) => {
 
     const listTest = useAppSelector(selectCandidate);
 
-    const [switchview, setSwitchview] = useState('ENG');
+    const [switchview, setSwitchview] = useState('ENG' && 'GEN');
 
     const toEng = () => {
         setSwitchview('ENG');
@@ -42,7 +43,6 @@ const Test = (props: any) => {
 
         let engCt = {} as TestContent;
         let genCt = {} as TestContent;
-
         if (Array.isArray(tests) && tests.length > 0) {
             tests.map(t => {
                 // English
@@ -52,7 +52,7 @@ const Test = (props: any) => {
                         content: t.questions
                     }
                     engCt = ct;
-                } 
+                }
 
                 // Coding
                 if (t.subject.id === 2) {
@@ -70,20 +70,61 @@ const Test = (props: any) => {
         switch (switchview) {
             case 'ENG': return <EnglishTest canId={canId} data={engCt} finish={props.finish} type={switchview} />
             case 'GEN': return <GeneralTest canId={canId} data={genCt} finish={props.finish} type={switchview} />
-          
+
         }
     }
 
-    const dispatch = useAppDispatch();
-    
+    const convertTime = (value: any) => {
+        // if (value == null) {
+        //     return value === Date.now()
+        // }
+        const splitString = value.split(":")
+        const splitTime = (+splitString[0] * 60 * 60 * 10) + (+splitString[1] * 60 * 10) + splitString[2]
+        const timeTest = Date.now() + parseInt(splitTime)
+        return timeTest
+
+    }
+
+    const timeTest = useRef(convertTime(listTest[0].times))
+    console.log(listTest, "listetessssssssssssssss")
     return (
         <div>
-            <Header start={props.start} finish={props.finish} />
+            <Header start={props.start} time={timeTest} finish={props.finish} />
             <div className='full-height row'>
                 <ul className='nav'>
-                    <li className='nav-item' onClick={toEng}><span className='vertical'>Tiếng anh</span></li>
-                    <li className='nav-item' onClick={toGen}><span className='vertical'>Kiến thức chung</span></li>
-                    <li className='nav-item' onClick={toCode}><span className='vertical'>Lập trình</span></li>
+                    {listTest.map((t) => {
+                        return (
+                            t.tests.map(t_test => {
+                                if (t_test.subject.name === "English") {
+
+                                    return (
+                                        <div>
+                                            <li className='nav-item' onClick={toEng}><span className='vertical'>Tiếng anh</span></li>
+                                        </div>
+                                    )
+                                } else if (t_test.subject.name === "Coding") {
+
+                                    return (
+                                        <div>
+                                            <li className='nav-item' onClick={toGen}><span className='vertical'>Kiến thức chung</span></li>
+                                        </div>
+
+                                    )
+                                } else if (t_test.subject.name === "English" && t_test.subject.name === "Coding") {
+                                    return (
+                                        <div>
+                                            <li className='nav-item' onClick={toEng}><span className='vertical'>Tiếng anh</span></li>
+                                            <li className='nav-item' onClick={toGen}><span className='vertical'>Kiến thức chung</span></li>
+                                        </div>
+                                    )
+                                }
+                            })
+                        )
+                    })}
+                    {/* <li className='nav-item' onClick={toEng}><span className='vertical'>Tiếng anh</span></li>
+                    <li className='nav-item' onClick={toGen}><span className='vertical'>Kiến thức chung</span></li> */}
+
+
                 </ul>
 
                 <div className='cus-pd fullwidth'>
@@ -96,5 +137,6 @@ const Test = (props: any) => {
 }
 
 export default Test;
+
 
 

@@ -5,7 +5,7 @@ import { createOneNoJwt } from "../../services/api";
 
 const Question = (props: any) => {
     const [answer, setAnswer] = useState('');
-    console.log("PROPPSSSS: ", props);
+    // console.log("PROPPSSSS: ", props);
 
     useEffect(() => {
         const cacheData = props.cache;

@@ -1,3 +1,4 @@
+
 import { PlusOutlined, CloseCircleFilled, DownOutlined, UpOutlined } from "@ant-design/icons";
 import { Button, Cascader, Modal, Input } from "antd";
 import { useState, useEffect } from "react";
@@ -102,6 +103,10 @@ const QuestionItem = (props: any) => {
         },
         {
             value: '2',
+            label: 'Coding'
+        },
+        {
+            value: '3',
             label: 'Kiến thức chung'
         },
     ];
@@ -419,7 +424,7 @@ const QuestionItem = (props: any) => {
                 >
                     <span className='row-between'>
                         <span>Loại câu hỏi: </span>
-                        <Cascader options={questionTypes} onChange={onSelectType} placeholder={props.data.type.id} />
+                        <Cascader options={questionTypes} onChange={onSelectType} placeholder={props.data.subject.name} />
                     </span>
                     <span className='row-between mgt-10'>
                         <span>Dạng câu hỏi: </span>
@@ -461,4 +466,5 @@ const QuestionItem = (props: any) => {
 }
 
 export default QuestionItem;
+
 
