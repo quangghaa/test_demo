@@ -45,7 +45,7 @@ const HeaderD = () => {
                         <li onClick={clearState}>
                             <Link to='/dashboard/complete'>Đã hoàn thành</Link>
                         </li>
-                        <li>Tài liệu</li>
+                        {/* <li>Tài liệu</li> */}
                     </ul>
                 </Col>
 

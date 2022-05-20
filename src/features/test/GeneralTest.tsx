@@ -45,7 +45,7 @@ const GeneralTest = (props: any) => {
                             }
                         })
                     } else {
-                        console.log("ArrReturn is not an Array");
+                        // console.log("ArrReturn is not an Array");
                     }
                 }
                 setCache(engArr);

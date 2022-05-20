@@ -105,42 +105,6 @@ const Header = (props: any) => {
     const { Countdown } = Statistic;
     // const deadline = Date.now() + 1000 * 60 * 60; // Moment is also OK
 
-    const listTest = useAppSelector(selectCandidate);
-
-    const convertTime = (value: any) => {
-        if (value == null) {
-            return Date.now()
-        }
-        const splitString = value.split(":")
-        const splitTime = (+splitString[0] * 60 * 60 * 10) + (+splitString[1] * 60 * 10) + splitString[2]
-        const timeTest = Date.now() + parseInt(splitTime)
-        return timeTest
-
-    }
-
-    const timeTest = listTest.length != 0 ? convertTime(listTest[0].times) : Date.now()
-
-    // const onFinish = async () => {
-    //     try {
-    //         const res = await createOneNoJwt('testpage/submit');
-    //         if (res) {
-    //             console.log("ket qua: ", res.data);
-    //             const marks = {
-    //                 englishMark: res.data.data.englishMark != null ? parseInt(res.data.data.englishMark) : -1,
-    //                 codingMark: res.data.data.codingMark != null ? parseInt(res.data.data.codingMark) : -1,
-    //                 knowledgeMark: res.data.data.knowledgeMark != null ? parseInt(res.data.data.knowledgeMark) : -1
-    //             }
-
-    //             console.log("MARKS: ", marks);
-    //             dispatch(updateCandidate(marks));
-    //             navigate("/completetest")
-    //         }
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-
-    // }
-
     const handleSubmit = () => {
         const submit = async () => {
             try {
@@ -178,7 +142,7 @@ const Header = (props: any) => {
                     <span>LOGO</span>
                     {props.start ?
                         <span className='row mgl-20'>
-                            <Countdown value={timeTest} />
+                            <Countdown value={props.time.current} />
                             <Button onClick={showModal} className='btn-sub mgl-20'>
                                 {/* <Link to='/completetest'>Nộp bài</Link> */}
                                 Nộp bài

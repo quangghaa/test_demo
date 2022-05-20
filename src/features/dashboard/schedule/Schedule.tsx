@@ -130,7 +130,7 @@ const Schedule = () => {
             const res = await getList('staff/candidate/bydate/undue');
             if (res && res.data != null) {
                 setFuture(res.data);
-                
+
             }
             setLoading([...loading, { future: false }]);
 
@@ -239,7 +239,7 @@ const Schedule = () => {
 
                 if (res && res.data != null) {
                     setCalList(res.data)
-                  
+
                 }
             } else if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == false) {
                 const res = await createOne("staff/search", condition);
@@ -318,10 +318,10 @@ const Schedule = () => {
             console.log(res.status, "ressssssss")
             if (res) {
                 setVisibleModal(false)
-                setReload(reload => reload + 1);
-                statusNotification(true, "Thêm thành công")
-            }
+                // setReload(reload => reload + 1);
 
+            }
+            statusNotification(true, "Thêm thành công")
         } catch (error) {
             console.log(error)
             if (error == `Error: Request failed with status code 400`) {

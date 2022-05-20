@@ -91,6 +91,10 @@ const Question = (props: any) => {
         },
         {
             value: '2',
+            label: 'Coding'
+        },
+        {
+            value: '3',
             label: 'Kiến thức chung'
         },
     ];
@@ -323,7 +327,7 @@ const Question = (props: any) => {
 
             {visible && (
                 <Modal
-                    title={!isEdit ? 'Tạo câu hỏi' : 'Sửa câu hỏi'}
+                    title={'Tạo câu hỏi'}
                     visible={visible}
                     confirmLoading={confirmLoading}
                     onCancel={handleCancel}
