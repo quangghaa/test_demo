@@ -51,7 +51,7 @@ const HeaderD = () => {
 
                 <Col span={6} className='row-reverse'>
                     <Menu mode="horizontal">
-                        <SubMenu  icon={<UserOutlined />} title={<Text strong>Tài khoản</Text>}>
+                        <SubMenu key={0} icon={<UserOutlined />} title={<Text strong>Tài khoản</Text>}>
                             <Menu.Item key="account" ><Link to="/manageaccount" />Quản lý tài khoản</Menu.Item>
                             <Menu.Item key="logout" onClick={logout}><Link to="/" />Đăng xuất</Menu.Item>
                         </SubMenu>

@@ -16,6 +16,10 @@ const Test = (props: any) => {
         },
         {
             value: '2',
+            label: 'Coding'
+        },
+        {
+            value: '3',
             label: 'Kiến thức chung'
         },
     ];
@@ -42,6 +46,10 @@ const Test = (props: any) => {
         },
         {
             value: '2',
+            label: 'Coding'
+        },
+        {
+            value: '3',
             label: 'Kiến thức chung'
         },
     ];
@@ -74,7 +82,7 @@ const Test = (props: any) => {
 
     const [allCands, setAllCands] = useState([] as ICandidate[]);
 
-
+    console.log(testList)
 
     useEffect(() => {
         const getAllTest = async () => {
@@ -168,18 +176,13 @@ const Test = (props: any) => {
                 }
             }
 
-            const checkCondition: any = {
-                condition: {
 
-                }
-            }
-
-            if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == true) {
+            if (Object.keys(condition.condition).length === 0) {
                 const res = await getList('staff/getalltest');
                 if (res && res.data != null) {
                     setTestList(res.data);
                 }
-            } else if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == false) {
+            } else if (Object.keys(condition.condition).length !== 0) {
                 const res = await createOne('staff/search', condition)
                 setTestList(res.data)
             }
@@ -382,7 +385,7 @@ const Test = (props: any) => {
                                 <li key={i} onClick={() => onTestClick(t.id)}>
                                     <span className='ic-close' onClick={(e: any) => onShowConfirm(e, t.id)}><CloseCircleFilled /></span>
                                     {/* <span className='lv-cir'>{t.level}</span> */}
-                                    <span>{t.name}</span>
+                                    <span>{t.name + " LEVEL: " + t.level.name}</span>
                                 </li>
                                 <Modal
                                     title="Xác nhận"

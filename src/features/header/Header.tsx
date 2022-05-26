@@ -1,29 +1,59 @@
 import { Button, Input, Modal, Statistic } from 'antd';
-import Countdown from 'antd/lib/statistic/Countdown';
+import GoogleLogin from 'react-google-login';
 import axios from 'axios';
-import { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../app/hooks';
 import { createOneNoJwt } from '../../services/api';
 import fakeRequest from '../../utils/fakeRequest';
 import { statusNotification } from '../notification/Notification';
-import { selectCandidate, updateCandidate } from '../reducer/listCandidateSlice';
+import { updateCandidate } from '../reducer/listCandidateSlice';
 import './Header.css';
+import GoogleButton from 'react-google-button';
 
 const Header = (props: any) => {
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
     const [visibleSubmit, setvisibleSubmit] = useState(false);
+    const [loginData, setLoginData] = useState(
+        localStorage.getItem('loginData')
+            ? JSON.parse(localStorage.getItem('loginData') || '')
+            : null
+    );
+
+    const handleFailure = (result: any) => {
+        statusNotification(false, "Đăng nhập thất bại");
+        console.log(result)
+        console.log(Object(process.env.REACT_APP_GOOGLE_CLIENT_ID))
+    };
+
+    const Login = async (googleData: any) => {
+        // const res = await fetch('/api/google-login', {
+        //     method: 'POST',
+        //     body: JSON.stringify({
+        //         token: googleData.tokenId,
+        //     }),
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        // });
+
+        // const data = await res.json();
+        // setLoginData(data);
+        // localStorage.setItem('loginData', JSON.stringify(data));
+        const useInfo = {
+
+        }
+        console.log(googleData)
+    };
+    const handleLogout = () => {
+        localStorage.removeItem('loginData');
+        setLoginData(null);
+    };
 
     const showModal = () => {
         setvisibleSubmit(true);
-    };
-
-    const okSubmit = () => {
-        handleSubmit()
-        setvisibleSubmit(false);
-        navigate("/completetest")
     };
 
     const cancelSubmit = () => {
@@ -125,7 +155,7 @@ const Header = (props: any) => {
             } catch (err) {
                 console.log(err);
             } finally {
-               navigate("/completetest")
+                navigate("/completetest")
             }
         }
 
@@ -167,11 +197,23 @@ const Header = (props: any) => {
                     <div className='col'>
                         <div className='row-reverse'><span className='forgot-pass'>Quên mật khẩu?</span></div>
                         <div className='center'>
-                            {/* <Link to='/dashboard'> */}
+
                             <Button key="submit" loading={confirmLoading} onClick={handleOk} className='btn-login'>
                                 Đăng nhập
                             </Button>
-                            {/* </Link> */}
+                            <p></p>
+                            {/* <GoogleLogin
+
+                                clientId={'744974257082-770efbi5v4ah0ic7qdg6rss3b7nsutuc.apps.googleusercontent.com'}
+                                // render={renderProps => (
+                                //     <GoogleButton onClick={Login} type="dark"></GoogleButton>
+                                // )}
+                                buttonText="Log in with Google"
+                                onSuccess={Login}
+                                onFailure={handleFailure}
+                                cookiePolicy={'single_host_origin'}
+                            ></GoogleLogin> */}
+
                         </div>
                     </div>
                     ,
@@ -182,6 +224,7 @@ const Header = (props: any) => {
                 <Input.Password
                     placeholder="Enter password" className='mgt-20' onChange={enterPassword}
                 />
+                <p></p>
 
             </Modal>
         </>

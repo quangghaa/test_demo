@@ -265,7 +265,7 @@ const CandidateCard = (props: any) => {
                                 <div className='col'>
                                     <span>Lịch</span>
                                     <DatePicker onChange={onSelectDateModal} placeholder={props.data.dates} />
-                                    <TimePicker className='mgt-10' onChange={onSelectTimeModal} placeholder={props.data.times} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                                    <TimePicker className='mgt-10' onChange={onSelectTimeModal} placeholder={props.data.times} defaultValue={moment('00:00:00', 'HH:mm:ss')} />
                                 </div>
                                 <div id='contact' className='col mgl-20'>
                                     <span>Liên hệ</span>

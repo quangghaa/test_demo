@@ -156,6 +156,7 @@ const Schedule = () => {
     }
 
     const onSelectPos = (value: any) => {
+        console.log(value)
         if (value === undefined) {
             setSearchBody({ ...searchBody })
         } else {
@@ -227,21 +228,14 @@ const Schedule = () => {
                 }
             }
 
-            const checkCondition: any = {
-                condition: {
-
-                }
-            }
-
-
-            if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == true) {
+            if (Object.keys(condition.condition).length === 0) {
                 const res = await getList('staff/listcandidate');
 
                 if (res && res.data != null) {
                     setCalList(res.data)
 
                 }
-            } else if (Object.keys(condition.condition).length == Object.keys(checkCondition.condition).length == false) {
+            } else if (Object.keys(condition.condition).length !== 0) {
                 const res = await createOne("staff/search", condition);
                 console.log(condition)
                 setCalList(res.data)
@@ -424,12 +418,12 @@ const Schedule = () => {
                         <Cascader className='c-cas' size='large' options={lev} onChange={onSelectLev} placeholder="Which level?" />
 
                         <div className='row-between mgt-10'>
-                            <div className='col'>
+                            {/* <div className='col'>
                                 <span>Lịch</span>
                                 <DatePicker onChange={onSelectDate} />
-                                <TimePicker className='mgt-10' onChange={onSelectTime} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
-                            </div>
-                            <div id='contact' className='col mgl-20'>
+                                <TimePicker className='mgt-10' onChange={onSelectTime} defaultValue={moment('00:00:00', 'HH:mm:ss')} />
+                            </div> */}
+                            <div id='contact' className='mgt-10 '>
                                 <span>Liên hệ</span>
                                 <Input size="small" placeholder="Email" onChange={enterEmail} prefix={<MailFilled />} />
                                 <Input className='mgt-10' size="small" placeholder="Phone number" onChange={enterPhone} prefix={<PhoneFilled />} />
