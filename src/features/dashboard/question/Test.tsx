@@ -186,10 +186,10 @@ const Test = (props: any) => {
                 const res = await createOne('staff/search', condition)
                 setTestList(res.data)
             }
-
+            statusNotification(true, "Tìm kiếm thành công")
             // console.log(searchBody, "searchbody")
         } catch (error) {
-            console.log(error)
+            statusNotification(false, "Tìm kiếm thất bại")
         }
     }
     //API SEARCH
@@ -283,10 +283,6 @@ const Test = (props: any) => {
     }
 
     const handleRemoveLevelCLick = () => {
-        const reset = ({
-
-        } as ConditionSearch2)
-        setSearchBody(reset)
         window.location.reload();
     }
 

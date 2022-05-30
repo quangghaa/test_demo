@@ -34,10 +34,10 @@ const Homepage = (props: any) => {
         const joinTest = async () => {
             try {
                 setLoading(true);
-                const res = await getListNoJwt('jointest', {code: canId});
+                const res = await getListNoJwt('jointest', { code: canId });
                 console.log(res.data)
-                if(res.data === 'làm xong rồi mà ???') {
-                    statusNotification(false , 'Bạn đã làm bài test')
+                if (res.data === 'làm xong rồi mà ???') {
+                    statusNotification(false, 'Bạn đã làm bài test')
                 } else {
                     dispatch(addCandidate(res.data));
                     navigate('/instruction');
@@ -45,7 +45,7 @@ const Homepage = (props: any) => {
             } finally {
                 setLoading(false);
             }
-            
+
         }
 
         joinTest();
@@ -71,7 +71,6 @@ const Homepage = (props: any) => {
             </div>
         </div>
     )
-}
-
-
+};
 export default Homepage;
+

@@ -161,7 +161,7 @@ const Schedule = () => {
         if (value === undefined) {
             setSearchBody({ ...searchBody })
         } else {
-            setSearchBody({ ...searchBody, CANDIDATE_BYPOSTION: value[0] })
+            setSearchBody({ ...searchBody, CANDIDATE_BYPOSITION: value[0] })
         }
     }
 
