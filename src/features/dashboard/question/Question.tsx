@@ -23,7 +23,7 @@ const Question = (props: any) => {
         },
         {
             value: '3',
-            label: 'Junior'
+            label: 'Senior'
         }
     ];
 
@@ -129,7 +129,7 @@ const Question = (props: any) => {
     }, [reload])
 
     const reloadData = () => {
-        setReload(reload => reload + 1);
+        setReload(reload);
     }
 
     const onSelectLev = async (value: any) => {

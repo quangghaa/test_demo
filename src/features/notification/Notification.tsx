@@ -5,12 +5,14 @@ export const statusNotification = (status: any, messageNoti: string) => {
     if (status === true) {
         notification.success({
             message: "Thành công",
-            description: messageNoti
+            description: messageNoti,
+            placement: 'top'
         });
     } else {
         notification.error({
             message: "Thất bại",
-            description: messageNoti
+            description: messageNoti,
+            placement: 'top'
         });
     }
 }

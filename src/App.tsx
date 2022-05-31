@@ -12,7 +12,6 @@ import Complete from './features/dashboard/complete/Complete';
 import CompleteTest from './features/completetest/CompleteTest';
 import QuestionCollection from './features/dashboard/question/QuestionCollection';
 
-
 function App() {
   const [isBegin, setIsBegin] = useState(false);
 
