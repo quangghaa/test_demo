@@ -203,7 +203,7 @@ const Header = (props: any) => {
                                 Đăng nhập
                             </Button>
                             <p></p>
-                            <GoogleLogin
+                            {/* <GoogleLogin
 
                                 clientId={'744974257082-770efbi5v4ah0ic7qdg6rss3b7nsutuc.apps.googleusercontent.com'}
                                 // render={renderProps => (
@@ -213,7 +213,7 @@ const Header = (props: any) => {
                                 onSuccess={Login}
                                 onFailure={handleFailure}
                                 cookiePolicy={'single_host_origin'}
-                            ></GoogleLogin>
+                            ></GoogleLogin> */}
 
                         </div>
                     </div>
