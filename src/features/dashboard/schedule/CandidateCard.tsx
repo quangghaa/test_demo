@@ -12,6 +12,7 @@ import { selectTest } from "../../reducer/testSlice";
 
 import './Schedule.css';
 import statusNotification from "../../notification/Notification";
+import fakeRequest from "../../../utils/fakeRequest";
 const dep = [
     {
         value: 'Blockchain',
@@ -111,7 +112,6 @@ const CandidateCard = (props: any) => {
         try {
             console.log(addBody)
             const res = await updateOne("staff/candidate/update", id, addBody);
-            console.log(res.status, "ressssssss")
             if (res) {
                 setVisibleConfirmEdit(false)
                 statusNotification(true, "Cập nhật ứng viên thành công")
@@ -120,8 +120,6 @@ const CandidateCard = (props: any) => {
         } catch (error) {
             console.log(error)
             statusNotification(false, "Cập nhật ứng viên thất bại")
-        } finally{
-            window.location.reload()
         }
     }
 
@@ -265,7 +263,7 @@ const CandidateCard = (props: any) => {
                                 <div className='col'>
                                     <span>Lịch</span>
                                     <DatePicker onChange={onSelectDateModal} placeholder={props.data.dates} />
-                                    <TimePicker className='mgt-10' onChange={onSelectTimeModal} placeholder={props.data.times} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                                    <TimePicker className='mgt-10' onChange={onSelectTimeModal} placeholder={props.data.times} />
                                 </div>
                                 <div id='contact' className='col mgl-20'>
                                     <span>Liên hệ</span>

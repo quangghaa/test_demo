@@ -6,7 +6,6 @@ import { ICandidate } from '../../interface';
 import HeaderD from '../headerD/HeaderD';
 import './Complete.css';
 
-
 const Complete = () => {
     const pos = [
         {
@@ -159,11 +158,12 @@ const Complete = () => {
                                 </div>
 
                                 <div className='right'>
+                                    <span><Button type='primary' icon={<SendOutlined />}>Gửi điểm</Button></span>
                                     <span>
                                         <Checkbox onChange={onChange}>SMS</Checkbox>
-                                        <span>Gửi điểm <SendOutlined /></span>
                                     </span>
                                     <span><Checkbox onChange={onChange}>Email</Checkbox></span>
+
                                 </div>
                             </li>
                         ))}

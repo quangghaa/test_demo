@@ -101,7 +101,7 @@ export interface ConditionSearch {
     CANDIDATE_BYLEVEL: string;
     CANDIDATE_BYDATE: string;
     CANDIDATE_BYNAME: string;
-    CANDIDATE_BYPOSTION: string;
+    CANDIDATE_BYPOSITION: string;
     CANDIDATE_BYEMAIL: string;
     CANDIDATE_BYPHONE: string;
 

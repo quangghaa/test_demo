@@ -6,9 +6,9 @@ const CalendarSection = (props: any) => {
     // console.log("LIST: ", props.list);
     return (
         <div>
-            {props.list.map((candidate: any) => {
+            {props.list.map((candidate: any, key: any) => {
                 return (
-                    <Space>
+                    <Space key={key}>
                         <div className='col mgt-20'>
                             <span className='cal-date'>{candidate.dates}</span>
                             <ul className='c-cal'>
@@ -18,7 +18,7 @@ const CalendarSection = (props: any) => {
 
                             </ul>
                         </div>
-                    </Space>    
+                    </Space>
                 )
             })}
 

@@ -23,7 +23,7 @@ const Test = (props: any) => {
 
     const listTest = useAppSelector(selectCandidate);
 
-    const [switchview, setSwitchview] = useState('ENG' && 'GEN');
+    const [switchview, setSwitchview] = useState('ENG' || 'GEN');
 
     const toEng = () => {
         setSwitchview('ENG');

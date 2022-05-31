@@ -5,7 +5,7 @@ import Header from '../header/Header';
 import './Instruction.css';
 
 const Instruction = (props: any) => {
-    
+    console.log(props)
     return (
         <div>
             <Header start={props.start}/>

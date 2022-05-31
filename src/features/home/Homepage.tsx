@@ -13,6 +13,7 @@ import { addCandidate } from '../reducer/listCandidateSlice';
 import './Homepage.css';
 import { useNavigate } from "react-router-dom";
 import { getListNoJwt } from '../../services/api';
+import statusNotification from '../notification/Notification';
 
 const Homepage = (props: any) => {
 
@@ -33,16 +34,18 @@ const Homepage = (props: any) => {
         const joinTest = async () => {
             try {
                 setLoading(true);
-                const res = await getListNoJwt('jointest', {code: canId});
+                const res = await getListNoJwt('jointest', { code: canId });
                 console.log(res.data)
-                if(res) {
+                if (res.data === 'làm xong rồi mà ???') {
+                    statusNotification(false, 'Bạn đã làm bài test')
+                } else {
                     dispatch(addCandidate(res.data));
                     navigate('/instruction');
                 }
             } finally {
                 setLoading(false);
             }
-            
+
         }
 
         joinTest();
@@ -68,6 +71,6 @@ const Homepage = (props: any) => {
             </div>
         </div>
     )
-}
-
+};
 export default Homepage;
+

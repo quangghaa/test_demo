@@ -162,7 +162,8 @@ const Demo = () => {
 
             } finally {
                 setloading(false);
-                
+                fakeRequest(1000)
+                await window.location.reload()
             }
         }
 

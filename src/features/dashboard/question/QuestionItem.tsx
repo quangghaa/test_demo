@@ -1,5 +1,5 @@
 
-import { PlusOutlined, CloseCircleFilled, DownOutlined, UpOutlined } from "@ant-design/icons";
+import { PlusOutlined, CloseCircleFilled, DownOutlined, UpOutlined, CheckOutlined } from "@ant-design/icons";
 import { Button, Cascader, Modal, Input } from "antd";
 import { useState, useEffect } from "react";
 import TextArea from 'antd/lib/input/TextArea';
@@ -9,6 +9,7 @@ import { IQA, ITest, IChoice } from "../../interface";
 
 import { addQa, selectTest } from "../../reducer/testSlice";
 import statusNotification from "../../notification/Notification";
+import fakeRequest from "../../../utils/fakeRequest";
 
 const QuestionItem = (props: any) => {
     const [testItem, setTestItem] = useState([] as ITest[]);
@@ -34,7 +35,7 @@ const QuestionItem = (props: any) => {
         },
         {
             value: '3',
-            label: 'Junior'
+            label: 'Senior'
         }
     ];
     const questionLevModal = lev;
@@ -49,13 +50,12 @@ const QuestionItem = (props: any) => {
         subject: {
             id: props.data?.subject.id
         },
-        content: props.data?.content || '',
+        content: props.data?.content,
         level: {
             id: props.data?.level.id
         },
-        multipleChoiceQuestions: props.data?.multipleChoiceQuestions || []
+        multipleChoiceQuestions: props.data?.multipleChoiceQuestions
     });
-
 
     const [abcd, setAbcd] = useState({
         a: {
@@ -84,8 +84,6 @@ const QuestionItem = (props: any) => {
 
     const showModal = (e: any, id: any) => {
         setVisible(id);
-        console.log(e.multipleChoiceQuestions)
-        console.log(questionBody, "question body")
     };
 
     const test = useAppSelector(selectTest);
@@ -123,27 +121,15 @@ const QuestionItem = (props: any) => {
     ];
 
     const onSelectType = (value: any) => {
-        const obj = {
-            id: parseInt(value[0])
-        }
-
-        setQuestionBody({ ...questionBody, subject: obj });
+        setQuestionBody({ ...questionBody, subject: value[0] });
     }
 
     const onSelectKind = (value: any) => {
-        const obj = {
-            id: parseInt(value[0])
-        }
-
-        setQuestionBody({ ...questionBody, type: obj });
+        setQuestionBody({ ...questionBody, type: value[0] });
     }
 
     const onSelectLevModal = (value: any) => {
-        const obj = {
-            id: parseInt(value[0])
-        }
-
-        setQuestionBody({ ...questionBody, level: obj });
+        setQuestionBody({ ...questionBody, level: value[0] });
     }
 
     const enterQContent = (e: any) => {
@@ -223,38 +209,6 @@ const QuestionItem = (props: any) => {
         });
     }
 
-    const handleRemoveQuestion = (ind: any) => {
-        if (testItem.length > 0 && ind > -1) {
-            const oldTestItem = testItem[0];
-
-            // const oldQa = testItem[0].qas;
-            const oldQa = testItem[0].questions;
-            let newQa = [] as IQA[];
-
-            for (let i = 0; i < oldQa.length; i++) {
-                if (i !== ind) newQa.push(oldQa[i]);
-            }
-
-            const x = [
-                {
-                    id: oldTestItem.id,
-                    codeTest: oldTestItem.codeTest,
-                    subject: oldTestItem.subject,
-                    name: oldTestItem.name,
-                    level: oldTestItem.level,
-                    candidates: oldTestItem.candidates,
-                    // qas: newQa
-                    questions: newQa
-                }
-            ]
-
-            // dispatch(deleteQa(ind));
-
-            setTestItem(x);
-
-        }
-    }
-
     const onChooseQuestion = (id: any) => {
         let isHad = false;
         test.questions.map(q => {
@@ -279,89 +233,94 @@ const QuestionItem = (props: any) => {
         }
     }
 
-    const removeQuestion = (qId: any, index: any) => {
-        handleRemoveQuestion(index);
-        props.func(qId);
-    }
-
-    const onEdit = () => {
-        console.log('ON EDIT');
-        props.setmode();
-        props.edit();
-    }
-
     const handleOk = async (id: any) => {
         console.log("Real ans: ", realAns.toLocaleLowerCase(), abcd);
-
         let mc = [];
 
-        if (abcd.a.answer) {
+        if (Object.keys(props.data.multipleChoiceQuestions) != null) {
             let temp = {
                 id: props.data.multipleChoiceQuestions[0].id,
-                answer: abcd.a.answer,
-                isTrue: 0
+                answer: abcd.a.answer || props.data.multipleChoiceQuestions[0].answer,
+                isTrue: props.data.multipleChoiceQuestions[0].isTrue
             }
+            console.log(temp, "----------------------")
             if (realAns.toLowerCase() === 'a') {
                 temp.isTrue = 1
+                // } else if (props.data.multipleChoiceQuestions[0].isTrue == 1) {
+                //     temp.isTrue = 1
+            } else {
+                temp.isTrue = 0
             }
 
             mc.push(temp);
         }
 
-        if (abcd.b.answer) {
+        if (Object.keys(props.data.multipleChoiceQuestions) != null) {
             let temp = {
                 id: props.data.multipleChoiceQuestions[1].id,
-                answer: abcd.b.answer,
-                isTrue: 0
+                answer: abcd.b.answer || props.data.multipleChoiceQuestions[1].answer,
+                isTrue: props.data.multipleChoiceQuestions[1].isTrue
             }
+            console.log(temp, "----------------------")
             if (realAns.toLowerCase() === 'b') {
                 temp.isTrue = 1
+                // } else if (props.data.multipleChoiceQuestions[1].isTrue == 1) {
+                //     temp.isTrue = 1
+            } else {
+                temp.isTrue = 0
             }
 
             mc.push(temp);
         }
 
-        if (abcd.c.answer) {
+        if (Object.keys(props.data.multipleChoiceQuestions) != null) {
             let temp = {
                 id: props.data.multipleChoiceQuestions[2].id,
-                answer: abcd.c.answer,
-                isTrue: 0
+                answer: abcd.c.answer || props.data.multipleChoiceQuestions[2].answer,
+                isTrue: props.data.multipleChoiceQuestions[2].isTrue
             }
+            console.log(temp, "----------------------")
             if (realAns.toLowerCase() === 'c') {
                 temp.isTrue = 1
+                // } else if (props.data.multipleChoiceQuestions[2].isTrue == 1) {
+                //     temp.isTrue = 1
+            } else {
+                temp.isTrue = 0
             }
 
             mc.push(temp);
         }
 
-        if (abcd.d.answer) {
+        if (Object.keys(props.data.multipleChoiceQuestions) != null) {
             let temp = {
                 id: props.data.multipleChoiceQuestions[3].id,
-                answer: abcd.d.answer,
-                isTrue: 0
+                answer: abcd.d.answer || props.data.multipleChoiceQuestions[3].answer,
+                isTrue: props.data.multipleChoiceQuestions[3].isTrue
             }
+            console.log(temp, "----------------------")
             if (realAns.toLowerCase() === 'd') {
                 temp.isTrue = 1
+                // } else if (props.data.multipleChoiceQuestions[3].isTrue == 1) {
+                //     temp.isTrue = 1
+            } else {
+                temp.isTrue = 0
             }
 
             mc.push(temp);
         }
 
         const body = { ...questionBody, multipleChoiceQuestions: mc };
-        console.log("BODY: ", body);
 
         try {
             setLoading(true);
-            console.log(id)
-            const res = await updateOne('staff/editquestion', id, body);
-            if (res) {
-
-                setVisible(false);
-                setReload(reload => reload + 1);
-            }
-
+            await updateOne('staff/editquestion', id, body);
+            console.log(body, "bodyyyyyyyyyy")
+        } catch (error) {
+            statusNotification(false, "Cập nhật câu hỏi thất bại")
         } finally {
-            setLoading(false);
+            setVisible(false);
+            statusNotification(true, "Cập nhật câu hỏi thành công")
+            fakeRequest(500)
             window.location.reload()
         }
     };
@@ -377,7 +336,10 @@ const QuestionItem = (props: any) => {
                     <div id={'ans-detail-' + props.index} className='hide'>
                         <ul className='ans-list'>
                             {props.data.multipleChoiceQuestions.map((c: any, i: any) => (
-                                <li>{mapABC(i + 1)}.&nbsp;{c.answer}</li>
+
+                                <li>{c.isTrue != 0 ? <span className="correct-ans"><CheckOutlined /></span> : <></>}
+                                    <span>{mapABC(i + 1)}.&nbsp;{c.answer}</span>
+                                </li>
                             ))}
                         </ul>
                         <span className='row-between mgt-10 pd-x-20'>
