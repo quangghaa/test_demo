@@ -7,29 +7,6 @@ import HeaderD from '../headerD/HeaderD';
 import './Complete.css';
 
 const Complete = () => {
-    const nodemailer = require('nodemailer')
-    const transporter = nodemailer.createTransport({
-        service: '',
-        auth: {
-            user: '',
-            pass: '',
-        }
-    })
-
-    const mailOptions = {
-        from: '',
-        to: '',
-        subject: '',
-        text: ''
-    }
-
-    transporter.sendMail(mailOptions, function (error: any, success: any) {
-        if(error){
-            console.log(error)
-        } else {
-            console.log(success)
-        }
-    })
     const pos = [
         {
             value: 'Developer',
